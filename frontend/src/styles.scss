@@ -1,0 +1,452 @@
+
+/* ============================================================================
+   ANGULAR MATERIAL + SISTEMA DE DISEÑO PERSONALIZADO
+   Material Design 3 + Principios UX/UI
+   ============================================================================ */
+
+@use '@angular/material' as mat;
+@use 'assets/styles/variables' as vars;
+
+/* ----------------------------------------------------------------------------
+   CONFIGURACIÓN DE THEME (Material 3)
+   ---------------------------------------------------------------------------- */
+
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$cyan-palette,
+      tertiary: mat.$orange-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+/* ----------------------------------------------------------------------------
+   ESTILOS BASE DE ANGULAR MATERIAL
+   ---------------------------------------------------------------------------- */
+
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}
+
+html, body { 
+  height: 100%; 
+}
+
+/* ============================================================================
+   SISTEMA DE DISEÑO PERSONALIZADO
+   Principios UX/UI: Nielsen, Shneiderman, WCAG 2.1, Gestalt
+   ============================================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; /* Mínimo WCAG */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  /* Sobrescribir con nuestras preferencias */
+  font-family: vars.$font-family-sans;
+  font-size: vars.$font-size-base;
+  line-height: vars.$line-height-base;
+  color: vars.$text-primary;
+  background-color: vars.$bg-secondary;
+  overflow-x: hidden;
+}
+
+/* ----------------------------------------------------------------------------
+   TIPOGRAFÍA - JERARQUÍA VISUAL
+   ---------------------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: vars.$font-weight-semibold;
+  line-height: vars.$line-height-tight;
+  color: vars.$text-primary;
+  margin-bottom: vars.$spacing-md;
+}
+
+h1 {
+  font-size: vars.$font-size-h1;
+  letter-spacing: vars.$letter-spacing-tight;
+}
+
+h2 {
+  font-size: vars.$font-size-h2;
+}
+
+h3 {
+  font-size: vars.$font-size-h3;
+}
+
+h4 {
+  font-size: vars.$font-size-h4;
+}
+
+h5 {
+  font-size: vars.$font-size-h5;
+}
+
+h6 {
+  font-size: vars.$font-size-h6;
+}
+
+p {
+  margin-bottom: vars.$spacing-md;
+  max-width: 75ch;
+}
+
+/* ----------------------------------------------------------------------------
+   ENLACES - ACCESIBILIDAD
+   ---------------------------------------------------------------------------- */
+
+a {
+  color: vars.$primary;
+  text-decoration: none;
+  transition: color vars.$transition-fast;
+  
+  &:hover {
+    color: darken(vars.$primary, 10%);
+    text-decoration: underline;
+  }
+  
+  &:focus {
+    outline: vars.$focus-outline-width vars.$focus-outline-style vars.$focus-outline-color;
+    outline-offset: vars.$focus-outline-offset;
+    border-radius: vars.$border-radius-sm;
+  }
+  
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   BOTONES PERSONALIZADOS
+   ---------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$spacing-sm;
+  
+  padding: 12px 24px;
+  border: none;
+  border-radius: vars.$border-radius;
+  
+  font-family: vars.$font-family-sans;
+  font-size: vars.$font-size-base;
+  font-weight: vars.$font-weight-medium;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  
+  cursor: pointer;
+  user-select: none;
+  
+  transition: all vars.$transition-base;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: vars.$box-shadow-focus;
+  }
+  
+  &.btn-primary {
+    background: linear-gradient(135deg, vars.$primary 0%, vars.$secondary 100%);
+    color: vars.$text-inverse;
+    box-shadow: vars.$box-shadow;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: vars.$box-shadow-hover;
+    }
+    
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+  
+  &.btn-secondary {
+    background: vars.$bg-primary;
+    color: vars.$text-primary;
+    border: 1px solid vars.$border-color;
+    
+    &:hover:not(:disabled) {
+      background: vars.$bg-secondary;
+      border-color: vars.$gray-500;
+    }
+  }
+  
+  &.btn-success {
+    background: vars.$success;
+    color: vars.$text-inverse;
+    
+    &:hover:not(:disabled) {
+      background: darken(vars.$success, 8%);
+    }
+  }
+  
+  &.btn-danger {
+    background: vars.$danger;
+    color: vars.$text-inverse;
+    
+    &:hover:not(:disabled) {
+      background: darken(vars.$danger, 8%);
+    }
+  }
+  
+  &.btn-block {
+    width: 100%;
+  }
+  
+  &.btn-sm {
+    padding: 8px 16px;
+    font-size: vars.$font-size-sm;
+  }
+  
+  &.btn-lg {
+    padding: 16px 32px;
+    font-size: 1.125rem;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   CARDS
+   ---------------------------------------------------------------------------- */
+
+.card {
+  background: vars.$bg-primary;
+  border: 1px solid vars.$border-color;
+  border-radius: vars.$border-radius-lg;
+  box-shadow: vars.$box-shadow;
+  padding: vars.$spacing-lg;
+  margin-bottom: vars.$spacing-md;
+  
+  transition: box-shadow vars.$transition-base;
+  
+  &:hover {
+    box-shadow: vars.$box-shadow-hover;
+  }
+  
+  .card-header {
+    margin-bottom: vars.$spacing-md;
+    padding-bottom: vars.$spacing-md;
+    border-bottom: 1px solid vars.$border-color;
+    
+    h3, h4 {
+      margin-bottom: 0;
+    }
+  }
+  
+  .card-footer {
+    margin-top: vars.$spacing-md;
+    padding-top: vars.$spacing-md;
+    border-top: 1px solid vars.$border-color;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   FORMULARIOS
+   ---------------------------------------------------------------------------- */
+
+label {
+  display: block;
+  margin-bottom: vars.$spacing-sm;
+  font-size: vars.$font-size-sm;
+  font-weight: vars.$font-weight-medium;
+  color: vars.$text-secondary;
+  text-transform: uppercase;
+  letter-spacing: vars.$letter-spacing-wide;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="date"],
+textarea,
+select {
+  width: 100%;
+  padding: 12px 16px;
+  
+  font-family: vars.$font-family-sans;
+  font-size: vars.$font-size-base;
+  line-height: vars.$line-height-base;
+  color: vars.$text-primary;
+  
+  background-color: vars.$bg-primary;
+  border: 1px solid vars.$border-color;
+  border-radius: vars.$border-radius;
+  
+  transition: border-color vars.$transition-fast, box-shadow vars.$transition-fast;
+  
+  &:focus {
+    outline: none;
+    border-color: vars.$primary;
+    box-shadow: vars.$box-shadow-focus;
+  }
+  
+  &.error,
+  &.ng-invalid.ng-touched {
+    border-color: vars.$danger;
+    
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.25);
+    }
+  }
+  
+  &:disabled {
+    background-color: vars.$gray-200;
+    color: vars.$text-disabled;
+    cursor: not-allowed;
+  }
+  
+  &::placeholder {
+    color: vars.$gray-400;
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.error-message {
+  display: block;
+  margin-top: vars.$spacing-sm;
+  font-size: vars.$font-size-sm;
+  color: vars.$danger;
+}
+
+.success-message {
+  display: block;
+  margin-top: vars.$spacing-sm;
+  font-size: vars.$font-size-sm;
+  color: vars.$success;
+}
+
+/* ----------------------------------------------------------------------------
+   UTILIDADES
+   ---------------------------------------------------------------------------- */
+
+.container {
+  max-width: vars.$container-max-width;
+  margin: 0 auto;
+  padding: 0 vars.$spacing-md;
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-primary { color: vars.$primary; }
+.text-success { color: vars.$success; }
+.text-danger { color: vars.$danger; }
+.text-warning { color: vars.$warning; }
+.text-info { color: vars.$info; }
+.text-muted { color: vars.$text-muted; }
+
+.mt-1 { margin-top: vars.$spacing-sm !important; }
+.mt-2 { margin-top: vars.$spacing-md !important; }
+.mt-3 { margin-top: vars.$spacing-lg !important; }
+.mt-4 { margin-top: vars.$spacing-xl !important; }
+
+.mb-1 { margin-bottom: vars.$spacing-sm !important; }
+.mb-2 { margin-bottom: vars.$spacing-md !important; }
+.mb-3 { margin-bottom: vars.$spacing-lg !important; }
+.mb-4 { margin-bottom: vars.$spacing-xl !important; }
+
+.pt-1 { padding-top: vars.$spacing-sm !important; }
+.pt-2 { padding-top: vars.$spacing-md !important; }
+.pt-3 { padding-top: vars.$spacing-lg !important; }
+
+.pb-1 { padding-bottom: vars.$spacing-sm !important; }
+.pb-2 { padding-bottom: vars.$spacing-md !important; }
+.pb-3 { padding-bottom: vars.$spacing-lg !important; }
+
+/* ----------------------------------------------------------------------------
+   LOADING
+   ---------------------------------------------------------------------------- */
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: vars.$text-muted;
+}
+
+/* ----------------------------------------------------------------------------
+   ACCESIBILIDAD
+   ---------------------------------------------------------------------------- */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: vars.$primary;
+  color: vars.$text-inverse;
+  padding: vars.$spacing-sm vars.$spacing-md;
+  z-index: 100;
+  text-decoration: none;
+  
+  &:focus {
+    top: 0;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+*:focus-visible {
+  outline: vars.$focus-outline-width vars.$focus-outline-style vars.$focus-outline-color;
+  outline-offset: vars.$focus-outline-offset;
+}
+
+/* ----------------------------------------------------------------------------
+   RESPONSIVE
+   ---------------------------------------------------------------------------- */
+
+@media (max-width: vars.$breakpoint-tablet) {
+  html {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 vars.$spacing-sm;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+}
