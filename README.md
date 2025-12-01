@@ -75,3 +75,43 @@ ng serve
 ## 🔗 Enlaces
 - [Repositorio GitHub](https://github.com/FernandoCollantes/ProyectoIntermodular)
 - [Documentación Completa](./docs/)
+
+# Backend - API REST
+
+## Tecnologías
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT para autenticación
+- Express Validator
+
+## Instalación
+```bash
+npm install
+cp .env.example .env
+# Configurar variables en .env
+npm run dev
+```
+
+## Endpoints (Sprint 1+)
+
+### Autenticación
+- `POST /api/auth/registro` - Registrar profesor
+- `POST /api/auth/login` - Iniciar sesión
+- `GET /api/auth/perfil` - Obtener perfil (protegido)
+
+### Preguntas
+- `GET /api/preguntas` - Listar preguntas
+- `POST /api/preguntas` - Crear pregunta (profesor)
+- `GET /api/preguntas/:id` - Obtener pregunta
+- `PUT /api/preguntas/:id` - Actualizar pregunta (profesor)
+- `DELETE /api/preguntas/:id` - Eliminar pregunta (profesor)
+
+### Exámenes
+- `POST /api/examenes` - Crear examen
+- `GET /api/examenes` - Listar exámenes
+- `GET /api/examenes/:id` - Obtener examen
+- `GET /api/examenes/realizar/:linkUnico` - Acceso alumno
+
+### Resultados
+- `POST /api/examenes/:linkUnico/enviar` - Enviar respuestas
+- `GET /api/resultados/:id` - Ver resultado
