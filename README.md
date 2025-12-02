@@ -1,7 +1,7 @@
 # Proyecto Intermodular - Generación Dinámica de Exámenes
 
 ## 📋 Descripción
-Aplicación web para la generación dinámica de exámenes tipo test. Permite a los profesores crear bancos de preguntas, generar exámenes aleatorios y que los alumnos los realicen mediante enlaces únicos.
+Aplicación web para la generación dinámica de exámenes tipo test. Permite a los profesores crear bancos de preguntas, generar exámenes aleatorios y que los alumnos los realicen mediante enlaces únicos y exportarlos a PDF.
 
 ## 🚀 Stack Tecnológico
 
@@ -15,8 +15,8 @@ Aplicación web para la generación dinámica de exámenes tipo test. Permite a 
 - **Runtime:** Node.js
 - **Framework:** Express.js
 - **Base de Datos:** MongoDB Atlas
-- **Autenticación:** JWT (JSON Web Tokens)
-- **Email:** Nodemailer
+- **ODM:** Mongoose (Esquemas y Validaciones)
+- **Generación PDF:** PDFKit (Server-Side)
 
 ## 👥 Equipo
 - **Fernando Collantes** - Frontend & Documentación
@@ -43,9 +43,8 @@ ProyectoIntermodular/
 ```bash
 cd backend
 npm install
-cp .env.example .env
-# Configurar variables en .env
-npm run dev
+# Iniciar servidor en puerto 3000
+npm start
 ```
 
 ### Frontend
@@ -79,10 +78,10 @@ ng serve
 # Backend - API REST
 
 ## Tecnologías
-- Node.js + Express
-- MongoDB + Mongoose
-- JWT para autenticación
-- Express Validator
+- Node.js + Express: Servidor web y API.
+- Mongoose: Modelado de datos estricto para integridad de la BD.
+- PDFKit: Generación dinámica de documentos PDF en el servidor.
+- Arquitectura: Fat Server / Service Layer (Lógica de negocio desacoplada del controlador).
 
 ## Instalación
 ```bash
@@ -94,24 +93,25 @@ npm run dev
 
 ## Endpoints (Sprint 1+)
 
-### Autenticación
-- `POST /api/auth/registro` - Registrar profesor
-- `POST /api/auth/login` - Iniciar sesión
-- `GET /api/auth/perfil` - Obtener perfil (protegido)
+### Búsqueda y Filtrado
+- `GET /api/preguntas/search` - Búsqueda avanzada (filtra por asignatura, tema y dificultad).
+- `GET /api/preguntas/subjects` - Obtener lista única de asignaturas (para dropdowns dinámicos).
+- `GET /api/preguntas/themes` - Obtener temas filtrados por asignatura.
 
-### Preguntas
-- `GET /api/preguntas` - Listar preguntas
-- `POST /api/preguntas` - Crear pregunta (profesor)
-- `GET /api/preguntas/:id` - Obtener pregunta
-- `PUT /api/preguntas/:id` - Actualizar pregunta (profesor)
-- `DELETE /api/preguntas/:id` - Eliminar pregunta (profesor)
+### Gestión de Preguntas
+- `POST /api/preguntas` - Crear nueva pregunta (valida y fusiona opciones correctas/incorrectas).
+
+- `PUT /api/preguntas/:id` - Actualizar pregunta (futuro)
+- `DELETE /api/preguntas/:id` - Eliminar pregunta (futuro)
 
 ### Exámenes
-- `POST /api/examenes` - Crear examen
-- `GET /api/examenes` - Listar exámenes
-- `GET /api/examenes/:id` - Obtener examen
-- `GET /api/examenes/realizar/:linkUnico` - Acceso alumno
+- `POST /api/preguntas/exam` - Generar examen aleatorio basado en criterios.
+- `POST /api/preguntas/download-pdf` - Descargar PDF del examen generado (Streaming binario).
 
-### Resultados
-- `POST /api/examenes/:linkUnico/enviar` - Enviar respuestas
-- `GET /api/resultados/:id` - Ver resultado
+### Notas de Desarrollo
+
+- **Seguridad:** Se utiliza validación estricta en el controlador antes de procesar datos.
+
+- **Rendimiento:** Uso de lean() en Mongoose para consultas rápidas de lectura.
+
+- **Acceso:** Configurado para permitir acceso desde red local (IP) mediante rutas relativas y express.static.
