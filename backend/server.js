@@ -1,12 +1,28 @@
-const app = require('./src/app');
-const dotenv = require('dotenv');
+const express = require('express');
+const cors = require('cors'); // Middleware para permitir peticiones desde otros dominios
+const path = require('path');
+const app = express();
+const { connect } = require('./dataBase.js'); // Importamos nuestra función de conexión
 
-// Cargar variables de entorno
-dotenv.config();
+// 1. Configuración de Middlewares
+app.use(cors()); // Permite que el frontend hable con este backend
+app.use(express.json()); // Permite que el servidor entienda datos JSON en el cuerpo de las peticiones (req.body)
 
-const PORT = process.env.PORT || 3000;
+// 2. Configuración para servir archivos estáticos
+// Esto sirve todo lo que haya en la carpeta 'Pagina' (index.html, index.js, estilos)
+// cuando entres a http://localhost:3000
+app.use(express.static(path.join(__dirname, 'Pagina')));
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+// 3. Definición de Rutas
+// Todas las rutas que empiecen por /api/preguntas se manejan en preguntasRoutes.js
+app.use('/api/preguntas', require('./routes/preguntasRoutes.js'));
+
+
+
+// 3. Inicio del Servidor
+// Primero conectamos a la BD, y solo si tenemos éxito, levantamos el servidor express
+connect().then(() => {
+    app.listen(3000, () => {
+        console.log('Servidor escuchando en el puerto 3000');
+    });
 });
