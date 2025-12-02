@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Pregunta - ExamGen</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .answer-options-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+    
+    .answer-option-input {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: var(--bg-secondary);
+      border-radius: var(--border-radius);
+    }
+    
+    .answer-option-input input[type="text"] {
+      flex: 1;
+    }
+    
+    .answer-option-input input[type="radio"] {
+      flex-shrink: 0;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: flex-end;
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border-color);
+      margin-top: var(--spacing-lg);
+    }
+  </style>
+</head>
+<body class="has-mockup-nav">
+  <!-- Navegación entre mockups -->
+  <nav class="mockup-nav">
+    <span class="mockup-nav-brand">NAVEGACIÓN MOCKUPS</span>
+    <div class="mockup-nav-links">
+      <a href="mockup-1-landing.html" class="mockup-nav-link">1. Landing</a>
+      <a href="mockup-2-login.html" class="mockup-nav-link">2. Login</a>
+      <a href="mockup-3-dashboard.html" class="mockup-nav-link">3. Dashboard</a>
+      <a href="mockup-4-mis-preguntas.html" class="mockup-nav-link">4. Mis Preguntas</a>
+      <a href="mockup-5-crear-pregunta.html" class="mockup-nav-link active">5. Crear Pregunta</a>
+      <a href="mockup-6-crear-examen.html" class="mockup-nav-link">6. Crear Examen</a>
+      <a href="mockup-7-acceso-alumno.html" class="mockup-nav-link">7. Acceso Alumno</a>
+      <a href="mockup-8-realizar-examen.html" class="mockup-nav-link">8. Realizar Examen</a>
+    </div>
+  </nav>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>EXAMGEN</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="mockup-3-dashboard.html" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Dashboard</span>
+        </a>
+        <a href="mockup-4-mis-preguntas.html" class="nav-item active">
+          <div class="nav-icon"></div>
+          <span>Mis Preguntas</span>
+        </a>
+        <a href="mockup-6-crear-examen.html" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Mis Exámenes</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Asignaturas</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Exportar</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <h1 class="topbar-title">Crear Nueva Pregunta</h1>
+        <div class="user-info">
+          <span class="user-name">Fernando Collantes</span>
+          <div class="user-avatar">FC</div>
+        </div>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <div class="card">
+          <form>
+            <!-- Asignatura y Categoría -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+              <div class="form-group">
+                <label for="subject" class="form-label required">Asignatura</label>
+                <select id="subject" class="form-select">
+                  <option value="">Seleccionar asignatura...</option>
+                  <option value="mat">Matemáticas</option>
+                  <option value="his">Historia</option>
+                  <option value="pro">Programación</option>
+                  <option value="ing">Inglés</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="category" class="form-label required">Categoría</label>
+                <select id="category" class="form-select">
+                  <option value="">Seleccionar categoría...</option>
+                  <option value="algebra">Álgebra</option>
+                  <option value="geometria">Geometría</option>
+                  <option value="calculo">Cálculo</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Enunciado -->
+            <div class="form-group">
+              <label for="statement" class="form-label required">Enunciado de la pregunta</label>
+              <textarea 
+                id="statement" 
+                class="form-textarea" 
+                placeholder="Escribe aquí el enunciado de la pregunta..."
+                rows="4"
+              ></textarea>
+            </div>
+            
+            <!-- Tipo de pregunta -->
+            <div class="form-group">
+              <label class="form-label required">Tipo de pregunta</label>
+              <div class="radio-group">
+                <label class="radio-item">
+                  <input type="radio" name="questionType" value="single" class="radio-input" checked>
+                  <span>Respuesta única (una sola respuesta correcta)</span>
+                </label>
+                <label class="radio-item">
+                  <input type="radio" name="questionType" value="multiple" class="radio-input">
+                  <span>Respuesta múltiple (varias respuestas correctas)</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Opciones de respuesta -->
+            <div class="form-group">
+              <label class="form-label required">Opciones de respuesta</label>
+              <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+                Marca con el radio button la respuesta correcta
+              </p>
+              
+              <div class="answer-options-container">
+                <div class="answer-option-input">
+                  <input type="radio" name="correctAnswer" value="a">
+                  <label style="font-weight: 500; min-width: 20px;">A)</label>
+                  <input type="text" class="form-input" placeholder="Escribe la opción A">
+                </div>
+                
+                <div class="answer-option-input">
+                  <input type="radio" name="correctAnswer" value="b">
+                  <label style="font-weight: 500; min-width: 20px;">B)</label>
+                  <input type="text" class="form-input" placeholder="Escribe la opción B">
+                </div>
+                
+                <div class="answer-option-input">
+                  <input type="radio" name="correctAnswer" value="c">
+                  <label style="font-weight: 500; min-width: 20px;">C)</label>
+                  <input type="text" class="form-input" placeholder="Escribe la opción C">
+                </div>
+                
+                <div class="answer-option-input">
+                  <input type="radio" name="correctAnswer" value="d">
+                  <label style="font-weight: 500; min-width: 20px;">D)</label>
+                  <input type="text" class="form-input" placeholder="Escribe la opción D">
+                </div>
+              </div>
+            </div>
+            
+            <!-- Dificultad -->
+            <div class="form-group">
+              <label for="difficulty" class="form-label">Nivel de dificultad</label>
+              <select id="difficulty" class="form-select">
+                <option value="facil">Fácil</option>
+                <option value="media" selected>Media</option>
+                <option value="dificil">Difícil</option>
+              </select>
+            </div>
+            
+            <!-- Acciones -->
+            <div class="form-actions">
+              <a href="mockup-4-mis-preguntas.html" class="btn btn-outline">Cancelar</a>
+              <button type="submit" class="btn btn-primary">
+                <div class="btn-icon"></div>
+                Guardar Pregunta
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

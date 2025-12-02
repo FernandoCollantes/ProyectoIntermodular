@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Preguntas - ExamGen</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="has-mockup-nav">
+  <!-- Navegación entre mockups -->
+  <nav class="mockup-nav">
+    <span class="mockup-nav-brand">NAVEGACIÓN MOCKUPS</span>
+    <div class="mockup-nav-links">
+      <a href="mockup-1-landing.html" class="mockup-nav-link">1. Landing</a>
+      <a href="mockup-2-login.html" class="mockup-nav-link">2. Login</a>
+      <a href="mockup-3-dashboard.html" class="mockup-nav-link">3. Dashboard</a>
+      <a href="mockup-4-mis-preguntas.html" class="mockup-nav-link active">4. Mis Preguntas</a>
+      <a href="mockup-5-crear-pregunta.html" class="mockup-nav-link">5. Crear Pregunta</a>
+      <a href="mockup-6-crear-examen.html" class="mockup-nav-link">6. Crear Examen</a>
+      <a href="mockup-7-acceso-alumno.html" class="mockup-nav-link">7. Acceso Alumno</a>
+      <a href="mockup-8-realizar-examen.html" class="mockup-nav-link">8. Realizar Examen</a>
+    </div>
+  </nav>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>EXAMGEN</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="mockup-3-dashboard.html" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Dashboard</span>
+        </a>
+        <a href="mockup-4-mis-preguntas.html" class="nav-item active">
+          <div class="nav-icon"></div>
+          <span>Mis Preguntas</span>
+        </a>
+        <a href="mockup-6-crear-examen.html" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Mis Exámenes</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Asignaturas</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Exportar</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <h1 class="topbar-title">Mis Preguntas</h1>
+        <div class="user-info">
+          <span class="user-name">Fernando Collantes</span>
+          <div class="user-avatar">FC</div>
+        </div>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="search-bar">
+            <div class="search-icon"></div>
+            <input type="text" class="search-input" placeholder="Buscar preguntas...">
+          </div>
+          <a href="mockup-5-crear-pregunta.html" class="btn btn-primary">
+            <div class="btn-icon"></div>
+            Nueva Pregunta
+          </a>
+        </div>
+        
+        <!-- Filters -->
+        <div class="chips-container">
+          <div class="chip active">TODAS</div>
+          <div class="chip">MATEMÁTICAS</div>
+          <div class="chip">HISTORIA</div>
+          <div class="chip">PROGRAMACIÓN</div>
+          <div class="chip">INGLÉS</div>
+        </div>
+        
+        <!-- Question Cards -->
+        <div class="question-grid">
+          <!-- Question 1 -->
+          <div class="question-card">
+            <div class="question-header">
+              <div class="badges">
+                <span class="badge badge-primary">MAT</span>
+                <span class="badge">ÁLGEBRA</span>
+              </div>
+              <div class="question-actions">
+                <button class="action-btn" title="Editar">
+                  <div class="action-icon"></div>
+                </button>
+                <button class="action-btn" title="Eliminar">
+                  <div class="action-icon"></div>
+                </button>
+              </div>
+            </div>
+            <div class="question-content">
+              <p class="question-text">¿Cuál es la solución de la ecuación 2x + 5 = 13?</p>
+            </div>
+            <div class="question-metadata">
+              <span>Creada: 15 Nov 2025</span>
+              <span>Usada en: 3 exámenes</span>
+              <span>Dificultad: Media</span>
+            </div>
+          </div>
+          
+          <!-- Question 2 -->
+          <div class="question-card">
+            <div class="question-header">
+              <div class="badges">
+                <span class="badge badge-success">HIS</span>
+                <span class="badge">EDAD MEDIA</span>
+              </div>
+              <div class="question-actions">
+                <button class="action-btn" title="Editar">
+                  <div class="action-icon"></div>
+                </button>
+                <button class="action-btn" title="Eliminar">
+                  <div class="action-icon"></div>
+                </button>
+              </div>
+            </div>
+            <div class="question-content">
+              <p class="question-text">¿En qué año comenzó la Reconquista española?</p>
+            </div>
+            <div class="question-metadata">
+              <span>Creada: 10 Nov 2025</span>
+              <span>Usada en: 5 exámenes</span>
+              <span>Dificultad: Fácil</span>
+            </div>
+          </div>
+          
+          <!-- Question 3 -->
+          <div class="question-card">
+            <div class="question-header">
+              <div class="badges">
+                <span class="badge badge-danger">PRO</span>
+                <span class="badge">JAVASCRIPT</span>
+              </div>
+              <div class="question-actions">
+                <button class="action-btn" title="Editar">
+                  <div class="action-icon"></div>
+                </button>
+                <button class="action-btn" title="Eliminar">
+                  <div class="action-icon"></div>
+                </button>
+              </div>
+            </div>
+            <div class="question-content">
+              <p class="question-text">¿Qué método se utiliza para añadir un elemento al final de un array en JavaScript?</p>
+            </div>
+            <div class="question-metadata">
+              <span>Creada: 08 Nov 2025</span>
+              <span>Usada en: 2 exámenes</span>
+              <span>Dificultad: Media</span>
+            </div>
+          </div>
+          
+          <!-- Question 4 -->
+          <div class="question-card">
+            <div class="question-header">
+              <div class="badges">
+                <span class="badge badge-primary">MAT</span>
+                <span class="badge">GEOMETRÍA</span>
+              </div>
+              <div class="question-actions">
+                <button class="action-btn" title="Editar">
+                  <div class="action-icon"></div>
+                </button>
+                <button class="action-btn" title="Eliminar">
+                  <div class="action-icon"></div>
+                </button>
+              </div>
+            </div>
+            <div class="question-content">
+              <p class="question-text">¿Cuál es el área de un círculo con radio de 5 cm?</p>
+            </div>
+            <div class="question-metadata">
+              <span>Creada: 05 Nov 2025</span>
+              <span>Usada en: 1 examen</span>
+              <span>Dificultad: Fácil</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

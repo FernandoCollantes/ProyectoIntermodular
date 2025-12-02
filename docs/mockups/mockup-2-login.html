@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Profesor - ExamGen</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .login-container {
+      min-height: calc(100vh - 48px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      padding: var(--spacing-xl);
+    }
+    
+    .login-box {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--white);
+      padding: 56px 48px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      transition: transform var(--transition-base), box-shadow var(--transition-base);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .login-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .login-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      margin: 0 auto 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 188, 212, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .login-logo::before {
+      content: 'E';
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    
+    .login-title {
+      font-size: 2rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+    
+    .login-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    
+    .login-form {
+      margin-bottom: 24px;
+    }
+    
+    .login-form .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .login-form .form-input {
+      padding: 14px 16px;
+      font-size: 1rem;
+    }
+    
+    .login-form .btn {
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    
+    .form-footer {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .form-footer p {
+      margin: 8px 0;
+    }
+    
+    .form-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color var(--transition-fast);
+    }
+    
+    .form-footer a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="has-mockup-nav">
+  <!-- Navegación entre mockups -->
+  <nav class="mockup-nav">
+    <span class="mockup-nav-brand">NAVEGACIÓN MOCKUPS</span>
+    <div class="mockup-nav-links">
+      <a href="mockup-1-landing.html" class="mockup-nav-link">1. Landing</a>
+      <a href="mockup-2-login.html" class="mockup-nav-link active">2. Login</a>
+      <a href="mockup-3-dashboard.html" class="mockup-nav-link">3. Dashboard</a>
+      <a href="mockup-4-mis-preguntas.html" class="mockup-nav-link">4. Mis Preguntas</a>
+      <a href="mockup-5-crear-pregunta.html" class="mockup-nav-link">5. Crear Pregunta</a>
+      <a href="mockup-6-crear-examen.html" class="mockup-nav-link">6. Crear Examen</a>
+      <a href="mockup-7-acceso-alumno.html" class="mockup-nav-link">7. Acceso Alumno</a>
+      <a href="mockup-8-realizar-examen.html" class="mockup-nav-link">8. Realizar Examen</a>
+    </div>
+  </nav>
+
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <div class="login-logo"></div>
+        <h1 class="login-title">ExamGen</h1>
+        <p class="login-subtitle">Acceso Profesores</p>
+      </div>
+      
+      <form class="login-form">
+        <div class="form-group">
+          <label for="email" class="form-label required">Correo electrónico</label>
+          <input 
+            type="email" 
+            id="email" 
+            class="form-input" 
+            placeholder="profesor@ejemplo.com"
+            aria-required="true"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="password" class="form-label required">Contraseña</label>
+          <input 
+            type="password" 
+            id="password" 
+            class="form-input" 
+            placeholder="••••••••"
+            aria-required="true"
+          >
+        </div>
+        
+        <a href="mockup-3-dashboard.html" class="btn btn-primary btn-lg" style="width: 100%;">
+          Iniciar Sesión
+        </a>
+      </form>
+      
+      <div class="form-footer">
+        <p>¿No tienes cuenta? <a href="#">Regístrate aquí</a></p>
+        <p><a href="#">¿Olvidaste tu contraseña?</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

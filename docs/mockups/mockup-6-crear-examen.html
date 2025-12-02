@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Examen - ExamGen</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .exam-config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .questions-selection {
+      background-color: var(--bg-secondary);
+      border-radius: var(--border-radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .questions-list {
+      max-height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+    
+    .question-select-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: var(--bg-primary);
+      border-radius: var(--border-radius);
+      border: 2px solid var(--border-color);
+      transition: border-color var(--transition-fast);
+    }
+    
+    .question-select-item:hover {
+      border-color: var(--primary);
+    }
+    
+    .question-select-item input[type="checkbox"] {
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    
+    .question-select-content {
+      flex: 1;
+    }
+    
+    .question-select-text {
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-xs);
+      line-height: 1.4;
+    }
+    
+    .question-select-meta {
+      display: flex;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+    
+    .selected-count {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: rgba(0, 188, 212, 0.1);
+      color: var(--primary);
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: flex-end;
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border-color);
+      margin-top: var(--spacing-lg);
+    }
+  </style>
+</head>
+<body class="has-mockup-nav">
+  <!-- Navegación entre mockups -->
+  <nav class="mockup-nav">
+    <span class="mockup-nav-brand">NAVEGACIÓN MOCKUPS</span>
+    <div class="mockup-nav-links">
+      <a href="mockup-1-landing.html" class="mockup-nav-link">1. Landing</a>
+      <a href="mockup-2-login.html" class="mockup-nav-link">2. Login</a>
+      <a href="mockup-3-dashboard.html" class="mockup-nav-link">3. Dashboard</a>
+      <a href="mockup-4-mis-preguntas.html" class="mockup-nav-link">4. Mis Preguntas</a>
+      <a href="mockup-5-crear-pregunta.html" class="mockup-nav-link">5. Crear Pregunta</a>
+      <a href="mockup-6-crear-examen.html" class="mockup-nav-link active">6. Crear Examen</a>
+      <a href="mockup-7-acceso-alumno.html" class="mockup-nav-link">7. Acceso Alumno</a>
+      <a href="mockup-8-realizar-examen.html" class="mockup-nav-link">8. Realizar Examen</a>
+    </div>
+  </nav>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>EXAMGEN</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="mockup-3-dashboard.html" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Dashboard</span>
+        </a>
+        <a href="mockup-4-mis-preguntas.html" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Mis Preguntas</span>
+        </a>
+        <a href="mockup-6-crear-examen.html" class="nav-item active">
+          <div class="nav-icon"></div>
+          <span>Mis Exámenes</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Asignaturas</span>
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon"></div>
+          <span>Exportar</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <h1 class="topbar-title">Crear Nuevo Examen</h1>
+        <div class="user-info">
+          <span class="user-name">Fernando Collantes</span>
+          <div class="user-avatar">FC</div>
+        </div>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <div class="card">
+          <form>
+            <!-- Configuración del Examen -->
+            <h3 style="margin-bottom: var(--spacing-lg); color: var(--text-primary);">Configuración del Examen</h3>
+            
+            <div class="form-group">
+              <label for="examTitle" class="form-label required">Título del examen</label>
+              <input 
+                type="text" 
+                id="examTitle" 
+                class="form-input" 
+                placeholder="Ej: Examen Final Matemáticas - 1º Trimestre"
+              >
+            </div>
+            
+            <div class="exam-config-grid">
+              <div class="form-group">
+                <label for="subject" class="form-label required">Asignatura</label>
+                <select id="subject" class="form-select">
+                  <option value="">Seleccionar...</option>
+                  <option value="mat">Matemáticas</option>
+                  <option value="his">Historia</option>
+                  <option value="pro">Programación</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="duration" class="form-label required">Duración (minutos)</label>
+                <input 
+                  type="number" 
+                  id="duration" 
+                  class="form-input" 
+                  placeholder="60"
+                  min="5"
+                  max="180"
+                >
+              </div>
+              
+              <div class="form-group">
+                <label for="passingGrade" class="form-label required">Nota mínima (%)</label>
+                <input 
+                  type="number" 
+                  id="passingGrade" 
+                  class="form-input" 
+                  placeholder="50"
+                  min="0"
+                  max="100"
+                >
+              </div>
+              
+              <div class="form-group">
+                <label for="attempts" class="form-label">Intentos permitidos</label>
+                <select id="attempts" class="form-select">
+                  <option value="1" selected>1 intento</option>
+                  <option value="2">2 intentos</option>
+                  <option value="3">3 intentos</option>
+                  <option value="unlimited">Ilimitados</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Selección de Preguntas -->
+            <div class="questions-selection">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                <h3 style="margin: 0; color: var(--text-primary);">Seleccionar Preguntas</h3>
+                <span class="selected-count">
+                  <div style="width: 16px; height: 16px; background-color: var(--primary); border-radius: 50%;"></div>
+                  3 preguntas seleccionadas
+                </span>
+              </div>
+              
+              <div class="search-bar" style="margin-bottom: var(--spacing-md);">
+                <div class="search-icon"></div>
+                <input type="text" class="search-input" placeholder="Buscar preguntas...">
+              </div>
+              
+              <div class="questions-list">
+                <!-- Question 1 -->
+                <label class="question-select-item">
+                  <input type="checkbox" checked>
+                  <div class="question-select-content">
+                    <div class="question-select-text">
+                      ¿Cuál es la solución de la ecuación 2x + 5 = 13?
+                    </div>
+                    <div class="question-select-meta">
+                      <span class="badge badge-primary">MAT</span>
+                      <span class="badge">ÁLGEBRA</span>
+                      <span class="badge">MEDIA</span>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Question 2 -->
+                <label class="question-select-item">
+                  <input type="checkbox" checked>
+                  <div class="question-select-content">
+                    <div class="question-select-text">
+                      ¿Cuál es el área de un círculo con radio de 5 cm?
+                    </div>
+                    <div class="question-select-meta">
+                      <span class="badge badge-primary">MAT</span>
+                      <span class="badge">GEOMETRÍA</span>
+                      <span class="badge">FÁCIL</span>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Question 3 -->
+                <label class="question-select-item">
+                  <input type="checkbox" checked>
+                  <div class="question-select-content">
+                    <div class="question-select-text">
+                      Calcula el valor de la derivada de f(x) = 3x² + 2x - 1 en x = 2
+                    </div>
+                    <div class="question-select-meta">
+                      <span class="badge badge-primary">MAT</span>
+                      <span class="badge">CÁLCULO</span>
+                      <span class="badge">DIFÍCIL</span>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Question 4 -->
+                <label class="question-select-item">
+                  <input type="checkbox">
+                  <div class="question-select-content">
+                    <div class="question-select-text">
+                      ¿Qué es un triángulo equilátero?
+                    </div>
+                    <div class="question-select-meta">
+                      <span class="badge badge-primary">MAT</span>
+                      <span class="badge">GEOMETRÍA</span>
+                      <span class="badge">FÁCIL</span>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Question 5 -->
+                <label class="question-select-item">
+                  <input type="checkbox">
+                  <div class="question-select-content">
+                    <div class="question-select-text">
+                      Resuelve el sistema de ecuaciones: x + y = 10, x - y = 2
+                    </div>
+                    <div class="question-select-meta">
+                      <span class="badge badge-primary">MAT</span>
+                      <span class="badge">ÁLGEBRA</span>
+                      <span class="badge">MEDIA</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Opciones adicionales -->
+            <div class="form-group">
+              <label class="form-label">Opciones adicionales</label>
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" class="checkbox-input" checked>
+                  <span>Mostrar resultados al finalizar</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" class="checkbox-input">
+                  <span>Aleatorizar orden de preguntas</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" class="checkbox-input">
+                  <span>Aleatorizar orden de respuestas</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Acciones -->
+            <div class="form-actions">
+              <a href="mockup-3-dashboard.html" class="btn btn-outline">Cancelar</a>
+              <button type="button" class="btn btn-secondary">Guardar como borrador</button>
+              <button type="submit" class="btn btn-primary">
+                <div class="btn-icon"></div>
+                Crear y Publicar Examen
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

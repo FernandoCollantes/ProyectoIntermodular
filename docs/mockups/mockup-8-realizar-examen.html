@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realizar Examen - ExamGen</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    body.exam-body {
+      padding-top: 48px;
+    }
+  </style>
+</head>
+<body class="has-mockup-nav exam-body" style="background-color: var(--bg-secondary);">
+  <!-- Navegación entre mockups -->
+  <nav class="mockup-nav">
+    <span class="mockup-nav-brand">NAVEGACIÓN MOCKUPS</span>
+    <div class="mockup-nav-links">
+      <a href="mockup-1-landing.html" class="mockup-nav-link">1. Landing</a>
+      <a href="mockup-2-login.html" class="mockup-nav-link">2. Login</a>
+      <a href="mockup-3-dashboard.html" class="mockup-nav-link">3. Dashboard</a>
+      <a href="mockup-4-mis-preguntas.html" class="mockup-nav-link">4. Mis Preguntas</a>
+      <a href="mockup-5-crear-pregunta.html" class="mockup-nav-link">5. Crear Pregunta</a>
+      <a href="mockup-6-crear-examen.html" class="mockup-nav-link">6. Crear Examen</a>
+      <a href="mockup-7-acceso-alumno.html" class="mockup-nav-link">7. Acceso Alumno</a>
+      <a href="mockup-8-realizar-examen.html" class="mockup-nav-link active">8. Realizar Examen</a>
+    </div>
+  </nav>
+
+  <div class="exam-container" style="padding-top: var(--spacing-lg);">
+    <!-- Exam Header -->
+    <div class="exam-header">
+      <div>
+        <h1 class="exam-title">Examen Final Matemáticas - 1º Trimestre</h1>
+        <p style="color: var(--text-secondary); font-size: var(--font-size-sm); margin: var(--spacing-xs) 0 0 0;">
+          Alumno: María García López
+        </p>
+      </div>
+      <div class="exam-timer">
+        <div class="timer-icon"></div>
+        <span>45:23</span>
+      </div>
+    </div>
+    
+    <!-- Question Box -->
+    <div class="question-box">
+      <div class="question-number">Pregunta 1 de 10</div>
+      
+      <!-- INDICADOR DE TIPO DE PREGUNTA (NUEVO) -->
+      <div class="question-type-indicator">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink: 0;">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="8" cy="8" r="3" fill="currentColor"/>
+        </svg>
+        <span>Pregunta de respuesta única</span>
+      </div>
+      
+      <h2 class="question-statement">
+        ¿Cuál es la solución de la ecuación 2x + 5 = 13?
+      </h2>
+      
+      <div class="answers-list">
+        <label class="answer-option">
+          <input type="radio" name="answer" value="a" class="radio-input">
+          <span>A) x = 3</span>
+        </label>
+        
+        <label class="answer-option selected">
+          <input type="radio" name="answer" value="b" class="radio-input" checked>
+          <span>B) x = 4</span>
+        </label>
+        
+        <label class="answer-option">
+          <input type="radio" name="answer" value="c" class="radio-input">
+          <span>C) x = 5</span>
+        </label>
+        
+        <label class="answer-option">
+          <input type="radio" name="answer" value="d" class="radio-input">
+          <span>D) x = 6</span>
+        </label>
+      </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="exam-nav">
+      <button class="btn btn-outline" disabled>
+        Anterior
+      </button>
+      
+      <div class="question-progress">
+        <strong>Progreso:</strong> 1/10 preguntas respondidas
+      </div>
+      
+      <button class="btn btn-primary">
+        Siguiente
+      </button>
+    </div>
+    
+    <!-- Finish Button -->
+    <div style="margin-top: var(--spacing-xl); text-align: center;">
+      <button class="btn btn-success btn-lg">
+        Finalizar Examen
+      </button>
+    </div>
+  </div>
+</body>
+</html>
