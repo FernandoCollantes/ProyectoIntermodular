@@ -1,13 +1,13 @@
 /* ============================================================================
-   MOCKUP PROFESIONAL - GENERACIÓN DINÁMICA DE EXÁMENES
+   PROTOTIPO PROFESIONAL - GENERACIÓN DINÁMICA DE EXÁMENES
    Basado en principios UX/UI: Nielsen, Shneiderman, WCAG 2.1, Gestalt
    Paleta: Cyan/Orange (Angular Material) + Colores personalizados
    ============================================================================ */
 /* ============================================================================
-   BARRA DE NAVEGACIÓN SUPERIOR ENTRE MOCKUPS
+   BARRA DE NAVEGACIÓN SUPERIOR ENTRE PrototipoS
    ============================================================================ */
 
-.mockup-nav {
+.Prototipo-nav {
   position: fixed;
   top: 0;
   left: 0;
@@ -22,7 +22,7 @@
   gap: var(--spacing-md);
 }
 
-.mockup-nav-brand {
+.Prototipo-nav-brand {
   color: var(--white);
   font-weight: 500;
   font-size: var(--font-size-sm);
@@ -31,7 +31,7 @@
   white-space: nowrap;
 }
 
-.mockup-nav-links {
+.Prototipo-nav-links {
   display: flex;
   gap: var(--spacing-xs);
   flex-wrap: wrap;
@@ -40,7 +40,7 @@
   flex: 1;
 }
 
-.mockup-nav-link {
+.Prototipo-nav-link {
   display: inline-block;
   padding: var(--spacing-xs) var(--spacing-sm);
   color: var(--sidebar-text);
@@ -52,46 +52,46 @@
   border: 1px solid transparent;
 }
 
-.mockup-nav-link:hover {
+.Prototipo-nav-link:hover {
   background-color: rgba(255,255,255,0.1);
   color: var(--white);
 }
 
-.mockup-nav-link.active {
+.Prototipo-nav-link.active {
   background-color: var(--primary);
   color: var(--white);
   border-color: var(--primary);
 }
 
-/* Ajustar body cuando hay mockup-nav */
-body.has-mockup-nav {
+/* Ajustar body cuando hay Prototipo-nav */
+body.has-Prototipo-nav {
   padding-top: 48px;
 }
 
-/* Ajustar sidebar cuando hay mockup-nav */
-.has-mockup-nav .sidebar {
+/* Ajustar sidebar cuando hay Prototipo-nav */
+.has-Prototipo-nav .sidebar {
   top: 48px;
   height: calc(100vh - 48px);
 }
 
-/* Responsive para mockup-nav */
+/* Responsive para Prototipo-nav */
 @media (max-width: 768px) {
-  .mockup-nav {
+  .Prototipo-nav {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-sm);
   }
   
-  .mockup-nav-links {
+  .Prototipo-nav-links {
     width: 100%;
     overflow-x: auto;
   }
   
-  body.has-mockup-nav {
+  body.has-Prototipo-nav {
     padding-top: 80px;
   }
   
-  .has-mockup-nav .sidebar {
+  .has-Prototipo-nav .sidebar {
     top: 80px;
     height: calc(100vh - 80px);
   }
@@ -106,13 +106,13 @@ body.has-mockup-nav {
 
 /* VARIABLES CSS (Basadas en sistema de diseño Angular) */
 :root {
-  /* Colores primarios (del mockup original + Cyan/Orange) */
+  /* Colores primarios (del Prototipo original + Cyan/Orange) */
   --primary: #00bcd4;              /* Cyan - Material */
   --primary-dark: #0097a7;
   --secondary: #ff6d00;            /* Orange - Material */
   --secondary-dark: #e65100;
   
-  /* Colores de marca personalizados (gradiente mockup) */
+  /* Colores de marca personalizados (gradiente Prototipo) */
   --brand-primary: #667eea;
   --brand-secondary: #764ba2;
   
