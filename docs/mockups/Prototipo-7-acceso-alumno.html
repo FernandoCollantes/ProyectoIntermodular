@@ -6,8 +6,13 @@
   <title>Acceso Alumno - ExamGen</title>
   <link rel="stylesheet" href="assets/css/styles.css">
   <style>
-    .access-container {
-      min-height: calc(100vh - 48px);
+    /* ----------------------------------------------------------------------------
+       ESTILOS ESPECÍFICOS PARA ACCESO ALUMNO
+       -------------------------------------------------------------------------- */
+       
+    /* **CONTENEDOR DE ACCESO:** El contenedor principal con fondo degradado y centrado. */
+    .contenedor-acceso {
+      min-height: calc(100vh - 48px); /* Ajusta para la barra de prototipos */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -15,7 +20,8 @@
       padding: var(--spacing-xl);
     }
     
-    .access-box {
+    /* **CAJA DE ACCESO:** El contenedor del formulario con fondo blanco y sombra. */
+    .caja-acceso {
       width: 100%;
       max-width: 540px;
       background-color: var(--white);
@@ -26,17 +32,19 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .access-box:hover {
+    .caja-acceso:hover {
       transform: translateY(-4px);
       box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
     }
     
-    .access-header {
+    /* **CABECERA DE ACCESO:** Contiene el logo y los títulos. */
+    .cabecera-acceso {
       text-align: center;
       margin-bottom: 40px;
     }
     
-    .access-logo {
+    /* **LOGO DE ACCESO:** Caja decorativa para el logo 'E'. */
+    .logo-acceso {
       width: 80px;
       height: 80px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -48,14 +56,15 @@
       justify-content: center;
     }
     
-    .access-logo::before {
+    .logo-acceso::before {
       content: 'E';
       font-size: 2.5rem;
       font-weight: 700;
       color: var(--white);
     }
     
-    .access-title {
+    /* **TÍTULO PRINCIPAL:** (Acceso al Examen) */
+    .titulo-acceso {
       font-size: 2rem;
       font-weight: 400;
       margin-bottom: 12px;
@@ -63,7 +72,8 @@
       letter-spacing: -0.5px;
     }
     
-    .access-subtitle {
+    /* **SUBTÍTULO:** */
+    .subtitulo-acceso {
       font-size: 0.9375rem;
       color: var(--text-secondary);
       line-height: 1.6;
@@ -71,7 +81,8 @@
       margin: 0 auto;
     }
     
-    .access-code-input {
+    /* **ENTRADA DE CÓDIGO:** Estilo especial para el campo de código de examen. */
+    .entrada-codigo-acceso {
       text-align: center;
       font-size: 1.75rem;
       font-weight: 600;
@@ -82,29 +93,31 @@
       transition: all var(--transition-fast);
     }
     
-    .access-code-input:focus {
+    .entrada-codigo-acceso:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.1);
       letter-spacing: 0.4em;
     }
     
-    .access-form .form-group {
+    /* Formulario General */
+    .formulario-acceso .grupo-formulario {
       margin-bottom: 24px;
     }
     
-    .access-form .form-input {
+    .formulario-acceso .entrada-formulario {
       padding: 14px 16px;
       font-size: 1rem;
     }
     
-    .access-form .btn {
+    .formulario-acceso .boton {
       padding: 14px;
       font-size: 1rem;
       font-weight: 600;
       margin-top: 8px;
     }
     
-    .info-box {
+    /* **CAJA DE INFORMACIÓN:** Bloque azul de advertencia. */
+    .caja-info {
       background: linear-gradient(135deg, rgba(33, 150, 243, 0.08) 0%, rgba(33, 150, 243, 0.12) 100%);
       border-left: 4px solid var(--info);
       padding: 20px;
@@ -112,85 +125,85 @@
       margin-top: 28px;
     }
     
-    .info-box p {
+    .caja-info p {
       margin: 0;
       font-size: 0.875rem;
       color: var(--text-secondary);
       line-height: 1.6;
     }
     
-    .info-box strong {
+    .caja-info strong {
       color: var(--text-primary);
       font-weight: 600;
     }
   </style>
 </head>
-<body class="has-Prototipo-nav">
-  <!-- Navegación entre Prototipos -->
-  <nav class="Prototipo-nav">
-    <span class="Prototipo-nav-brand">NAVEGACIÓN PrototipoS</span>
-    <div class="Prototipo-nav-links">
-      <a href="Prototipo-1-landing.html" class="Prototipo-nav-link">1. Landing</a>
-      <a href="Prototipo-2-login.html" class="Prototipo-nav-link">2. Login</a>
-      <a href="Prototipo-3-dashboard.html" class="Prototipo-nav-link">3. Dashboard</a>
-      <a href="Prototipo-4-mis-preguntas.html" class="Prototipo-nav-link">4. Mis Preguntas</a>
-      <a href="Prototipo-5-crear-pregunta.html" class="Prototipo-nav-link">5. Crear Pregunta</a>
-      <a href="Prototipo-6-crear-examen.html" class="Prototipo-nav-link">6. Crear Examen</a>
-      <a href="Prototipo-7-acceso-alumno.html" class="Prototipo-nav-link active">7. Acceso Alumno</a>
-      <a href="Prototipo-8-realizar-examen.html" class="Prototipo-nav-link">8. Realizar Examen</a>
+
+<body class="con-navegacion-prototipo">
+  <nav class="navegacion-prototipo">
+    <span class="navegacion-prototipo-marca">NAVEGACIÓN PROTOTIPO</span>
+    <div class="navegacion-prototipo-enlaces">
+      <a href="Prototipo-1-landing.html" class="navegacion-prototipo-enlace">1. Landing</a>
+      <a href="Prototipo-2-login.html" class="navegacion-prototipo-enlace">2. Login</a>
+      <a href="Prototipo-3-dashboard.html" class="navegacion-prototipo-enlace">3. Dashboard</a>
+      <a href="Prototipo-4-mis-preguntas.html" class="navegacion-prototipo-enlace">4. Mis Preguntas</a>
+      <a href="Prototipo-5-crear-pregunta.html" class="navegacion-prototipo-enlace">5. Crear Pregunta</a>
+      <a href="Prototipo-6-crear-examen.html" class="navegacion-prototipo-enlace">6. Crear Examen</a>
+      <a href="Prototipo-7-acceso-alumno.html" class="navegacion-prototipo-enlace activo">7. Acceso Alumno</a>
+      <a href="Prototipo-8-realizar-examen.html" class="navegacion-prototipo-enlace">8. Realizar Examen</a>
     </div>
   </nav>
 
-  <div class="access-container">
-    <div class="access-box">
-      <div class="access-header">
-        <div class="access-logo"></div>
-        <h1 class="access-title">Acceso al Examen</h1>
-        <p class="access-subtitle">
+  <div class="contenedor-acceso">
+    <div class="caja-acceso">
+      <div class="cabecera-acceso">
+        <div class="logo-acceso"></div>
+        <h1 class="titulo-acceso">Acceso al Examen</h1>
+        <p class="subtitulo-acceso">
           Introduce el código de acceso proporcionado por tu profesor
         </p>
       </div>
       
-      <form class="access-form">
-        <div class="form-group">
-          <label for="examCode" class="form-label required">Código del examen</label>
+      <form class="formulario-acceso">
+        <div class="grupo-formulario">
+          <label for="examCode" class="etiqueta-formulario requerido">Código del examen</label>
           <input 
             type="text" 
             id="examCode" 
-            class="form-input access-code-input" 
+            class="entrada-formulario entrada-codigo-acceso" 
             placeholder="ABC123"
             maxlength="6"
             aria-required="true"
           >
         </div>
         
-        <div class="form-group">
-          <label for="studentName" class="form-label required">Tu nombre completo</label>
+        <div class="grupo-formulario">
+          <label for="studentName" class="etiqueta-formulario requerido">Tu nombre completo</label>
           <input 
             type="text" 
             id="studentName" 
-            class="form-input" 
-            placeholder="Ej: María García López"
+            class="entrada-formulario" 
+            placeholder="Ej: Fernando Collantes"
             aria-required="true"
           >
         </div>
         
-        <div class="form-group">
-          <label for="studentEmail" class="form-label required">Tu correo electrónico</label>
+        <div class="grupo-formulario">
+          <label for="studentEmail" class="etiqueta-formulario requerido">Tu correo electrónico</label>
           <input 
             type="email" 
             id="studentEmail" 
-            class="form-input" 
-            placeholder="alumno@ejemplo.com"
+            class="entrada-formulario" 
+            placeholder="fernandocollantes.24@campuscamara.es"
             aria-required="true"
           >
         </div>
         
-        <a href="Prototipo-8-realizar-examen.html" class="btn btn-primary btn-lg" style="width: 100%;">
+        <a href="Prototipo-8-realizar-examen.html" class="boton boton-primario boton-grande" style="width: 100%;">
           Acceder al Examen
         </a>
         
-        <div class="info-box">
+        <div class="caja-info">
           <p>
             <strong>Importante:</strong> Una vez inicies el examen, el tiempo comenzará a correr. 
             Asegúrate de tener buena conexión a internet y tiempo suficiente para completarlo.

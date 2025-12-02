@@ -6,191 +6,183 @@
   <title>Mis Preguntas - ExamGen</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body class="has-Prototipo-nav">
-  <!-- Navegación entre Prototipos -->
-  <nav class="Prototipo-nav">
-    <span class="Prototipo-nav-brand">NAVEGACIÓN PrototipoS</span>
-    <div class="Prototipo-nav-links">
-      <a href="Prototipo-1-landing.html" class="Prototipo-nav-link">1. Landing</a>
-      <a href="Prototipo-2-login.html" class="Prototipo-nav-link">2. Login</a>
-      <a href="Prototipo-3-dashboard.html" class="Prototipo-nav-link">3. Dashboard</a>
-      <a href="Prototipo-4-mis-preguntas.html" class="Prototipo-nav-link active">4. Mis Preguntas</a>
-      <a href="Prototipo-5-crear-pregunta.html" class="Prototipo-nav-link">5. Crear Pregunta</a>
-      <a href="Prototipo-6-crear-examen.html" class="Prototipo-nav-link">6. Crear Examen</a>
-      <a href="Prototipo-7-acceso-alumno.html" class="Prototipo-nav-link">7. Acceso Alumno</a>
-      <a href="Prototipo-8-realizar-examen.html" class="Prototipo-nav-link">8. Realizar Examen</a>
+<body class="con-navegacion-prototipo">
+  
+  <nav class="navegacion-prototipo">
+    <span class="navegacion-prototipo-marca">NAVEGACIÓN PROTOTIPO</span>
+    <div class="navegacion-prototipo-enlaces">
+      <a href="Prototipo-1-landing.html" class="navegacion-prototipo-enlace">1. Landing</a>
+      <a href="Prototipo-2-login.html" class="navegacion-prototipo-enlace">2. Login</a>
+      <a href="Prototipo-3-dashboard.html" class="navegacion-prototipo-enlace">3. Dashboard</a>
+      <a href="Prototipo-4-mis-preguntas.html" class="navegacion-prototipo-enlace activo">4. Mis Preguntas</a>
+      <a href="Prototipo-5-crear-pregunta.html" class="navegacion-prototipo-enlace">5. Crear Pregunta</a>
+      <a href="Prototipo-6-crear-examen.html" class="navegacion-prototipo-enlace">6. Crear Examen</a>
+      <a href="Prototipo-7-acceso-alumno.html" class="navegacion-prototipo-enlace">7. Acceso Alumno</a>
+      <a href="Prototipo-8-realizar-examen.html" class="navegacion-prototipo-enlace">8. Realizar Examen</a>
     </div>
   </nav>
 
-  <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
+  <div class="contenedor-app">
+    <aside class="barra-lateral">
+      <div class="barra-lateral-cabecera">
         <h2>EXAMGEN</h2>
       </div>
-      <nav class="sidebar-nav">
-        <a href="Prototipo-3-dashboard.html" class="nav-item">
-          <div class="nav-icon"></div>
+      <nav class="barra-lateral-navegacion">
+        <a href="Prototipo-3-dashboard.html" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Dashboard</span>
         </a>
-        <a href="Prototipo-4-mis-preguntas.html" class="nav-item active">
-          <div class="nav-icon"></div>
+        <a href="Prototipo-4-mis-preguntas.html" class="item-navegacion activo">
+          <div class="icono-navegacion"></div>
           <span>Mis Preguntas</span>
         </a>
-        <a href="Prototipo-6-crear-examen.html" class="nav-item">
-          <div class="nav-icon"></div>
+        <a href="Prototipo-6-crear-examen.html" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Mis Exámenes</span>
         </a>
-        <a href="#" class="nav-item">
-          <div class="nav-icon"></div>
+        <a href="#" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Asignaturas</span>
         </a>
-        <a href="#" class="nav-item">
-          <div class="nav-icon"></div>
+        <a href="#" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Exportar</span>
         </a>
       </nav>
     </aside>
     
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Topbar -->
-      <header class="topbar">
-        <h1 class="topbar-title">Mis Preguntas</h1>
-        <div class="user-info">
-          <span class="user-name">Fernando Collantes</span>
-          <div class="user-avatar">FC</div>
+    <main class="contenido-principal">
+      <header class="barra-superior">
+        <h1 class="barra-superior-titulo">Mis Preguntas</h1>
+        <div class="informacion-usuario">
+          <span class="nombre-usuario">Fernando Collantes</span>
+          <div class="avatar-usuario">FC</div>
         </div>
       </header>
       
-      <!-- Content -->
-      <div class="content">
-        <!-- Toolbar -->
-        <div class="toolbar">
-          <div class="search-bar">
-            <div class="search-icon"></div>
-            <input type="text" class="search-input" placeholder="Buscar preguntas...">
+      <div class="contenido">
+        
+        <div class="barra-herramientas">
+          <div class="barra-busqueda">
+            <div class="icono-busqueda"></div>
+            <input type="text" class="entrada-busqueda" placeholder="Buscar preguntas...">
           </div>
-          <a href="Prototipo-5-crear-pregunta.html" class="btn btn-primary">
-            <div class="btn-icon"></div>
+          <a href="Prototipo-5-crear-pregunta.html" class="boton boton-primario">
+            <div class="boton-icono"></div>
             Nueva Pregunta
           </a>
         </div>
         
-        <!-- Filters -->
-        <div class="chips-container">
-          <div class="chip active">TODAS</div>
-          <div class="chip">MATEMÁTICAS</div>
-          <div class="chip">HISTORIA</div>
-          <div class="chip">PROGRAMACIÓN</div>
+        <div class="contenedor-chips">
+          <div class="chip activo">TODAS</div>
           <div class="chip">INGLÉS</div>
+          <div class="chip">LENGUAJE DE MARCAS</div>
+          <div class="chip">PROGRAMACIÓN</div>
+          <div class="chip">IPE</div>
         </div>
         
-        <!-- Question Cards -->
-        <div class="question-grid">
-          <!-- Question 1 -->
-          <div class="question-card">
-            <div class="question-header">
-              <div class="badges">
-                <span class="badge badge-primary">MAT</span>
-                <span class="badge">ÁLGEBRA</span>
+        <div class="rejilla-pregunta">
+          
+          <div class="tarjeta-pregunta">
+            <div class="pregunta-cabecera">
+              <div class="insignias">
+                <span class="insignia insignia-primaria">MAT</span>
+                <span class="insignia">ÁLGEBRA</span>
               </div>
-              <div class="question-actions">
-                <button class="action-btn" title="Editar">
-                  <div class="action-icon"></div>
+              <div class="pregunta-acciones">
+                <button class="boton-accion" title="Editar">
+                  <div class="icono-accion"></div>
                 </button>
-                <button class="action-btn" title="Eliminar">
-                  <div class="action-icon"></div>
+                <button class="boton-accion" title="Eliminar">
+                  <div class="icono-accion"></div>
                 </button>
               </div>
             </div>
-            <div class="question-content">
-              <p class="question-text">¿Cuál es la solución de la ecuación 2x + 5 = 13?</p>
+            <div class="pregunta-contenido">
+              <p class="pregunta-texto">¿Cuál es la solución de la ecuación 2x + 5 = 13?</p>
             </div>
-            <div class="question-metadata">
+            <div class="pregunta-metadata">
               <span>Creada: 15 Nov 2025</span>
               <span>Usada en: 3 exámenes</span>
               <span>Dificultad: Media</span>
             </div>
           </div>
           
-          <!-- Question 2 -->
-          <div class="question-card">
-            <div class="question-header">
-              <div class="badges">
-                <span class="badge badge-success">HIS</span>
-                <span class="badge">EDAD MEDIA</span>
+          <div class="tarjeta-pregunta">
+            <div class="pregunta-cabecera">
+              <div class="insignias">
+                <span class="insignia insignia-exito">IPE</span>
+                <span class="insignia">EMPRESA</span>
               </div>
-              <div class="question-actions">
-                <button class="action-btn" title="Editar">
-                  <div class="action-icon"></div>
+              <div class="pregunta-acciones">
+                <button class="boton-accion" title="Editar">
+                  <div class="icono-accion"></div>
                 </button>
-                <button class="action-btn" title="Eliminar">
-                  <div class="action-icon"></div>
+                <button class="boton-accion" title="Eliminar">
+                  <div class="icono-accion"></div>
                 </button>
               </div>
             </div>
-            <div class="question-content">
-              <p class="question-text">¿En qué año comenzó la Reconquista española?</p>
+            <div class="pregunta-contenido">
+              <p class="pregunta-texto">¿Qué es un currículum vitae?</p>
             </div>
-            <div class="question-metadata">
+            <div class="pregunta-metadata">
               <span>Creada: 10 Nov 2025</span>
               <span>Usada en: 5 exámenes</span>
               <span>Dificultad: Fácil</span>
             </div>
           </div>
           
-          <!-- Question 3 -->
-          <div class="question-card">
-            <div class="question-header">
-              <div class="badges">
-                <span class="badge badge-danger">PRO</span>
-                <span class="badge">JAVASCRIPT</span>
+          <div class="tarjeta-pregunta">
+            <div class="pregunta-cabecera">
+              <div class="insignias">
+                <span class="insignia insignia-peligro">PRO</span>
+                <span class="insignia">JAVASCRIPT</span>
               </div>
-              <div class="question-actions">
-                <button class="action-btn" title="Editar">
-                  <div class="action-icon"></div>
+              <div class="pregunta-acciones">
+                <button class="boton-accion" title="Editar">
+                  <div class="icono-accion"></div>
                 </button>
-                <button class="action-btn" title="Eliminar">
-                  <div class="action-icon"></div>
+                <button class="boton-accion" title="Eliminar">
+                  <div class="icono-accion"></div>
                 </button>
               </div>
             </div>
-            <div class="question-content">
-              <p class="question-text">¿Qué método se utiliza para añadir un elemento al final de un array en JavaScript?</p>
+            <div class="pregunta-contenido">
+              <p class="pregunta-texto">¿Qué método se utiliza para añadir un elemento al final de un array en JavaScript?</p>
             </div>
-            <div class="question-metadata">
+            <div class="pregunta-metadata">
               <span>Creada: 08 Nov 2025</span>
               <span>Usada en: 2 exámenes</span>
               <span>Dificultad: Media</span>
             </div>
           </div>
           
-          <!-- Question 4 -->
-          <div class="question-card">
-            <div class="question-header">
-              <div class="badges">
-                <span class="badge badge-primary">MAT</span>
-                <span class="badge">GEOMETRÍA</span>
+          <div class="tarjeta-pregunta">
+            <div class="pregunta-cabecera">
+              <div class="insignias">
+                <span class="insignia insignia-primaria">MAT</span>
+                <span class="insignia">GEOMETRÍA</span>
               </div>
-              <div class="question-actions">
-                <button class="action-btn" title="Editar">
-                  <div class="action-icon"></div>
+              <div class="pregunta-acciones">
+                <button class="boton-accion" title="Editar">
+                  <div class="icono-accion"></div>
                 </button>
-                <button class="action-btn" title="Eliminar">
-                  <div class="action-icon"></div>
+                <button class="boton-accion" title="Eliminar">
+                  <div class="icono-accion"></div>
                 </button>
               </div>
             </div>
-            <div class="question-content">
-              <p class="question-text">¿Cuál es el área de un círculo con radio de 5 cm?</p>
+            <div class="pregunta-contenido">
+              <p class="pregunta-texto">¿Cuál es el área de un círculo con radio de 5 cm?</p>
             </div>
-            <div class="question-metadata">
+            <div class="pregunta-metadata">
               <span>Creada: 05 Nov 2025</span>
               <span>Usada en: 1 examen</span>
               <span>Dificultad: Fácil</span>
             </div>
           </div>
+          
         </div>
       </div>
     </main>

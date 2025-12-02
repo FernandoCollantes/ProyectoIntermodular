@@ -1,13 +1,14 @@
 /* ============================================================================
-   PROTOTIPO PROFESIONAL - GENERACIÓN DINÁMICA DE EXÁMENES
-   Basado en principios UX/UI: Nielsen, Shneiderman, WCAG 2.1, Gestalt
-   Paleta: Cyan/Orange (Angular Material) + Colores personalizados
-   ============================================================================ */
+    PROTOTIPO PROFESIONAL - GENERACIÓN DINÁMICA DE EXÁMENES
+    Basado en principios UX/UI: Nielsen, Shneiderman, WCAG 2.1, Gestalt
+    Paleta: Cyan/Orange (Angular Material) + Colores personalizados
+    ============================================================================ */
 /* ============================================================================
-   BARRA DE NAVEGACIÓN SUPERIOR ENTRE PrototipoS
-   ============================================================================ */
+    BARRA DE NAVEGACIÓN SUPERIOR ENTRE PROTOTIPOS
+    ============================================================================ */
 
-.Prototipo-nav {
+/* **NAVEGACIÓN PROTOTIPO (Barra Superior Fija):** Fija la barra, define fondo, sombra y usa Flexbox para alinear elementos. */
+.navegacion-prototipo {
   position: fixed;
   top: 0;
   left: 0;
@@ -22,7 +23,8 @@
   gap: var(--spacing-md);
 }
 
-.Prototipo-nav-brand {
+/* **MARCA DE LA NAVEGACIÓN:** Estilo del nombre de la marca o logo. */
+.navegacion-prototipo-marca {
   color: var(--white);
   font-weight: 500;
   font-size: var(--font-size-sm);
@@ -31,7 +33,8 @@
   white-space: nowrap;
 }
 
-.Prototipo-nav-links {
+/* **CONTENEDOR DE ENLACES:** Usa Flexbox para la disposición horizontal de los enlaces. */
+.navegacion-prototipo-enlaces {
   display: flex;
   gap: var(--spacing-xs);
   flex-wrap: wrap;
@@ -40,7 +43,8 @@
   flex: 1;
 }
 
-.Prototipo-nav-link {
+/* **ENLACE INDIVIDUAL:** Estilo base del elemento de navegación. */
+.navegacion-prototipo-enlace {
   display: inline-block;
   padding: var(--spacing-xs) var(--spacing-sm);
   color: var(--sidebar-text);
@@ -52,76 +56,86 @@
   border: 1px solid transparent;
 }
 
-.Prototipo-nav-link:hover {
+/* **EFECTO HOVER DEL ENLACE:** Feedback visual al pasar el ratón. */
+.navegacion-prototipo-enlace:hover {
   background-color: rgba(255,255,255,0.1);
   color: var(--white);
 }
 
-.Prototipo-nav-link.active {
+/* **ESTADO ACTIVO DEL ENLACE:** Resalta el enlace de la página actual. */
+.navegacion-prototipo-enlace.activo {
   background-color: var(--primary);
   color: var(--white);
   border-color: var(--primary);
 }
 
-/* Ajustar body cuando hay Prototipo-nav */
-body.has-Prototipo-nav {
+/* **AJUSTAR BODY:** Añade un relleno superior cuando la barra de navegación está presente. */
+body.con-navegacion-prototipo {
   padding-top: 48px;
 }
 
-/* Ajustar sidebar cuando hay Prototipo-nav */
-.has-Prototipo-nav .sidebar {
+/* **AJUSTAR SIDEBAR:** Posiciona la barra lateral justo debajo de la barra de navegación. */
+.con-navegacion-prototipo .barra-lateral {
   top: 48px;
   height: calc(100vh - 48px);
 }
 
-/* Responsive para Prototipo-nav */
+/* **RESPONSIVE PARA LA NAVEGACIÓN SUPERIOR** */
 @media (max-width: 768px) {
-  .Prototipo-nav {
+  /* En móviles, la navegación se apila verticalmente. */
+  .navegacion-prototipo {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-sm);
   }
-  
-  .Prototipo-nav-links {
+
+  /* Asegura que los enlaces ocupen todo el ancho y permitan scroll horizontal. */
+  .navegacion-prototipo-enlaces {
     width: 100%;
     overflow-x: auto;
   }
-  
-  body.has-Prototipo-nav {
+
+  /* Ajuste mayor del relleno superior del body cuando la barra es más alta. */
+  body.con-navegacion-prototipo {
     padding-top: 80px;
   }
-  
-  .has-Prototipo-nav .sidebar {
+
+  /* Ajuste de la posición y altura de la barra lateral. */
+  .con-navegacion-prototipo .barra-lateral {
     top: 80px;
     height: calc(100vh - 80px);
   }
 }
 
-/* RESET BÁSICO */
+/* ============================================================================
+    RESET BÁSICO Y VARIABLES
+    ============================================================================ */
+
+/* **RESET BÁSICO:** Elimina márgenes y paddings por defecto, y usa border-box. */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* VARIABLES CSS (Basadas en sistema de diseño Angular) */
+/* **VARIABLES CSS:** Definición de colores, espaciado, tipografía y sombras. */
 :root {
   /* Colores primarios (del Prototipo original + Cyan/Orange) */
-  --primary: #00bcd4;              /* Cyan - Material */
+  --primary: #00bcd4;                /* Cyan - Material */
   --primary-dark: #0097a7;
-  --secondary: #ff6d00;            /* Orange - Material */
+  --secondary: #ff6d00;              /* Orange - Material */
   --secondary-dark: #e65100;
-  
+
   /* Colores de marca personalizados (gradiente Prototipo) */
   --brand-primary: #667eea;
   --brand-secondary: #764ba2;
-  
+
   /* Colores semánticos (WCAG AA compliant) */
   --success: #4CAF50;
   --danger: #f44336;
   --warning: #ff9800;
   --info: #2196F3;
-  
+
   /* Escala de grises (contraste 4.5:1 mínimo) */
   --gray-900: #212121;
   --gray-800: #424242;
@@ -133,53 +147,53 @@ body.has-Prototipo-nav {
   --gray-200: #eeeeee;
   --gray-100: #f5f5f5;
   --white: #ffffff;
-  
+
   /* Colores de texto */
   --text-primary: var(--gray-900);
   --text-secondary: var(--gray-700);
   --text-disabled: var(--gray-500);
-  
+
   /* Backgrounds */
   --bg-primary: var(--white);
   --bg-secondary: var(--gray-100);
   --bg-dark: #263238;
-  
+
   /* Sidebar */
-  --sidebar-bg: #263238;           /* Material Blue Grey 900 */
-  --sidebar-active: #37474f;       /* Material Blue Grey 800 */
-  --sidebar-text: #eceff1;         /* Material Blue Grey 50 */
-  
+  --sidebar-bg: #263238;              /* Material Blue Grey 900 */
+  --sidebar-active: #37474f;          /* Material Blue Grey 800 */
+  --sidebar-text: #eceff1;            /* Material Blue Grey 50 */
+
   /* Borders y sombras */
   --border-color: var(--gray-300);
-  --border-radius: 4px;            /* Material Design estándar */
+  --border-radius: 4px;              /* Material Design estándar */
   --border-radius-lg: 8px;
-  
+
   /* Sombras Material Design */
   --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   --shadow-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
   --shadow-3: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
   --shadow-4: 0 15px 25px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.05);
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
+
   /* Tipografía */
   --font-family: 'Roboto', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-size-base: 16px;
   --font-size-sm: 14px;
   --font-size-xs: 12px;
   --line-height-base: 1.5;
-  
+
   /* Transiciones */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* TIPOGRAFÍA BASE */
+/* **TIPOGRAFÍA BASE:** Configuración de la fuente, color y fondo general. */
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
@@ -190,7 +204,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* JERARQUÍA TIPOGRÁFICA (Nielsen: Facilidad de aprendizaje) */
+/* **JERARQUÍA TIPOGRÁFICA:** Estilos para los encabezados (h1 a h6). */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   line-height: 1.2;
@@ -205,15 +219,19 @@ h4 { font-size: 1.5rem; }
 h5 { font-size: 1.25rem; }
 h6 { font-size: 1rem; font-weight: 500; }
 
-/* LAYOUT PRINCIPAL */
-.app-container {
+/* ============================================================================
+    LAYOUT PRINCIPAL (Contenedor, Sidebar, Contenido Principal)
+    ============================================================================ */
+
+/* **CONTENEDOR APP:** Layout principal usando Flexbox. */
+.contenedor-app {
   display: flex;
   min-height: 100vh;
   background-color: var(--bg-secondary);
 }
 
-/* SIDEBAR (Principio Gestalt: Figura-fondo) */
-.sidebar {
+/* **BARRA LATERAL (SIDEBAR):** Menú fijo de navegación. */
+.barra-lateral {
   width: 260px;
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
@@ -227,13 +245,15 @@ h6 { font-size: 1rem; font-weight: 500; }
   z-index: 1000;
 }
 
-.sidebar-header {
+/* **CABECERA DE LA BARRA LATERAL:** Área superior para el logo/título. */
+.barra-lateral-cabecera {
   padding: var(--spacing-lg);
   background-color: #1a252f;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.sidebar-header h2 {
+/* **TÍTULO DE LA CABECERA:** Estilo del texto del título. */
+.barra-lateral-cabecera h2 {
   font-size: 1.5rem;
   font-weight: 500;
   color: var(--white);
@@ -241,13 +261,15 @@ h6 { font-size: 1rem; font-weight: 500; }
   letter-spacing: 0.5px;
 }
 
-.sidebar-nav {
+/* **NAVEGACIÓN DE LA BARRA LATERAL:** Contenedor de enlaces con scroll. */
+.barra-lateral-navegacion {
   flex: 1;
   padding: var(--spacing-md) 0;
   overflow-y: auto;
 }
 
-.nav-item {
+/* **ÍTEM DE NAVEGACIÓN:** Estilo de cada enlace del menú lateral. */
+.item-navegacion {
   display: flex;
   align-items: center;
   padding: 12px var(--spacing-lg);
@@ -258,17 +280,20 @@ h6 { font-size: 1rem; font-weight: 500; }
   font-weight: 500;
 }
 
-.nav-item:hover {
+/* **HOVER DEL ÍTEM:** Feedback visual al pasar el ratón. */
+.item-navegacion:hover {
   background-color: rgba(255,255,255,0.05);
 }
 
-.nav-item.active {
+/* **ÍTEM ACTIVO:** Resalta el elemento seleccionado. */
+.item-navegacion.activo {
   background-color: var(--sidebar-active);
   border-left-color: var(--primary);
   color: var(--white);
 }
 
-.nav-icon {
+/* **ICONO DE NAVEGACIÓN:** Placeholder para el icono del elemento. */
+.icono-navegacion {
   width: 24px;
   height: 24px;
   margin-right: var(--spacing-md);
@@ -277,16 +302,16 @@ h6 { font-size: 1rem; font-weight: 500; }
   flex-shrink: 0;
 }
 
-/* CONTENIDO PRINCIPAL */
-.main-content {
+/* **CONTENIDO PRINCIPAL:** Área de trabajo, con margen para la barra lateral. */
+.contenido-principal {
   flex: 1;
   margin-left: 260px;
   display: flex;
   flex-direction: column;
 }
 
-/* TOPBAR (Principio: Consistencia de Shneiderman) */
-.topbar {
+/* **BARRA SUPERIOR (TOPBAR):** Barra fija en la parte superior del contenido. */
+.barra-superior {
   background-color: var(--bg-primary);
   padding: var(--spacing-md) var(--spacing-lg);
   display: flex;
@@ -299,20 +324,23 @@ h6 { font-size: 1rem; font-weight: 500; }
   z-index: 100;
 }
 
-.topbar-title {
+/* **TÍTULO DE LA BARRA SUPERIOR:** Estilo del título de la sección actual. */
+.barra-superior-titulo {
   font-size: 1.5rem;
   font-weight: 400;
   color: var(--text-primary);
   margin: 0;
 }
 
-.user-info {
+/* **INFORMACIÓN DE USUARIO:** Contenedor para el nombre y avatar. */
+.informacion-usuario {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
 }
 
-.user-name {
+/* **NOMBRE DE USUARIO:** Estilo del texto del nombre. */
+.nombre-usuario {
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--text-secondary);
@@ -320,7 +348,8 @@ h6 { font-size: 1rem; font-weight: 500; }
   letter-spacing: 0.5px;
 }
 
-.user-avatar {
+/* **AVATAR DE USUARIO:** Círculo que representa la imagen de perfil. */
+.avatar-usuario {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -333,8 +362,8 @@ h6 { font-size: 1rem; font-weight: 500; }
   font-size: 1rem;
 }
 
-/* CONTENT AREA */
-.content {
+/* **ÁREA DE CONTENIDO:** Relleno y ancho máximo del contenido de la página. */
+.contenido {
   flex: 1;
   padding: var(--spacing-xl);
   max-width: 1400px;
@@ -342,8 +371,12 @@ h6 { font-size: 1rem; font-weight: 500; }
   width: 100%;
 }
 
-/* CARDS (Material Design) */
-.card {
+/* ============================================================================
+    COMPONENTES (Tarjetas, Estadísticas, Botones)
+    ============================================================================ */
+
+/* **TARJETA (CARD):** Contenedor con esquinas redondeadas y sombra. */
+.tarjeta {
   background-color: var(--bg-primary);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-2);
@@ -352,32 +385,36 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: box-shadow var(--transition-base);
 }
 
-.card:hover {
+/* **HOVER DE LA TARJETA:** Aumenta la sombra. */
+.tarjeta:hover {
   box-shadow: var(--shadow-3);
 }
 
-.card-header {
+/* **CABECERA DE LA TARJETA:** Área superior con separación inferior. */
+.tarjeta-cabecera {
   padding-bottom: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
 }
 
-.card-title {
+/* **TÍTULO DE LA TARJETA:** Estilo del título dentro de la cabecera. */
+.tarjeta-titulo {
   font-size: 1.25rem;
   font-weight: 500;
   margin: 0;
   color: var(--text-primary);
 }
 
-/* STATS GRID (Dashboard) */
-.stats-grid {
+/* **REJILLA DE ESTADÍSTICAS:** Layout Grid para las tarjetas de resumen. */
+.rejilla-estadisticas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-xl);
 }
 
-.stat-card {
+/* **TARJETA DE ESTADÍSTICA:** Tarjeta con borde izquierdo destacado y efecto de elevación. */
+.tarjeta-estadistica {
   background-color: var(--bg-primary);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
@@ -386,19 +423,22 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.stat-card:hover {
+/* **HOVER DE ESTADÍSTICA:** Efecto de elevación al pasar el ratón. */
+.tarjeta-estadistica:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-3);
 }
 
-.stat-value {
+/* **VALOR DE LA ESTADÍSTICA:** Número principal grande y de color primario. */
+.valor-estadistica {
   font-size: 2.5rem;
   font-weight: 300;
   color: var(--primary);
   margin-bottom: var(--spacing-xs);
 }
 
-.stat-label {
+/* **ETIQUETA DE LA ESTADÍSTICA:** Texto descriptivo en mayúsculas. */
+.etiqueta-estadistica {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -406,8 +446,8 @@ h6 { font-size: 1rem; font-weight: 500; }
   font-weight: 500;
 }
 
-/* BOTONES (Material Design + Feedback de Shneiderman) */
-.btn {
+/* **BOTÓN BASE:** Estilos comunes para todos los botones. */
+.boton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -426,71 +466,87 @@ h6 { font-size: 1rem; font-weight: 500; }
   text-decoration: none;
 }
 
-.btn:hover {
+/* **HOVER DEL BOTÓN:** Efecto de elevación. */
+.boton:hover {
   box-shadow: var(--shadow-2);
   transform: translateY(-1px);
 }
 
-.btn:active {
+/* **ESTADO ACTIVO DEL BOTÓN:** Efecto de "presionado". */
+.boton:active {
   transform: translateY(0);
   box-shadow: var(--shadow-1);
 }
 
-.btn-primary {
+/* **BOTÓN PRIMARIO:** Color principal. */
+.boton-primario {
   background-color: var(--primary);
   color: var(--white);
 }
 
-.btn-primary:hover {
+/* **HOVER DEL BOTÓN PRIMARIO:** Color principal oscuro. */
+.boton-primario:hover {
   background-color: var(--primary-dark);
 }
 
-.btn-secondary {
+/* **BOTÓN SECUNDARIO:** Color secundario. */
+.boton-secundario {
   background-color: var(--secondary);
   color: var(--white);
 }
 
-.btn-success {
+/* **BOTÓN ÉXITO:** Color de éxito (verde). */
+.boton-exito {
   background-color: var(--success);
   color: var(--white);
 }
 
-.btn-danger {
+/* **BOTÓN PELIGRO:** Color de peligro (rojo). */
+.boton-peligro {
   background-color: var(--danger);
   color: var(--white);
 }
 
-.btn-outline {
+/* **BOTÓN CONTORNO:** Estilo de botón sin relleno, con borde primario. */
+.boton-contorno {
   background-color: transparent;
   border: 2px solid var(--primary);
   color: var(--primary);
   box-shadow: none;
 }
 
-.btn-outline:hover {
+/* **HOVER DEL BOTÓN CONTORNO:** Se rellena con el color primario. */
+.boton-contorno:hover {
   background-color: var(--primary);
   color: var(--white);
 }
 
-.btn-sm {
+/* **BOTÓN PEQUEÑO:** Tamaño reducido. */
+.boton-sm {
   padding: 6px 12px;
   font-size: var(--font-size-sm);
 }
 
-.btn-lg {
+/* **BOTÓN GRANDE:** Tamaño aumentado. */
+.boton-lg {
   padding: 14px 28px;
   font-size: 1.125rem;
 }
 
-.btn-icon {
+/* **ICONO DE BOTÓN:** Placeholder para iconos. */
+.boton-icono {
   width: 18px;
   height: 18px;
   background-color: currentColor;
   border-radius: var(--border-radius);
 }
 
-/* TOOLBAR (Búsqueda + Acciones) */
-.toolbar {
+/* ============================================================================
+    HERRAMIENTAS DE DATOS (Toolbar, Búsqueda, Chips)
+    ============================================================================ */
+
+/* **BARRA DE HERRAMIENTAS:** Contenedor de búsqueda y acciones. */
+.barra-herramientas {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -499,8 +555,8 @@ h6 { font-size: 1rem; font-weight: 500; }
   gap: var(--spacing-md);
 }
 
-/* SEARCH BAR */
-.search-bar {
+/* **BARRA DE BÚSQUEDA:** Contenedor del campo de búsqueda. */
+.barra-busqueda {
   display: flex;
   align-items: center;
   background-color: var(--bg-primary);
@@ -512,19 +568,22 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.search-bar:focus-within {
+/* **FOCO EN BÚSQUEDA:** Efecto al hacer clic en el campo. */
+.barra-busqueda:focus-within {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
 }
 
-.search-icon {
+/* **ICONO DE BÚSQUEDA:** Placeholder para el icono de lupa. */
+.icono-busqueda {
   width: 20px;
   height: 20px;
   background-color: var(--gray-500);
   margin-right: var(--spacing-sm);
 }
 
-.search-input {
+/* **CAMPO DE BÚSQUEDA:** Estilo del campo de texto sin borde. */
+.entrada-busqueda {
   flex: 1;
   border: none;
   outline: none;
@@ -533,18 +592,20 @@ h6 { font-size: 1rem; font-weight: 500; }
   background: transparent;
 }
 
-.search-input::placeholder {
+/* **PLACEHOLDER DE BÚSQUEDA:** Estilo del texto de ayuda. */
+.entrada-busqueda::placeholder {
   color: var(--gray-500);
 }
 
-/* CHIPS/FILTERS (Categorías) */
-.chips-container {
+/* **CONTENEDOR DE CHIPS:** Agrupa los elementos de filtro (chips). */
+.contenedor-chips {
   display: flex;
   gap: var(--spacing-sm);
   flex-wrap: wrap;
   margin-bottom: var(--spacing-lg);
 }
 
+/* **CHIP/FILTRO:** Estilo de etiqueta de filtro interactiva. */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -558,24 +619,31 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: all var(--transition-fast);
 }
 
+/* **HOVER DEL CHIP:** Feedback visual. */
 .chip:hover {
   background-color: var(--gray-100);
   border-color: var(--gray-400);
 }
 
-.chip.active {
+/* **CHIP ACTIVO:** Resalta el filtro seleccionado. */
+.chip.activo {
   background-color: var(--primary);
   color: var(--white);
   border-color: var(--primary);
 }
 
-/* QUESTION CARDS (Mis Preguntas) */
-.question-grid {
+/* ============================================================================
+    TARJETAS DE PREGUNTA
+    ============================================================================ */
+
+/* **REJILLA DE PREGUNTAS:** Layout para mostrar varias preguntas. */
+.rejilla-pregunta {
   display: grid;
   gap: var(--spacing-lg);
 }
 
-.question-card {
+/* **TARJETA DE PREGUNTA:** Tarjeta individual para una pregunta. */
+.tarjeta-pregunta {
   background-color: var(--bg-primary);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
@@ -584,36 +652,42 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: box-shadow var(--transition-base), transform var(--transition-fast);
 }
 
-.question-card:hover {
+/* **HOVER DE PREGUNTA:** Efecto de elevación. */
+.tarjeta-pregunta:hover {
   box-shadow: var(--shadow-3);
   transform: translateY(-2px);
 }
 
-.question-header {
+/* **CABECERA DE PREGUNTA:** Contenedor de título y acciones. */
+.pregunta-cabecera {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--spacing-md);
 }
 
-.question-content {
+/* **CONTENIDO DE PREGUNTA:** Cuerpo de texto y detalles. */
+.pregunta-contenido {
   margin-bottom: var(--spacing-md);
   color: var(--text-primary);
   line-height: 1.6;
 }
 
-.question-text {
+/* **TEXTO DE PREGUNTA:** Estilo del enunciado. */
+.pregunta-texto {
   font-size: var(--font-size-base);
   margin-bottom: var(--spacing-sm);
 }
 
-.badges {
+/* **CONTENEDOR DE INSIGNIAS:** Agrupa etiquetas. */
+.insignias {
   display: flex;
   gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
-.badge {
+/* **INSIGNIA/ETIQUETA:** Estilo base de las etiquetas de metadata. */
+.insignia {
   display: inline-flex;
   padding: 4px 8px;
   background-color: var(--gray-200);
@@ -625,17 +699,20 @@ h6 { font-size: 1rem; font-weight: 500; }
   letter-spacing: 0.5px;
 }
 
-.badge-primary { background-color: rgba(0, 188, 212, 0.1); color: var(--primary); }
-.badge-success { background-color: rgba(76, 175, 80, 0.1); color: var(--success); }
-.badge-danger { background-color: rgba(244, 67, 54, 0.1); color: var(--danger); }
+/* **INSIGNIAS POR COLOR:** Variantes de color. */
+.insignia-primaria { background-color: rgba(0, 188, 212, 0.1); color: var(--primary); }
+.insignia-exito { background-color: rgba(76, 175, 80, 0.1); color: var(--success); }
+.insignia-peligro { background-color: rgba(244, 67, 54, 0.1); color: var(--danger); }
 
-.question-actions {
+/* **ACCIONES DE PREGUNTA:** Contenedor de botones de acción rápida. */
+.pregunta-acciones {
   display: flex;
   gap: var(--spacing-sm);
   justify-content: flex-end;
 }
 
-.action-btn {
+/* **BOTÓN DE ACCIÓN:** Botón pequeño y cuadrado para editar/eliminar. */
+.boton-accion {
   width: 36px;
   height: 36px;
   display: flex;
@@ -648,19 +725,21 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: all var(--transition-fast);
 }
 
-.action-btn:hover {
+/* **HOVER DEL BOTÓN DE ACCIÓN:** Efecto de escala. */
+.boton-accion:hover {
   background-color: var(--gray-200);
   transform: scale(1.05);
 }
 
-.action-icon {
+/* **ICONO DE ACCIÓN:** Placeholder para el icono. */
+.icono-accion {
   width: 18px;
   height: 18px;
   background-color: var(--gray-600);
 }
 
-/* METADATA */
-.question-metadata {
+/* **METADATA DE PREGUNTA:** Información adicional como fecha, autor. */
+.pregunta-metadata {
   display: flex;
   gap: var(--spacing-lg);
   font-size: var(--font-size-sm);
@@ -669,12 +748,17 @@ h6 { font-size: 1rem; font-weight: 500; }
   border-top: 1px solid var(--border-color);
 }
 
-/* FORMULARIOS (Prevención de errores - Nielsen) */
-.form-group {
+/* ============================================================================
+    FORMULARIOS (Entradas, Checkbox, Radio)
+    ============================================================================ */
+
+/* **GRUPO DE FORMULARIO:** Contenedor de etiqueta y campo. */
+.grupo-formulario {
   margin-bottom: var(--spacing-lg);
 }
 
-.form-label {
+/* **ETIQUETA DE FORMULARIO:** Estilo de la etiqueta del campo. */
+.etiqueta-formulario {
   display: block;
   margin-bottom: var(--spacing-sm);
   font-size: var(--font-size-sm);
@@ -684,14 +768,16 @@ h6 { font-size: 1rem; font-weight: 500; }
   letter-spacing: 0.5px;
 }
 
-.form-label.required::after {
+/* **INDICADOR DE REQUERIDO:** Añade un asterisco a campos obligatorios. */
+.etiqueta-formulario.requerido::after {
   content: ' *';
   color: var(--danger);
 }
 
-.form-input,
-.form-textarea,
-.form-select {
+/* **ENTRADAS BASE:** Estilo para campos de texto, áreas de texto y selects. */
+.entrada-formulario,
+.area-texto-formulario,
+.seleccion-formulario {
   width: 100%;
   padding: 12px var(--spacing-md);
   border: 1px solid var(--border-color);
@@ -703,33 +789,37 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
+/* **FOCO EN ENTRADAS:** Efecto visual al interactuar. */
+.entrada-formulario:focus,
+.area-texto-formulario:focus,
+.seleccion-formulario:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
 }
 
-.form-input::placeholder {
+/* **PLACEHOLDER DE ENTRADA:** Estilo del texto de ayuda. */
+.entrada-formulario::placeholder {
   color: var(--gray-500);
 }
 
-.form-textarea {
+/* **ÁREA DE TEXTO:** Configuración de altura mínima y redimensionamiento. */
+.area-texto-formulario {
   min-height: 120px;
   resize: vertical;
 }
 
-/* CHECKBOX Y RADIO (Accesibilidad WCAG AA) */
-.checkbox-group,
-.radio-group {
+/* **GRUPO DE CHECKBOX:** Contenedor de opciones de casilla. */
+.grupo-casilla,
+.grupo-radio {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
 }
 
-.checkbox-item,
-.radio-item {
+/* **ÍTEM DE CHECKBOX/RADIO:** Estilo del contenedor de cada opción. */
+.item-casilla,
+.item-radio {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -739,13 +829,15 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: background-color var(--transition-fast);
 }
 
-.checkbox-item:hover,
-.radio-item:hover {
+/* **HOVER DE ÍTEM:** Feedback visual. */
+.item-casilla:hover,
+.item-radio:hover {
   background-color: var(--gray-100);
 }
 
-.checkbox-input,
-.radio-input {
+/* **INPUT CHECKBOX/RADIO:** Estilo personalizado del control. */
+.entrada-casilla,
+.entrada-radio {
   width: 20px;
   height: 20px;
   border: 2px solid var(--gray-400);
@@ -756,13 +848,15 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: all var(--transition-fast);
 }
 
-.checkbox-input:checked,
-.radio-input:checked {
+/* **ESTADO MARCADO:** Fondo primario al seleccionar. */
+.entrada-casilla:checked,
+.entrada-radio:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-.checkbox-input:checked::after {
+/* **MARCA DE CHECKBOX:** Estilo del 'tick' blanco. */
+.entrada-casilla:checked::after {
   content: '';
   position: absolute;
   left: 6px;
@@ -774,11 +868,13 @@ h6 { font-size: 1rem; font-weight: 500; }
   transform: rotate(45deg);
 }
 
-.radio-input {
+/* **INPUT RADIO:** Forma circular. */
+.entrada-radio {
   border-radius: 50%;
 }
 
-.radio-input:checked::after {
+/* **MARCA DE RADIO:** Círculo interior blanco. */
+.entrada-radio:checked::after {
   content: '';
   position: absolute;
   width: 10px;
@@ -790,13 +886,18 @@ h6 { font-size: 1rem; font-weight: 500; }
   transform: translate(-50%, -50%);
 }
 
-/* EXAM LAYOUT (Realizar Examen) */
-.exam-container {
+/* ============================================================================
+    LAYOUT DE EXAMEN
+    ============================================================================ */
+
+/* **CONTENEDOR DE EXAMEN:** Limita el ancho del examen. */
+.contenedor-examen {
   max-width: 900px;
   margin: 0 auto;
 }
 
-.exam-header {
+/* **CABECERA DE EXAMEN:** Contiene título y temporizador. */
+.examen-cabecera {
   background-color: var(--bg-primary);
   padding: var(--spacing-lg);
   border-radius: var(--border-radius-lg);
@@ -807,13 +908,15 @@ h6 { font-size: 1rem; font-weight: 500; }
   align-items: center;
 }
 
-.exam-title {
+/* **TÍTULO DE EXAMEN:** Estilo del nombre del examen. */
+.examen-titulo {
   font-size: 1.5rem;
   font-weight: 400;
   margin: 0;
 }
 
-.exam-timer {
+/* **TEMPORIZADOR DE EXAMEN:** Estilo del contador de tiempo. */
+.examen-temporizador {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -822,14 +925,16 @@ h6 { font-size: 1rem; font-weight: 500; }
   color: var(--primary);
 }
 
-.timer-icon {
+/* **ICONO DE TEMPORIZADOR:** Placeholder para el icono de reloj. */
+.icono-temporizador {
   width: 24px;
   height: 24px;
   background-color: var(--primary);
   border-radius: 50%;
 }
 
-.question-box {
+/* **CAJA DE PREGUNTA:** Contenedor de una pregunta individual. */
+.caja-pregunta {
   background-color: var(--bg-primary);
   padding: var(--spacing-xl);
   border-radius: var(--border-radius-lg);
@@ -837,7 +942,8 @@ h6 { font-size: 1rem; font-weight: 500; }
   margin-bottom: var(--spacing-lg);
 }
 
-.question-number {
+/* **NÚMERO DE PREGUNTA:** Indicador del número de la pregunta. */
+.numero-pregunta {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   font-weight: 500;
@@ -846,7 +952,8 @@ h6 { font-size: 1rem; font-weight: 500; }
   letter-spacing: 0.5px;
 }
 
-.question-type-indicator {
+/* **INDICADOR DE TIPO DE PREGUNTA:** Etiqueta del tipo de pregunta (ej: Opción Múltiple). */
+.indicador-tipo-pregunta {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -859,20 +966,23 @@ h6 { font-size: 1rem; font-weight: 500; }
   margin-bottom: var(--spacing-md);
 }
 
-.question-statement {
+/* **ENUNCIADO DE PREGUNTA:** Texto principal de la pregunta. */
+.enunciado-pregunta {
   font-size: 1.125rem;
   line-height: 1.6;
   color: var(--text-primary);
   margin-bottom: var(--spacing-lg);
 }
 
-.answers-list {
+/* **LISTA DE RESPUESTAS:** Contenedor de las opciones de respuesta. */
+.lista-respuestas {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
 }
 
-.answer-option {
+/* **OPCIÓN DE RESPUESTA:** Estilo de cada opción seleccionable. */
+.opcion-respuesta {
   display: flex;
   align-items: center;
   padding: var(--spacing-md);
@@ -882,43 +992,51 @@ h6 { font-size: 1rem; font-weight: 500; }
   transition: all var(--transition-fast);
 }
 
-.answer-option:hover {
+/* **HOVER DE OPCIÓN:** Resalta la opción al pasar el ratón. */
+.opcion-respuesta:hover {
   border-color: var(--primary);
   background-color: rgba(0, 188, 212, 0.05);
 }
 
-.answer-option.selected {
+/* **OPCIÓN SELECCIONADA:** Resalta la opción elegida. */
+.opcion-respuesta.seleccionada {
   border-color: var(--primary);
   background-color: rgba(0, 188, 212, 0.1);
 }
 
-/* EXAM NAVIGATION */
-.exam-nav {
+/* **NAVEGACIÓN DE EXAMEN:** Botones de anterior/siguiente y progreso. */
+.navegacion-examen {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.question-progress {
+/* **PROGRESO DE PREGUNTA:** Indicador de avance. */
+.progreso-pregunta {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   font-weight: 500;
 }
 
-/* ACCESIBILIDAD - FOCUS VISIBLE (WCAG 2.1) */
+/* ============================================================================
+    ACCESIBILIDAD Y UTILIDADES
+    ============================================================================ */
+
+/* **ACCESIBILIDAD FOCUS VISIBLE:** Asegura un contorno visible para el foco del teclado. */
 *:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
-/* UTILITY CLASSES */
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.text-muted { color: var(--text-secondary); }
-.text-primary { color: var(--primary); }
-.text-success { color: var(--success); }
-.text-danger { color: var(--danger); }
+/* **CLASES DE UTILIDAD (TEXTO)** */
+.texto-centrado { text-align: center; }
+.texto-derecha { text-align: right; }
+.texto-apagado { color: var(--text-secondary); }
+.texto-primario { color: var(--primary); }
+.texto-exito { color: var(--success); }
+.texto-peligro { color: var(--danger); }
 
+/* **CLASES DE UTILIDAD (MARGEN)** */
 .mt-sm { margin-top: var(--spacing-sm); }
 .mt-md { margin-top: var(--spacing-md); }
 .mt-lg { margin-top: var(--spacing-lg); }
@@ -926,45 +1044,58 @@ h6 { font-size: 1rem; font-weight: 500; }
 .mb-md { margin-bottom: var(--spacing-md); }
 .mb-lg { margin-bottom: var(--spacing-lg); }
 
-/* RESPONSIVE (Mobile First) */
+/* ============================================================================
+    RESPONSIVE
+
+/* **MÓVILES Y TABLETAS (hasta 768px):** Ajustes de layout. */
 @media (max-width: 768px) {
-  .sidebar {
+  /* Reduce el ancho del sidebar. */
+  .barra-lateral {
     width: 200px;
   }
-  
-  .main-content {
+
+  /* Ajusta el margen del contenido principal. */
+  .contenido-principal {
     margin-left: 200px;
   }
-  
-  .content {
+
+  /* Reduce el padding general del contenido. */
+  .contenido {
     padding: var(--spacing-md);
   }
-  
-  .stats-grid {
+
+  /* Las estadísticas se apilan en una sola columna. */
+  .rejilla-estadisticas {
     grid-template-columns: 1fr;
   }
-  
-  .toolbar {
+
+  /* La barra de herramientas se apila verticalmente. */
+  .barra-herramientas {
     flex-direction: column;
     align-items: stretch;
   }
-  
-  .search-bar {
+
+  /* La barra de búsqueda ocupa todo el ancho disponible. */
+  .barra-busqueda {
     min-width: 100%;
   }
 }
 
+/* **MÓVILES PEQUEÑOS (hasta 480px):** Sidebar se oculta por defecto. */
 @media (max-width: 480px) {
-  .sidebar {
+  /* Oculta el sidebar fuera de la pantalla. */
+  .barra-lateral {
     transform: translateX(-100%);
     transition: transform var(--transition-base);
   }
-  
-  .sidebar.open {
+
+  /* Muestra el sidebar cuando tiene la clase 'open'. */
+  .barra-lateral.abierta {
     transform: translateX(0);
   }
-  
-  .main-content {
+
+  /* Elimina el margen para que el contenido ocupe todo el ancho. */
+  .contenido-principal {
     margin-left: 0;
   }
 }

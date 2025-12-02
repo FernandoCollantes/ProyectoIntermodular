@@ -6,7 +6,13 @@
   <title>Login Profesor - ExamGen</title>
   <link rel="stylesheet" href="assets/css/styles.css">
   <style>
-    .login-container {
+    /* ----------------------------------------------------------------------------
+       ESTILOS PARA LA PÁGINA LOGIN
+       -------------------------------------------------------------------------- */
+    
+    /* **CONTENEDOR INICIO DE SESIÓN:** Ajusta la altura, centra el contenido y aplica el fondo gradiente. */
+    .contenedor-inicio-sesion {
+      /* min-height: Ajustado para la altura de la ventana menos la altura de la nav superior */
       min-height: calc(100vh - 48px);
       display: flex;
       align-items: center;
@@ -15,7 +21,8 @@
       padding: var(--spacing-xl);
     }
     
-    .login-box {
+    /* **CAJA DE INICIO DE SESIÓN:** Contenedor principal del formulario (fondo blanco y sombra). */
+    .caja-inicio-sesion {
       width: 100%;
       max-width: 480px;
       background-color: var(--white);
@@ -26,17 +33,20 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .login-box:hover {
+    /* **HOVER DE CAJA:** Efecto de elevación sutil. */
+    .caja-inicio-sesion:hover {
       transform: translateY(-4px);
       box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
     }
     
-    .login-header {
+    /* **CABECERA DE INICIO DE SESIÓN:** Contenedor para el logo y títulos. */
+    .cabecera-inicio-sesion {
       text-align: center;
       margin-bottom: 40px;
     }
     
-    .login-logo {
+    /* **LOGO DE INICIO DE SESIÓN:** Estilo del logo (caja con gradiente). */
+    .logo-inicio-sesion {
       width: 80px;
       height: 80px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -48,14 +58,16 @@
       justify-content: center;
     }
     
-    .login-logo::before {
+    /* **INICIAL DEL LOGO:** Añade la letra 'E'. */
+    .logo-inicio-sesion::before {
       content: 'E';
       font-size: 2.5rem;
       font-weight: 700;
       color: var(--white);
     }
     
-    .login-title {
+    /* **TÍTULO DE INICIO DE SESIÓN:** Título principal ("ExamGen"). */
+    .titulo-inicio-sesion {
       font-size: 2rem;
       font-weight: 400;
       margin-bottom: 8px;
@@ -63,7 +75,8 @@
       letter-spacing: -0.5px;
     }
     
-    .login-subtitle {
+    /* **SUBTÍTULO DE INICIO DE SESIÓN:** Texto secundario ("Acceso Profesores"). */
+    .subtitulo-inicio-sesion {
       font-size: 0.875rem;
       color: var(--text-secondary);
       text-transform: uppercase;
@@ -71,101 +84,110 @@
       font-weight: 600;
     }
     
-    .login-form {
+    /* **FORMULARIO DE INICIO DE SESIÓN:** Contenedor del formulario. */
+    .formulario-inicio-sesion {
       margin-bottom: 24px;
     }
     
-    .login-form .form-group {
+    /* **ESPACIADO DE GRUPO:** Ajuste del margen inferior de cada grupo de campo. */
+    .formulario-inicio-sesion .grupo-formulario {
       margin-bottom: 24px;
     }
     
-    .login-form .form-input {
+    /* **AJUSTE DE INPUT:** Relleno y tamaño del texto para los campos de entrada. */
+    .formulario-inicio-sesion .entrada-formulario {
       padding: 14px 16px;
       font-size: 1rem;
     }
     
-    .login-form .btn {
+    /* **AJUSTE DE BOTÓN:** Relleno y fuente para el botón principal del formulario. */
+    .formulario-inicio-sesion .boton {
       padding: 14px;
       font-size: 1rem;
       font-weight: 600;
     }
     
-    .form-footer {
+    /* **PIE DE FORMULARIO:** Contenedor para enlaces de registro/contraseña olvidada. */
+    .pie-formulario {
       text-align: center;
       font-size: 0.875rem;
       color: var(--text-secondary);
     }
     
-    .form-footer p {
+    /* **MARGEN DE PÁRRAFO:** Espaciado entre los elementos del pie. */
+    .pie-formulario p {
       margin: 8px 0;
     }
     
-    .form-footer a {
+    /* **ENLACES DE PIE:** Estilo de los enlaces (color primario, sin subrayado). */
+    .pie-formulario a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 600;
       transition: color var(--transition-fast);
     }
     
-    .form-footer a:hover {
+    /* **HOVER DE ENLACES:** Subraya el enlace al pasar el ratón. */
+    .pie-formulario a:hover {
       color: var(--primary-dark);
       text-decoration: underline;
     }
   </style>
 </head>
-<body class="has-Prototipo-nav">
-  <!-- Navegación entre Prototipos -->
-  <nav class="Prototipo-nav">
-    <span class="Prototipo-nav-brand">NAVEGACIÓN PrototipoS</span>
-    <div class="Prototipo-nav-links">
-      <a href="Prototipo-1-landing.html" class="Prototipo-nav-link">1. Landing</a>
-      <a href="Prototipo-2-login.html" class="Prototipo-nav-link active">2. Login</a>
-      <a href="Prototipo-3-dashboard.html" class="Prototipo-nav-link">3. Dashboard</a>
-      <a href="Prototipo-4-mis-preguntas.html" class="Prototipo-nav-link">4. Mis Preguntas</a>
-      <a href="Prototipo-5-crear-pregunta.html" class="Prototipo-nav-link">5. Crear Pregunta</a>
-      <a href="Prototipo-6-crear-examen.html" class="Prototipo-nav-link">6. Crear Examen</a>
-      <a href="Prototipo-7-acceso-alumno.html" class="Prototipo-nav-link">7. Acceso Alumno</a>
-      <a href="Prototipo-8-realizar-examen.html" class="Prototipo-nav-link">8. Realizar Examen</a>
+
+<body class="con-navegacion-prototipo">
+  
+  <nav class="navegacion-prototipo">
+    <span class="navegacion-prototipo-marca">NAVEGACIÓN PROTOTIPO</span>
+    <div class="navegacion-prototipo-enlaces">
+      <a href="Prototipo-1-landing.html" class="navegacion-prototipo-enlace">1. Landing</a>
+      <a href="Prototipo-2-login.html" class="navegacion-prototipo-enlace activo">2. Login</a>
+      <a href="Prototipo-3-dashboard.html" class="navegacion-prototipo-enlace">3. Dashboard</a>
+      <a href="Prototipo-4-mis-preguntas.html" class="navegacion-prototipo-enlace">4. Mis Preguntas</a>
+      <a href="Prototipo-5-crear-pregunta.html" class="navegacion-prototipo-enlace">5. Crear Pregunta</a>
+      <a href="Prototipo-6-crear-examen.html" class="navegacion-prototipo-enlace">6. Crear Examen</a>
+      <a href="Prototipo-7-acceso-alumno.html" class="navegacion-prototipo-enlace">7. Acceso Alumno</a>
+      <a href="Prototipo-8-realizar-examen.html" class="navegacion-prototipo-enlace">8. Realizar Examen</a>
     </div>
   </nav>
 
-  <div class="login-container">
-    <div class="login-box">
-      <div class="login-header">
-        <div class="login-logo"></div>
-        <h1 class="login-title">ExamGen</h1>
-        <p class="login-subtitle">Acceso Profesores</p>
+  <div class="contenedor-inicio-sesion">
+    <div class="caja-inicio-sesion">
+      <div class="cabecera-inicio-sesion">
+        <div class="logo-inicio-sesion"></div>
+        <h1 class="titulo-inicio-sesion">ExamGen</h1>
+        <p class="subtitulo-inicio-sesion">Acceso Profesores</p>
       </div>
       
-      <form class="login-form">
-        <div class="form-group">
-          <label for="email" class="form-label required">Correo electrónico</label>
+      <form class="formulario-inicio-sesion">
+        <div class="grupo-formulario">
+          <label for="email" class="etiqueta-formulario requerido">Correo electrónico</label>
           <input 
             type="email" 
             id="email" 
-            class="form-input" 
+            class="entrada-formulario" 
             placeholder="profesor@ejemplo.com"
             aria-required="true"
           >
         </div>
         
-        <div class="form-group">
-          <label for="password" class="form-label required">Contraseña</label>
+        <div class="grupo-formulario">
+          <label for="password" class="etiqueta-formulario requerido">Contraseña</label>
           <input 
             type="password" 
             id="password" 
-            class="form-input" 
+            class="entrada-formulario" 
             placeholder="••••••••"
             aria-required="true"
           >
         </div>
         
-        <a href="Prototipo-3-dashboard.html" class="btn btn-primary btn-lg" style="width: 100%;">
+        <a href="Prototipo-3-dashboard.html" class="boton boton-primario boton-lg" style="width: 100%;">
           Iniciar Sesión
         </a>
       </form>
       
-      <div class="form-footer">
+      <div class="pie-formulario">
         <p>¿No tienes cuenta? <a href="#">Regístrate aquí</a></p>
         <p><a href="#">¿Olvidaste tu contraseña?</a></p>
       </div>

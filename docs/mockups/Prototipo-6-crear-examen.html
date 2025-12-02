@@ -6,21 +6,28 @@
   <title>Crear Examen - ExamGen</title>
   <link rel="stylesheet" href="assets/css/styles.css">
   <style>
-    .exam-config-grid {
+    /* ----------------------------------------------------------------------------
+       ESTILOS ESPECÍFICOS PARA CREAR EXAMEN
+       -------------------------------------------------------------------------- */
+       
+    /* **REJILLA DE CONFIGURACIÓN DE EXAMEN:** Layout para campos de configuración de examen. */
+    .rejilla-configuracion-examen {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: var(--spacing-lg);
       margin-bottom: var(--spacing-lg);
     }
     
-    .questions-selection {
+    /* **SELECCIÓN DE PREGUNTAS:** Contenedor principal de la sección de selección de preguntas. */
+    .seleccion-preguntas {
       background-color: var(--bg-secondary);
       border-radius: var(--border-radius-lg);
       padding: var(--spacing-lg);
       margin-bottom: var(--spacing-lg);
     }
     
-    .questions-list {
+    /* **LISTA DE PREGUNTAS:** Contenedor con scroll para la lista de preguntas disponibles. */
+    .lista-preguntas {
       max-height: 400px;
       overflow-y: auto;
       display: flex;
@@ -28,7 +35,8 @@
       gap: var(--spacing-md);
     }
     
-    .question-select-item {
+    /* **ITEM DE SELECCIÓN DE PREGUNTA:** Estilo base para cada pregunta en la lista. */
+    .item-seleccion-pregunta {
       display: flex;
       align-items: flex-start;
       gap: var(--spacing-md);
@@ -39,32 +47,37 @@
       transition: border-color var(--transition-fast);
     }
     
-    .question-select-item:hover {
+    .item-seleccion-pregunta:hover {
       border-color: var(--primary);
     }
     
-    .question-select-item input[type="checkbox"] {
+    /* Checkbox de selección */
+    .item-seleccion-pregunta input[type="checkbox"] {
       margin-top: 4px;
       flex-shrink: 0;
     }
     
-    .question-select-content {
+    /* Contenido de la pregunta (texto y metadata) */
+    .contenido-seleccion-pregunta {
       flex: 1;
     }
     
-    .question-select-text {
+    /* Texto de la pregunta */
+    .texto-seleccion-pregunta {
       color: var(--text-primary);
       margin-bottom: var(--spacing-xs);
       line-height: 1.4;
     }
     
-    .question-select-meta {
+    /* Metadata (insignias) de la pregunta */
+    .meta-seleccion-pregunta {
       display: flex;
       gap: var(--spacing-sm);
       flex-wrap: wrap;
     }
     
-    .selected-count {
+    /* Contador de preguntas seleccionadas */
+    .contador-seleccionado {
       display: inline-flex;
       align-items: center;
       gap: var(--spacing-sm);
@@ -76,7 +89,8 @@
       font-size: var(--font-size-sm);
     }
     
-    .form-actions {
+    /* Acciones de Formulario */
+    .acciones-formulario {
       display: flex;
       gap: var(--spacing-md);
       justify-content: flex-end;
@@ -86,118 +100,115 @@
     }
   </style>
 </head>
-<body class="has-Prototipo-nav">
-  <!-- Navegación entre Prototipos -->
-  <nav class="Prototipo-nav">
-    <span class="Prototipo-nav-brand">NAVEGACIÓN PrototipoS</span>
-    <div class="Prototipo-nav-links">
-      <a href="Prototipo-1-landing.html" class="Prototipo-nav-link">1. Landing</a>
-      <a href="Prototipo-2-login.html" class="Prototipo-nav-link">2. Login</a>
-      <a href="Prototipo-3-dashboard.html" class="Prototipo-nav-link">3. Dashboard</a>
-      <a href="Prototipo-4-mis-preguntas.html" class="Prototipo-nav-link">4. Mis Preguntas</a>
-      <a href="Prototipo-5-crear-pregunta.html" class="Prototipo-nav-link">5. Crear Pregunta</a>
-      <a href="Prototipo-6-crear-examen.html" class="Prototipo-nav-link active">6. Crear Examen</a>
-      <a href="Prototipo-7-acceso-alumno.html" class="Prototipo-nav-link">7. Acceso Alumno</a>
-      <a href="Prototipo-8-realizar-examen.html" class="Prototipo-nav-link">8. Realizar Examen</a>
+
+<body class="con-navegacion-prototipo">
+  <nav class="navegacion-prototipo">
+    <span class="navegacion-prototipo-marca">NAVEGACIÓN PROTOTIPO</span>
+    <div class="navegacion-prototipo-enlaces">
+      <a href="Prototipo-1-landing.html" class="navegacion-prototipo-enlace">1. Landing</a>
+      <a href="Prototipo-2-login.html" class="navegacion-prototipo-enlace">2. Login</a>
+      <a href="Prototipo-3-dashboard.html" class="navegacion-prototipo-enlace">3. Dashboard</a>
+      <a href="Prototipo-4-mis-preguntas.html" class="navegacion-prototipo-enlace">4. Mis Preguntas</a>
+      <a href="Prototipo-5-crear-pregunta.html" class="navegacion-prototipo-enlace">5. Crear Pregunta</a>
+      <a href="Prototipo-6-crear-examen.html" class="navegacion-prototipo-enlace activo">6. Crear Examen</a>
+      <a href="Prototipo-7-acceso-alumno.html" class="navegacion-prototipo-enlace">7. Acceso Alumno</a>
+      <a href="Prototipo-8-realizar-examen.html" class="navegacion-prototipo-enlace">8. Realizar Examen</a>
     </div>
   </nav>
 
-  <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
+  <div class="contenedor-app">
+    <aside class="barra-lateral">
+      <div class="barra-lateral-cabecera">
         <h2>EXAMGEN</h2>
       </div>
-      <nav class="sidebar-nav">
-        <a href="Prototipo-3-dashboard.html" class="nav-item">
-          <div class="nav-icon"></div>
+      <nav class="barra-lateral-navegacion">
+        <a href="Prototipo-3-dashboard.html" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Dashboard</span>
         </a>
-        <a href="Prototipo-4-mis-preguntas.html" class="nav-item">
-          <div class="nav-icon"></div>
+        <a href="Prototipo-4-mis-preguntas.html" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Mis Preguntas</span>
         </a>
-        <a href="Prototipo-6-crear-examen.html" class="nav-item active">
-          <div class="nav-icon"></div>
+        <a href="Prototipo-6-crear-examen.html" class="item-navegacion activo">
+          <div class="icono-navegacion"></div>
           <span>Mis Exámenes</span>
         </a>
-        <a href="#" class="nav-item">
-          <div class="nav-icon"></div>
+        <a href="#" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Asignaturas</span>
         </a>
-        <a href="#" class="nav-item">
-          <div class="nav-icon"></div>
+        <a href="#" class="item-navegacion">
+          <div class="icono-navegacion"></div>
           <span>Exportar</span>
         </a>
       </nav>
     </aside>
     
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Topbar -->
-      <header class="topbar">
-        <h1 class="topbar-title">Crear Nuevo Examen</h1>
-        <div class="user-info">
-          <span class="user-name">Fernando Collantes</span>
-          <div class="user-avatar">FC</div>
+    <main class="contenido-principal">
+      <header class="barra-superior">
+        <h1 class="barra-superior-titulo">Crear Nuevo Examen</h1>
+        <div class="informacion-usuario">
+          <span class="nombre-usuario">Fernando Collantes</span>
+          <div class="avatar-usuario">FC</div>
         </div>
       </header>
       
-      <!-- Content -->
-      <div class="content">
-        <div class="card">
+      <div class="contenido">
+        <div class="tarjeta">
           <form>
-            <!-- Configuración del Examen -->
+            
             <h3 style="margin-bottom: var(--spacing-lg); color: var(--text-primary);">Configuración del Examen</h3>
             
-            <div class="form-group">
-              <label for="examTitle" class="form-label required">Título del examen</label>
+            <div class="grupo-formulario">
+              <label for="examTitle" class="etiqueta-formulario requerido">Título del examen</label>
               <input 
                 type="text" 
                 id="examTitle" 
-                class="form-input" 
+                class="entrada-formulario" 
                 placeholder="Ej: Examen Final Matemáticas - 1º Trimestre"
               >
             </div>
             
-            <div class="exam-config-grid">
-              <div class="form-group">
-                <label for="subject" class="form-label required">Asignatura</label>
-                <select id="subject" class="form-select">
+            <div class="rejilla-configuracion-examen">
+              <div class="grupo-formulario">
+                <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
+                <select id="subject" class="seleccion-formulario">
                   <option value="">Seleccionar...</option>
-                  <option value="mat">Matemáticas</option>
-                  <option value="his">Historia</option>
-                  <option value="pro">Programación</option>
+                  <option value="IPE">IPE</option>
+                  <option value="LENGUAJE DE MARCAS">LENGUAJE DE MARCAS</option>
+                  <option value="PROGRAMACIÓN">PROGRAMACIÓN</option>
+                  <option value="INGLÉS">INGLÉS</option>
                 </select>
               </div>
               
-              <div class="form-group">
-                <label for="duration" class="form-label required">Duración (minutos)</label>
+              <div class="grupo-formulario">
+                <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
                 <input 
                   type="number" 
                   id="duration" 
-                  class="form-input" 
+                  class="entrada-formulario" 
                   placeholder="60"
                   min="5"
                   max="180"
                 >
               </div>
               
-              <div class="form-group">
-                <label for="passingGrade" class="form-label required">Nota mínima (%)</label>
+              <div class="grupo-formulario">
+                <label for="passingGrade" class="etiqueta-formulario requerido">Nota mínima (%)</label>
                 <input 
                   type="number" 
                   id="passingGrade" 
-                  class="form-input" 
+                  class="entrada-formulario" 
                   placeholder="50"
                   min="0"
                   max="100"
                 >
               </div>
               
-              <div class="form-group">
-                <label for="attempts" class="form-label">Intentos permitidos</label>
-                <select id="attempts" class="form-select">
+              <div class="grupo-formulario">
+                <label for="attempts" class="etiqueta-formulario">Intentos permitidos</label>
+                <select id="attempts" class="seleccion-formulario">
                   <option value="1" selected>1 intento</option>
                   <option value="2">2 intentos</option>
                   <option value="3">3 intentos</option>
@@ -206,124 +217,117 @@
               </div>
             </div>
             
-            <!-- Selección de Preguntas -->
-            <div class="questions-selection">
+            <div class="seleccion-preguntas">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
                 <h3 style="margin: 0; color: var(--text-primary);">Seleccionar Preguntas</h3>
-                <span class="selected-count">
+                <span class="contador-seleccionado">
                   <div style="width: 16px; height: 16px; background-color: var(--primary); border-radius: 50%;"></div>
                   3 preguntas seleccionadas
                 </span>
               </div>
               
-              <div class="search-bar" style="margin-bottom: var(--spacing-md);">
-                <div class="search-icon"></div>
-                <input type="text" class="search-input" placeholder="Buscar preguntas...">
+              <div class="barra-busqueda" style="margin-bottom: var(--spacing-md);">
+                <div class="icono-busqueda"></div>
+                <input type="text" class="entrada-busqueda" placeholder="Buscar preguntas...">
               </div>
               
-              <div class="questions-list">
-                <!-- Question 1 -->
-                <label class="question-select-item">
+              <div class="lista-preguntas">
+                
+                <label class="item-seleccion-pregunta">
                   <input type="checkbox" checked>
-                  <div class="question-select-content">
-                    <div class="question-select-text">
+                  <div class="contenido-seleccion-pregunta">
+                    <div class="texto-seleccion-pregunta">
                       ¿Cuál es la solución de la ecuación 2x + 5 = 13?
                     </div>
-                    <div class="question-select-meta">
-                      <span class="badge badge-primary">MAT</span>
-                      <span class="badge">ÁLGEBRA</span>
-                      <span class="badge">MEDIA</span>
+                    <div class="meta-seleccion-pregunta">
+                      <span class="insignia insignia-primaria">MAT</span>
+                      <span class="insignia">ÁLGEBRA</span>
+                      <span class="insignia">MEDIA</span>
                     </div>
                   </div>
                 </label>
                 
-                <!-- Question 2 -->
-                <label class="question-select-item">
+                <label class="item-seleccion-pregunta">
                   <input type="checkbox" checked>
-                  <div class="question-select-content">
-                    <div class="question-select-text">
+                  <div class="contenido-seleccion-pregunta">
+                    <div class="texto-seleccion-pregunta">
                       ¿Cuál es el área de un círculo con radio de 5 cm?
                     </div>
-                    <div class="question-select-meta">
-                      <span class="badge badge-primary">MAT</span>
-                      <span class="badge">GEOMETRÍA</span>
-                      <span class="badge">FÁCIL</span>
+                    <div class="meta-seleccion-pregunta">
+                      <span class="insignia insignia-primaria">MAT</span>
+                      <span class="insignia">GEOMETRÍA</span>
+                      <span class="insignia">FÁCIL</span>
                     </div>
                   </div>
                 </label>
                 
-                <!-- Question 3 -->
-                <label class="question-select-item">
+                <label class="item-seleccion-pregunta">
                   <input type="checkbox" checked>
-                  <div class="question-select-content">
-                    <div class="question-select-text">
+                  <div class="contenido-seleccion-pregunta">
+                    <div class="texto-seleccion-pregunta">
                       Calcula el valor de la derivada de f(x) = 3x² + 2x - 1 en x = 2
                     </div>
-                    <div class="question-select-meta">
-                      <span class="badge badge-primary">MAT</span>
-                      <span class="badge">CÁLCULO</span>
-                      <span class="badge">DIFÍCIL</span>
+                    <div class="meta-seleccion-pregunta">
+                      <span class="insignia insignia-primaria">MAT</span>
+                      <span class="insignia">CÁLCULO</span>
+                      <span class="insignia">DIFÍCIL</span>
                     </div>
                   </div>
                 </label>
                 
-                <!-- Question 4 -->
-                <label class="question-select-item">
+                <label class="item-seleccion-pregunta">
                   <input type="checkbox">
-                  <div class="question-select-content">
-                    <div class="question-select-text">
+                  <div class="contenido-seleccion-pregunta">
+                    <div class="texto-seleccion-pregunta">
                       ¿Qué es un triángulo equilátero?
                     </div>
-                    <div class="question-select-meta">
-                      <span class="badge badge-primary">MAT</span>
-                      <span class="badge">GEOMETRÍA</span>
-                      <span class="badge">FÁCIL</span>
+                    <div class="meta-seleccion-pregunta">
+                      <span class="insignia insignia-primaria">MAT</span>
+                      <span class="insignia">GEOMETRÍA</span>
+                      <span class="insignia">FÁCIL</span>
                     </div>
                   </div>
                 </label>
                 
-                <!-- Question 5 -->
-                <label class="question-select-item">
+                <label class="item-seleccion-pregunta">
                   <input type="checkbox">
-                  <div class="question-select-content">
-                    <div class="question-select-text">
+                  <div class="contenido-seleccion-pregunta">
+                    <div class="texto-seleccion-pregunta">
                       Resuelve el sistema de ecuaciones: x + y = 10, x - y = 2
                     </div>
-                    <div class="question-select-meta">
-                      <span class="badge badge-primary">MAT</span>
-                      <span class="badge">ÁLGEBRA</span>
-                      <span class="badge">MEDIA</span>
+                    <div class="meta-seleccion-pregunta">
+                      <span class="insignia insignia-primaria">MAT</span>
+                      <span class="insignia">ÁLGEBRA</span>
+                      <span class="insignia">MEDIA</span>
                     </div>
                   </div>
                 </label>
               </div>
             </div>
             
-            <!-- Opciones adicionales -->
-            <div class="form-group">
-              <label class="form-label">Opciones adicionales</label>
-              <div class="checkbox-group">
-                <label class="checkbox-item">
-                  <input type="checkbox" class="checkbox-input" checked>
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">Opciones adicionales</label>
+              <div class="grupo-checkbox">
+                <label class="item-checkbox">
+                  <input type="checkbox" class="entrada-checkbox" checked>
                   <span>Mostrar resultados al finalizar</span>
                 </label>
-                <label class="checkbox-item">
-                  <input type="checkbox" class="checkbox-input">
+                <label class="item-checkbox">
+                  <input type="checkbox" class="entrada-checkbox">
                   <span>Aleatorizar orden de preguntas</span>
                 </label>
-                <label class="checkbox-item">
-                  <input type="checkbox" class="checkbox-input">
+                <label class="item-checkbox">
+                  <input type="checkbox" class="entrada-checkbox">
                   <span>Aleatorizar orden de respuestas</span>
                 </label>
               </div>
             </div>
             
-            <!-- Acciones -->
-            <div class="form-actions">
-              <a href="Prototipo-3-dashboard.html" class="btn btn-outline">Cancelar</a>
-              <button type="button" class="btn btn-secondary">Guardar como borrador</button>
-              <button type="submit" class="btn btn-primary">
-                <div class="btn-icon"></div>
+            <div class="acciones-formulario">
+              <a href="Prototipo-3-dashboard.html" class="boton boton-contorno">Cancelar</a>
+              <button type="button" class="boton boton-secundario">Guardar como borrador</button>
+              <button type="submit" class="boton boton-primario">
+                <div class="boton-icono"></div>
                 Crear y Publicar Examen
               </button>
             </div>
