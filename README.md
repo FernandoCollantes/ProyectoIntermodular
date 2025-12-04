@@ -6,7 +6,7 @@ Aplicación web para la generación dinámica de exámenes tipo test. Permite a 
 ## 🚀 Stack Tecnológico
 
 ### Frontend
-- **Framework:** Angular 17+
+- **Framework:** Angular 16
 - **Lenguaje:** TypeScript
 - **UI Library:** Angular Material
 - **Estilos:** SCSS
@@ -27,7 +27,6 @@ Aplicación web para la generación dinámica de exámenes tipo test. Permite a 
 ProyectoIntermodular/
 ├── frontend/         # Aplicación Angular
 ├── backend/          # API REST Node.js + Express
-├── docs/             # Documentación (wireframes, mockups, memoria)
 ├── .gitignore
 └── README.md
 ```
