@@ -1,339 +1,475 @@
+// --- CONFIGURACIÓN DE RUTAS API (NUEVA ESTRUCTURA) ---
+const URL_ASIGNATURAS = '/api/asignaturas'; // Para asignaturas y criterios
+const URL_PREGUNTAS = '/api/preguntas';     // Para preguntas y búsqueda
+const URL_EXAMENES = '/api/examenes';       // Para gestión de exámenes
+
 // --- Estado Global ---
-// Almacenamos el examen actual aquí para poder enviarlo al endpoint de descarga PDF cuando el usuario haga clic.
 let currentExamData = null; 
 
-// --- Referencias al DOM (Elementos HTML) ---
+// --- Referencias al DOM ---
+// Búsqueda
 const subjectSelect = document.getElementById('subjectInput');
-const searchThemeSelect = document.getElementById('searchThemeInput');
+const searchCriterioSelect = document.getElementById('searchCriterioInput');
 const searchDifficultyInput = document.getElementById('searchDifficultyInput');
-const examSubjectSelect = document.getElementById('examSubjectInput'); 
 const resultsContainer = document.getElementById('resultsContainer');
-const searchSection = document.getElementById('searchSection');
+const searchQuestionsSection = document.getElementById('searchQuestionsSection');
 
-// Elementos del formulario "Nueva Pregunta"
+// Formularios Nuevos (Administración)
+const createSubjectForm = document.getElementById('createSubjectForm');
+const createCriterioForm = document.getElementById('createCriterioForm');
+const criterioSubjectSelect = document.getElementById('criterioSubjectSelect'); // Dropdown dentro de Crear Criterio
+
+// Formulario Pregunta
 const newAsignaturaSelect = document.getElementById('newAsignatura'); 
-const newTemaSelect = document.getElementById('newTema'); 
-
-// Elementos de la vista "Examen"
-const examViewContainer = document.getElementById('examViewContainer');
-const examQuestionsList = document.getElementById('examQuestionsList');
-const examTitle = document.getElementById('examTitle');
-
-// Contenedores de Formularios
+// const newCriterioSelect = document.getElementById('newCriterio'); // YA NO SE USA (Sustituido por Checkboxes)
+const criteriosCheckboxContainer = document.getElementById('criteriosCheckboxContainer'); // NUEVO
 const formContainer = document.getElementById('addQuestionForm');
-const createExamForm = document.getElementById('createExamForm');
 const incorrectOptionsContainer = document.getElementById('incorrectOptionsContainer');
 
-// Botones
+// Formulario Examen
+const createExamForm = document.getElementById('createExamForm');
+const examSubjectSelect = document.getElementById('examSubjectInput'); 
+
+// SECCIÓN NUEVA: BUSCADOR EXÁMENES
+const searchExamsSection = document.getElementById('searchExamsSection');
+const examSearchSubject = document.getElementById('examSearchSubject');
+const examSearchAuthor = document.getElementById('examSearchAuthor');
+const examsListContainer = document.getElementById('examsListContainer');
+const btnSearchExams = document.getElementById('btnSearchExams');
+
+// Vista Examen
+const examViewContainer = document.getElementById('examViewContainer');
+const examQuestionsList = document.getElementById('examQuestionsList');
+const examNameInput = document.getElementById('examNameInput'); 
+const examAuthorInput = document.getElementById('examAuthorInput'); 
+
+// Botones (Toggles)
 const toggleFormBtn = document.getElementById('toggleFormBtn');
 const toggleExamFormBtn = document.getElementById('toggleExamFormBtn');
+const toggleSearchExamsBtn = document.getElementById('toggleSearchExamsBtn');
+const toggleSubjectFormBtn = document.getElementById('toggleSubjectFormBtn');
+const toggleCriterioFormBtn = document.getElementById('toggleCriterioFormBtn');
+
+// Botones (Acciones)
 const addOptionBtn = document.getElementById('addOptionBtn');
 const saveQuestionBtn = document.getElementById('saveQuestionBtn');
 const searchBtn = document.getElementById('searchBtn');
 const generateExamBtn = document.getElementById('generateExamBtn');
 const downloadExamBtn = document.getElementById('downloadExamBtn');
+const saveExamToDbBtn = document.getElementById('saveExamToDbBtn'); 
+const saveSubjectBtn = document.getElementById('saveSubjectBtn');
+const saveCriterioBtn = document.getElementById('saveCriterioBtn');
 
-//const API_URL = 'http://localhost:3000/api/preguntas';
-//const API_URL = 'http://172.22.50.6:3000/api/preguntas';
-const API_URL = '/api/preguntas';
 
-// --- Event Listeners (Escuchadores de Eventos) ---
+// --- Event Listeners ---
 
-// Al cargar la página, cargamos las asignaturas disponibles
 document.addEventListener('DOMContentLoaded', loadSubjects);
 
-// Botones para mostrar/ocultar formularios
-toggleFormBtn.addEventListener('click', toggleQuestionForm);
-toggleExamFormBtn.addEventListener('click', toggleExamForm);
+// Toggles: Gestionamos visibilidad exclusiva de secciones principales
+toggleFormBtn.addEventListener('click', () => showMainSection(formContainer));
+toggleExamFormBtn.addEventListener('click', () => showMainSection(createExamForm));
+toggleSearchExamsBtn.addEventListener('click', () => showMainSection(searchExamsSection));
 
-// Acciones principales
+// Toggles Admin (Sub-formularios)
+toggleSubjectFormBtn.addEventListener('click', () => { 
+    createSubjectForm.classList.toggle('hidden'); 
+    createCriterioForm.classList.add('hidden'); 
+});
+toggleCriterioFormBtn.addEventListener('click', () => { 
+    createCriterioForm.classList.toggle('hidden'); 
+    createSubjectForm.classList.add('hidden'); 
+});
+
+// Acciones
 addOptionBtn.addEventListener('click', addOptionInput);
 saveQuestionBtn.addEventListener('click', submitNewQuestion);
 searchBtn.addEventListener('click', searchQuestions);
-generateExamBtn.addEventListener('click', generateExam);
+generateExamBtn.addEventListener('click', generateExamPreview); 
 downloadExamBtn.addEventListener('click', downloadExamPDF);
+saveExamToDbBtn.addEventListener('click', saveExamToDB); 
+saveSubjectBtn.addEventListener('click', submitNewSubject);
+saveCriterioBtn.addEventListener('click', submitNewCriterio);
+btnSearchExams.addEventListener('click', searchExams);
 
-// Carga dinámica de temas: Al cambiar la asignatura en "Nueva Pregunta"
-newAsignaturaSelect.addEventListener('change', (e) => {
-    const subject = e.target.value;
-    if (subject) {
-        loadThemes(subject, newTemaSelect);
-    } else {
-        resetThemeSelect(newTemaSelect);
-    }
-});
-
-// Carga dinámica de temas: Al cambiar la asignatura en "Buscar"
-subjectSelect.addEventListener('change', (e) => {
-    const subject = e.target.value;
-    if (subject) {
-        loadThemes(subject, searchThemeSelect);
-    } else {
-        resetThemeSelect(searchThemeSelect);
-    }
-});
+// Dropdowns Cascada
+// CASO ESPECIAL: Checkboxes para nueva pregunta
+newAsignaturaSelect.addEventListener('change', (e) => loadCriteriaCheckboxes(e.target.value));
+// Caso Normal: Select para búsqueda
+subjectSelect.addEventListener('change', (e) => handleCriteriaLoad(e.target.value, searchCriterioSelect));
 
 
-// --- Funciones de Lógica ---
+// --- Helpers ---
 
-/**
- * Carga la lista de asignaturas del backend y puebla todos los dropdowns relevantes en la página.
- */
-async function loadSubjects() {
-    try {
-        const res = await fetch(`${API_URL}/subjects`);
-        const data = await res.json();
+function showMainSection(targetSection) {
+    // Lista de secciones principales que se solapan
+    const sections = [
+        formContainer, 
+        createExamForm, 
+        searchExamsSection, 
+        searchQuestionsSection, 
+        resultsContainer,
+        examViewContainer
+    ];
+    
+    // Ocultar todas
+    sections.forEach(s => s.classList.add('hidden'));
+    
+    // Mostrar objetivo
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
         
-        // Reiniciamos los dropdowns
-        subjectSelect.innerHTML = '<option value="">-- Cualquiera --</option>';
-        examSubjectSelect.innerHTML = '<option value="">-- Selecciona --</option>';
-        newAsignaturaSelect.innerHTML = '<option value="">-- Selecciona --</option>';
-
-        // Rellenamos con datos
-        data.subjects.forEach(subj => {
-            const opt1 = document.createElement('option');
-            opt1.value = subj; opt1.textContent = subj;
-            subjectSelect.appendChild(opt1);
-
-            const opt2 = document.createElement('option');
-            opt2.value = subj; opt2.textContent = subj;
-            examSubjectSelect.appendChild(opt2);
-
-            const opt3 = document.createElement('option');
-            opt3.value = subj; opt3.textContent = subj;
-            newAsignaturaSelect.appendChild(opt3);
-        });
-    } catch (err) {
-        console.error("Error cargando asignaturas:", err);
+        // Si mostramos buscador de preguntas, mostramos sus resultados también por UX
+        if (targetSection === searchQuestionsSection) resultsContainer.classList.remove('hidden');
     }
+
+    // Logic extra al abrir formulario de pregunta
+    if (targetSection === formContainer && incorrectOptionsContainer.children.length === 0) addOptionInput();
 }
 
-/**
- * Carga los temas dependientes de una asignatura.
- * @param {string} subject - La asignatura seleccionada.
- * @param {HTMLElement} targetSelect - El elemento <select> que vamos a rellenar.
- */
-async function loadThemes(subject, targetSelect) {
+function handleCriteriaLoad(subjectId, targetSelect) {
+    if (subjectId) loadCriteria(subjectId, targetSelect);
+    else resetSelect(targetSelect);
+}
+
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+// --- Carga de Datos ---
+
+async function loadSubjects() {
+    try {
+        const res = await fetch(URL_ASIGNATURAS);
+        const response = await res.json();
+        
+        // Reset de todos los dropdowns de asignatura
+        const selects = [subjectSelect, examSubjectSelect, newAsignaturaSelect, criterioSubjectSelect, examSearchSubject];
+        selects.forEach(sel => sel.innerHTML = '<option value="">-- Selecciona --</option>');
+        
+        // Excepciones de texto por defecto
+        subjectSelect.innerHTML = '<option value="">-- Cualquiera --</option>'; 
+        examSearchSubject.innerHTML = '<option value="">-- Todas --</option>'; 
+
+        if (response.success && response.subjects) {
+            response.subjects.forEach(subj => {
+                // Rellenamos todos los selects a la vez
+                selects.forEach(sel => {
+                    sel.appendChild(new Option(subj.nombre, subj._id));
+                });
+            });
+        }
+    } catch (err) { console.error(err); }
+}
+
+// Carga para Select normal (Búsqueda)
+async function loadCriteria(subjectId, targetSelect) {
     try {
         targetSelect.disabled = true;
         targetSelect.innerHTML = '<option>Cargando...</option>';
-
-        const res = await fetch(`${API_URL}/themes?subject=${encodeURIComponent(subject)}`);
-        const data = await res.json();
-
-        targetSelect.innerHTML = '<option value="">-- Cualquiera --</option>';
         
-        if (data.themes && data.themes.length > 0) {
-            data.themes.forEach(tema => {
-                const option = document.createElement('option');
-                option.value = tema;
-                option.textContent = tema;
-                targetSelect.appendChild(option);
+        const res = await fetch(`${URL_ASIGNATURAS}/criterios?asignatura=${subjectId}`);
+        const response = await res.json();
+        targetSelect.innerHTML = '<option value="">-- Selecciona --</option>';
+        
+        if (response.success && response.criterios.length > 0) {
+            response.criterios.forEach(crit => {
+                targetSelect.appendChild(new Option(crit.nombre, crit._id));
             });
             targetSelect.disabled = false;
         } else {
-            targetSelect.innerHTML = '<option value="">No hay temas</option>';
+            targetSelect.innerHTML = '<option value="">No hay criterios</option>';
         }
+    } catch (err) { console.error(err); targetSelect.innerHTML = '<option>Error</option>'; }
+}
 
+// Carga para Checkboxes (Nueva Pregunta)
+async function loadCriteriaCheckboxes(subjectId) {
+    criteriosCheckboxContainer.innerHTML = '<p class="text-gray-400 p-1">Cargando...</p>';
+    if (!subjectId) {
+        criteriosCheckboxContainer.innerHTML = '<p class="italic text-gray-400 p-1">Selecciona una asignatura primero...</p>';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${URL_ASIGNATURAS}/criterios?asignatura=${subjectId}`);
+        const response = await res.json();
+        criteriosCheckboxContainer.innerHTML = ''; // Limpiar
+
+        if (response.success && response.criterios.length > 0) {
+            response.criterios.forEach(crit => {
+                // Crear estructura checkbox
+                const div = document.createElement('div');
+                div.className = "flex items-center gap-2 mb-1 p-1 hover:bg-gray-50 rounded";
+                div.innerHTML = `
+                    <input type="checkbox" id="crit_${crit._id}" value="${crit._id}" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
+                    <label for="crit_${crit._id}" class="text-gray-700 select-none cursor-pointer flex-grow text-xs">${escapeHTML(crit.nombre)}</label>
+                `;
+                criteriosCheckboxContainer.appendChild(div);
+            });
+        } else {
+            criteriosCheckboxContainer.innerHTML = '<p class="text-red-400 p-1 text-xs">No hay criterios definidos.</p>';
+        }
     } catch (err) {
-        console.error("Error cargando temas:", err);
-        targetSelect.innerHTML = '<option>Error al cargar</option>';
+        console.error(err);
+        criteriosCheckboxContainer.innerHTML = '<p class="text-red-500 text-xs">Error al cargar criterios.</p>';
     }
 }
 
-function resetThemeSelect(targetSelect) {
+function resetSelect(targetSelect) {
     targetSelect.innerHTML = '<option value="">-- Elige Asignatura --</option>';
     targetSelect.disabled = true;
 }
 
-// --- Funciones UI (Mostrar/Ocultar Formularios) ---
-function toggleQuestionForm() {
-    if (!createExamForm.classList.contains('hidden')) createExamForm.classList.add('hidden');
-    const isHidden = formContainer.classList.contains('hidden');
-    formContainer.classList.toggle('hidden');
-    // Si se abre y no hay inputs de opciones, añade uno por defecto
-    if (isHidden && incorrectOptionsContainer.children.length === 0) addOptionInput();
+
+// --- LÓGICA DE EXÁMENES GUARDADOS ---
+
+async function searchExams() {
+    const subjectId = examSearchSubject.value;
+    const author = examSearchAuthor.value;
+
+    try {
+        examsListContainer.innerHTML = '<p class="text-center text-gray-500">Buscando...</p>';
+        const query = new URLSearchParams();
+        if (subjectId) query.append('subjectId', subjectId);
+        if (author) query.append('autor', author);
+
+        const res = await fetch(`${URL_EXAMENES}/search?${query.toString()}`);
+        const data = await res.json();
+
+        if (data.success) {
+            displayExamsList(data.exams);
+        } else {
+            examsListContainer.innerHTML = `<p class="text-red-500">${data.message}</p>`;
+        }
+    } catch (err) {
+        examsListContainer.innerHTML = '<p class="text-red-500">Error de conexión.</p>';
+    }
 }
 
-function toggleExamForm() {
-    if (!formContainer.classList.contains('hidden')) formContainer.classList.add('hidden');
-    createExamForm.classList.toggle('hidden');
+function displayExamsList(exams) {
+    if (!exams || exams.length === 0) {
+        examsListContainer.innerHTML = '<p class="text-center text-gray-500 py-4">No se encontraron exámenes.</p>';
+        return;
+    }
+
+    examsListContainer.innerHTML = exams.map(exam => `
+        <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-3 rounded shadow-sm border border-gray-200">
+            <div class="mb-2 sm:mb-0">
+                <h4 class="font-bold text-gray-800 text-sm">${escapeHTML(exam.nombre)}</h4>
+                <p class="text-xs text-gray-500">
+                    <span class="bg-gray-100 px-1 rounded">${escapeHTML(exam.asignatura?.nombre || 'Varios')}</span>
+                    • Autor: ${escapeHTML(exam.autor)}
+                    • ${new Date(exam.fecha_creacion).toLocaleDateString()}
+                </p>
+            </div>
+            <a href="${URL_EXAMENES}/${exam._id}/pdf" target="_blank" 
+               class="text-indigo-600 text-xs font-bold border border-indigo-200 px-3 py-1 rounded hover:bg-indigo-50 transition flex items-center gap-1">
+               📥 PDF
+            </a>
+        </div>
+    `).join('');
 }
 
-/**
- * Añade dinámicamente un input de texto para una opción incorrecta.
- */
+
+// --- LÓGICA DE ADMINISTRACIÓN ---
+
+async function submitNewSubject() {
+    const codigo = document.getElementById('newSubjectCode').value;
+    const nombre = document.getElementById('newSubjectName').value;
+    
+    if (!codigo || !nombre) return alert("Escribe un código y un nombre.");
+
+    try {
+        const res = await fetch(URL_ASIGNATURAS, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ codigo, nombre }) 
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            alert(`Asignatura "${nombre}" (${codigo}) creada.`);
+            document.getElementById('newSubjectName').value = '';
+            document.getElementById('newSubjectCode').value = '';
+            loadSubjects(); 
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (err) { console.error(err); alert('Error de conexión.'); }
+}
+
+async function submitNewCriterio() {
+    const nombre = document.getElementById('newCriterioName').value;
+    const asignaturaId = criterioSubjectSelect.value;
+    const descripcion = document.getElementById('newCriterioDesc').value;
+
+    if (!nombre || !asignaturaId) return alert("Nombre y Asignatura son obligatorios.");
+
+    try {
+        const res = await fetch(`${URL_ASIGNATURAS}/criterios`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, descripcion, asignaturaId })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            alert(`Criterio "${nombre}" creado.`);
+            document.getElementById('newCriterioName').value = '';
+            document.getElementById('newCriterioDesc').value = '';
+            criterioSubjectSelect.value = '';
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (err) { console.error(err); alert('Error de conexión.'); }
+}
+
+
+// --- LÓGICA DE PREGUNTAS ---
+
 function addOptionInput() {
     const wrapper = document.createElement('div');
     wrapper.className = 'flex items-center gap-2';
     wrapper.innerHTML = `
         <input type="text" class="incorrect-option flex-grow p-2 border rounded focus:ring-2 focus:ring-gray-200 outline-none" placeholder="Opción incorrecta">
-        <button type="button" class="delete-option-btn text-gray-400 hover:text-red-500 px-2 font-bold" title="Eliminar opción">✕</button>
+        <button type="button" class="delete-option-btn text-gray-400 hover:text-red-500 px-2 font-bold" title="Eliminar">✕</button>
     `;
-    // Listener para el botón eliminar de esta fila específica
     wrapper.querySelector('.delete-option-btn').addEventListener('click', () => wrapper.remove());
     incorrectOptionsContainer.appendChild(wrapper);
 }
 
-// --- Funciones de Envío de Datos ---
-
-/**
- * Recopila los datos del formulario de nueva pregunta y los envía al backend.
- */
 async function submitNewQuestion() {
     const enunciado = document.getElementById('newEnunciado').value;
     const asignatura = newAsignaturaSelect.value;
-    const tema = newTemaSelect.value;
+    
+    // RECOGEMOS LOS CHECKBOXES MARCADOS
+    const checkedBoxes = criteriosCheckboxContainer.querySelectorAll('input[type="checkbox"]:checked');
+    const criteriosSelected = Array.from(checkedBoxes).map(cb => cb.value);
+
     const dificultad = document.getElementById('newDificultad').value;
     const correcta = document.getElementById('newCorrecta').value;
-
     const incorrectInputs = document.querySelectorAll('.incorrect-option');
     const opcionesIncorrectas = [];
-    incorrectInputs.forEach(input => {
-        if (input.value.trim() !== "") opcionesIncorrectas.push(input.value.trim());
-    });
+    incorrectInputs.forEach(input => { if (input.value.trim() !== "") opcionesIncorrectas.push(input.value.trim()); });
 
-    // Validación simple en cliente
-    if (!enunciado || !asignatura || !correcta || !tema) return alert("Rellena todos los campos.");
+    if (!enunciado || !asignatura || criteriosSelected.length === 0 || !correcta) return alert("Rellena todos los campos y selecciona al menos un criterio.");
     
-    // Enviamos los datos estructurados para que el servicio los procese
-    const payload = {
+    const payload = { 
         enunciado, 
         asignatura, 
-        tema, 
-        dificultad,
-        respuesta_correcta: correcta,
-        incorrect_options: opcionesIncorrectas
+        criterios_evaluacion: criteriosSelected, 
+        dificultad, 
+        respuesta_correcta: correcta, 
+        incorrect_options: opcionesIncorrectas 
     };
 
     try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        const res = await fetch(URL_PREGUNTAS, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
         const data = await res.json();
-
         if (data.success) {
             alert('Pregunta guardada!');
-            // Limpiar formulario
             document.getElementById('newEnunciado').value = '';
             document.getElementById('newCorrecta').value = '';
             newAsignaturaSelect.value = "";
-            resetThemeSelect(newTemaSelect);
+            criteriosCheckboxContainer.innerHTML = '<p class="italic text-gray-400 p-1">Selecciona una asignatura primero...</p>';
             incorrectOptionsContainer.innerHTML = ''; 
             addOptionInput();
-            loadSubjects(); // Recargar listas por si hay nuevos datos
-        } else {
-            alert('Error: ' + data.message);
-        }
-    } catch (err) {
-        alert('Error de conexión.');
-    }
+        } else { alert('Error: ' + data.message); }
+    } catch (err) { alert('Error de conexión.'); }
 }
 
-/**
- * Realiza la búsqueda avanzada enviando parámetros query.
- */
 async function searchQuestions() {
-    const subject = subjectSelect.value;
-    const theme = searchThemeSelect.value;
+    const subjectName = subjectSelect.selectedIndex > 0 ? subjectSelect.options[subjectSelect.selectedIndex].text : '';
+    const themeName = searchCriterioSelect.selectedIndex > 0 ? searchCriterioSelect.options[searchCriterioSelect.selectedIndex].text : '';
     const difficulty = searchDifficultyInput.value;
 
-    if (!subject && !difficulty) return alert("Por favor elige al menos una asignatura o dificultad.");
+    if (!subjectName && !difficulty && !themeName) return alert("Elige al menos un filtro.");
     
-    // Cambiar vista a Resultados
-    resultsContainer.classList.remove('hidden');
-    searchSection.classList.remove('hidden');
-    examViewContainer.classList.add('hidden');
+    showMainSection(searchQuestionsSection);
     
     resultsContainer.innerHTML = '<p class="text-center text-blue-500">Cargando...</p>';
     
-    // Construir Query String
     const params = new URLSearchParams();
-    if (subject) params.append('subject', subject);
-    if (theme) params.append('theme', theme);
+    if (subjectName) params.append('subject', subjectName);
+    if (themeName) params.append('theme', themeName); 
     if (difficulty) params.append('difficulty', difficulty);
 
     try {
-        const res = await fetch(`${API_URL}/search?${params.toString()}`);
+        const res = await fetch(`${URL_PREGUNTAS}/search?${params.toString()}`);
         const data = await res.json();
         displaySearchResults(data.questions);
-    } catch (error) {
-        resultsContainer.innerHTML = '<p class="text-red-500 text-center">Error de conexión</p>';
-    }
+    } catch (error) { resultsContainer.innerHTML = '<p class="text-red-500 text-center">Error de conexión</p>'; }
 }
 
 function displaySearchResults(questions) {
     if (!questions || questions.length === 0) {
-        resultsContainer.innerHTML = '<p class="text-center text-gray-500">No hay preguntas que coincidan.</p>';
+        resultsContainer.innerHTML = '<p class="text-center text-gray-500">No se encontraron preguntas.</p>';
         return;
     }
-    // Renderizado del HTML de cada pregunta
     resultsContainer.innerHTML = questions.map((q, i) => `
         <div class="border-b last:border-b-0 py-4">
-            <h3 class="font-semibold text-gray-800">${i+1}. ${q.enunciado}</h3>
-            <div class="flex gap-2 mb-2">
-                <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Tema: ${q.tema || 'N/A'}</span>
-                <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Dif: ${q.dificultad || 'N/A'}</span>
+            <h3 class="font-semibold text-gray-800">${i+1}. ${escapeHTML(q.enunciado)}</h3>
+            <div class="flex gap-2 mb-2 mt-1">
+                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${escapeHTML(q.asignatura)}</span>
+                <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">${escapeHTML(q.tema || 'General')}</span>
             </div>
-            <ul class="ml-4 list-disc text-sm text-gray-600 space-y-1">
-                ${q.opciones.map(o => `<li>${o}</li>`).join('')}
-            </ul>
+            <ul class="ml-4 list-disc text-sm text-gray-600 space-y-1">${q.opciones.map(o => `<li>${escapeHTML(o)}</li>`).join('')}</ul>
         </div>
     `).join('');
 }
 
-/**
- * Genera un examen aleatorio solicitándolo al backend.
- */
-async function generateExam() {
-    const subject = examSubjectSelect.value;
+
+// --- GENERACIÓN DE EXÁMENES ---
+
+async function generateExamPreview() {
+    const subjectId = examSubjectSelect.value;
     const amount = document.getElementById('examAmountInput').value;
 
-    if (!subject) return alert("Selecciona una asignatura para el examen.");
+    if (!subjectId) return alert("Selecciona una asignatura.");
 
     try {
-        const res = await fetch(`${API_URL}/exam`, {
+        const res = await fetch(`${URL_EXAMENES}/preview`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subject, amount })
+            body: JSON.stringify({ subjectId, amount })
         });
         const data = await res.json();
 
         if (data.success) {
-            currentExamData = data.exam; // Guardamos datos para descarga PDF
+            currentExamData = data.exam;
+            showMainSection(examViewContainer); 
             displayExam(data.exam);
-            createExamForm.classList.add('hidden'); // Ocultar formulario para ver resultado
         } else {
             alert('Error: ' + data.message);
         }
-
-    } catch (err) {
-        console.error(err);
-        alert("Error generando el examen.");
-    }
+    } catch (err) { console.error(err); alert("Error generando el examen."); }
 }
 
 function displayExam(examData) {
-    searchSection.classList.add('hidden'); 
-    resultsContainer.classList.add('hidden');
-    examViewContainer.classList.remove('hidden');
-
-    examTitle.textContent = `${examData.nombre} (${examData.totalPreguntas} preguntas)`;
+    examNameInput.value = examData.nombre;
 
     examQuestionsList.innerHTML = examData.preguntas.map((q, i) => `
         <div class="bg-white p-6 rounded-lg shadow border border-indigo-100">
             <div class="flex justify-between items-start mb-4">
                 <h3 class="text-lg font-bold text-gray-800">Pregunta ${i + 1}</h3>
-                <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">${q.tema || 'General'}</span>
+                <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">${escapeHTML(q.tema || 'General')}</span>
             </div>
-            <p class="text-gray-700 mb-4 text-lg">${q.enunciado}</p>
+            <p class="text-gray-700 mb-4 text-lg">${escapeHTML(q.enunciado)}</p>
             <div class="space-y-3">
                 ${q.opciones.map(opcion => `
                     <div class="flex items-center p-3 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer transition">
                         <div class="w-4 h-4 border-2 border-gray-400 rounded-full mr-3"></div>
-                        <span class="text-gray-700">${opcion}</span>
+                        <span class="text-gray-700">${escapeHTML(opcion)}</span>
                     </div>
                 `).join('')}
             </div>
@@ -341,11 +477,44 @@ function displayExam(examData) {
     `).join('');
 }
 
-/**
- * Solicita al servidor el archivo PDF del examen actual.
- */
+async function saveExamToDB() {
+    if (!currentExamData) return alert("No hay examen para guardar.");
+
+    const finalName = examNameInput.value;
+    const author = examAuthorInput.value;
+    const questionsIds = currentExamData.preguntas.map(q => q.id);
+
+    try {
+        const res = await fetch(`${URL_EXAMENES}/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nombre: finalName,
+                asignaturaId: currentExamData.asignaturaId, 
+                preguntasIds: questionsIds,
+                autor: author
+            })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            alert(`Examen "${finalName}" guardado correctamente en la Base de Datos.`);
+            currentExamData.nombre = finalName;
+            currentExamData.autor = author;
+        } else {
+            alert('Error al guardar: ' + data.message);
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Error de conexión al guardar.");
+    }
+}
+
 async function downloadExamPDF() {
     if (!currentExamData) return alert("No hay examen para descargar.");
+    
+    currentExamData.nombre = examNameInput.value;
+    currentExamData.autor = examAuthorInput.value;
 
     try {
         const downloadBtn = document.getElementById('downloadExamBtn');
@@ -353,8 +522,7 @@ async function downloadExamPDF() {
         downloadBtn.innerHTML = 'Generando...';
         downloadBtn.disabled = true;
 
-        // Pedimos el PDF como POST, enviando los datos del examen
-        const response = await fetch(`${API_URL}/download-pdf`, {
+        const response = await fetch(`${URL_EXAMENES}/pdf-preview`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(currentExamData)
@@ -362,30 +530,22 @@ async function downloadExamPDF() {
 
         if (!response.ok) throw new Error('Error generando PDF');
 
-        // Recibimos la respuesta como un BLOB (Binary Large Object)
         const blob = await response.blob();
-        
-        // Creamos una URL temporal en el navegador que apunta a ese blob
         const url = window.URL.createObjectURL(blob);
-        
-        // Creamos un enlace <a> invisible para forzar la descarga
         const a = document.createElement('a');
         a.href = url;
         a.download = `${currentExamData.nombre}.pdf`; 
         document.body.appendChild(a);
         a.click();
-        
-        // Limpieza de memoria
         window.URL.revokeObjectURL(url);
         a.remove();
 
         downloadBtn.innerHTML = originalText;
         downloadBtn.disabled = false;
-
     } catch (err) {
         console.error(err);
         alert('Error al descargar el PDF');
         document.getElementById('downloadExamBtn').disabled = false;
-        document.getElementById('downloadExamBtn').innerHTML = '⬇ Descargar PDF';
+        document.getElementById('downloadExamBtn').innerHTML = '⬇ PDF';
     }
 }

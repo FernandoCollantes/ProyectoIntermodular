@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Switcher</title>
+    <style>
+        /* 1. Basic Reset to remove margins */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Prevents double scrollbars */
+        }
+
+        /* 2. Top Navigation Bar Styling */
+        .top-nav {
+            height: 60px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* 3. Button Styling */
+        .nav-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #fff;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #ddd;
+        }
+
+        /* 4. The Main Body (Iframe) Styling */
+        iframe {
+            width: 100%;
+            /* Calculate height: 100% of viewport minus the nav bar height */
+            height: calc(100vh - 60px); 
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button class="nav-btn" onclick="loadPage('../../docs/mockups/Prototipo-1-landing.html')">Front End</button>
+        <button class="nav-btn" onclick="loadPage('../../backend/Pagina/index.html')">Back End</button>
+    </div>
+
+    <iframe id="content-frame" src="../../docs/mockups/Prototipo-1-landing.html"></iframe>
+
+    <script>
+        function loadPage(url) {
+            // Locate the iframe by ID
+            const iframe = document.getElementById('content-frame');
+            // Change the source (src) to the new URL
+            iframe.src = url;
+        }
+    </script>
+
+</body>
+</html>

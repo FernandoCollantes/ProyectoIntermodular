@@ -11,11 +11,15 @@ body {
 /* Specific component styles */
 #resultsContainer {
     min-height: 100px;
-    /* Optional: custom scrollbar styling could go here in the future */
 }
 
 /* Helper to make the correct answer input stand out */
 #newCorrecta::placeholder {
     color: #4ade80; /* heavy green tint */
     opacity: 0.7;
+}
+
+.incorrect-option:focus {
+    border-color: #f87171;
+    background-color: #fef2f2;
 }
