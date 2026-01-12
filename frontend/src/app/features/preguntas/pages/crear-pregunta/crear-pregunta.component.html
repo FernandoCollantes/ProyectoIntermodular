@@ -1,0 +1,62 @@
+<div class="tarjeta">
+    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
+        <div
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+            <div class="grupo-formulario">
+                <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
+                <select id="subject" class="seleccion-formulario" formControlName="asignatura">
+                    <option value="">Seleccionar asignatura...</option>
+                    <option *ngFor="let asig of asignaturas" [value]="asig">{{ asig }}</option>
+                </select>
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="tema" class="etiqueta-formulario requerido">Tema / RA</label>
+                <select id="tema" class="seleccion-formulario" formControlName="tema">
+                    <option value="">Seleccionar tema...</option>
+                    <option *ngFor="let t of temas" [value]="t">{{ t }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grupo-formulario">
+            <label for="enunciado" class="etiqueta-formulario requerido">Enunciado de la pregunta</label>
+            <textarea id="enunciado" class="area-texto-formulario" formControlName="enunciado" rows="4"></textarea>
+        </div>
+
+        <div class="grupo-formulario">
+            <label class="etiqueta-formulario requerido">Respuesta Correcta</label>
+            <input type="text" class="entrada-formulario" formControlName="respuesta_correcta"
+                placeholder="La respuesta correcta">
+        </div>
+
+        <div class="grupo-formulario">
+            <label class="etiqueta-formulario requerido">Opciones Incorrectas</label>
+            <div class="contenedor-opciones-respuesta" formArrayName="incorrect_options">
+                <div *ngFor="let control of incorrectOptions.controls; let i = index" class="entrada-opcion-respuesta">
+                    <label style="min-width: 20px;">{{ i + 1 }})</label>
+                    <input type="text" [formControlName]="i" class="entrada-formulario" placeholder="Opción incorrecta">
+                    <button type="button" (click)="removeIncorrectOption(i)" *ngIf="incorrectOptions.length > 1"
+                        class="boton-accion">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="boton boton-contorno" (click)="addIncorrectOption()" style="margin-top: 10px;">
+                + Añadir distractora
+            </button>
+        </div>
+
+        <div class="grupo-formulario">
+            <label for="difficulty" class="etiqueta-formulario">Dificultad (1-10)</label>
+            <input type="number" id="difficulty" class="seleccion-formulario" formControlName="dificultad">
+        </div>
+
+        <div class="acciones-formulario">
+            <a [routerLink]="['/preguntas']" class="boton boton-contorno">Cancelar</a>
+            <button type="submit" class="boton boton-primario" [disabled]="questionForm.invalid || isLoading">
+                {{ isLoading ? 'Guardando...' : 'Guardar Pregunta' }}
+            </button>
+        </div>
+    </form>
+</div>

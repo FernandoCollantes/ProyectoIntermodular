@@ -1,452 +1,1241 @@
+﻿/* ============================================================================
+    PROTOTIPO PROFESIONAL - GENERACIÃ“N DINÃMICA DE EXÃMENES
+    Basado en principios UX/UI: Nielsen, Shneiderman, WCAG 2.1, Gestalt
+    Paleta: Cyan/Orange (Angular Material) + Colores personalizados
+    ============================================================================ */
+/* ============================================================================
+    BARRA DE NAVEGACIÃ“N SUPERIOR ENTRE PROTOTIPOS
+    ============================================================================ */
+
+/* **NAVEGACIÃ“N PROTOTIPO (Barra Superior Fija):** Fija la barra, define fondo, sombra y usa Flexbox para alinear elementos. */
+.navegacion-prototipo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--sidebar-bg);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  box-shadow: var(--shadow-2);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+/* **MARCA DE LA NAVEGACIÃ“N:** Estilo del nombre de la marca o logo. */
+.navegacion-prototipo-marca {
+  color: var(--white);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* **CONTENEDOR DE ENLACES:** Usa Flexbox para la disposiciÃ³n horizontal de los enlaces. */
+.navegacion-prototipo-enlaces {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  align-items: center;
+  overflow-x: auto;
+  flex: 1;
+}
+
+/* **ENLACE INDIVIDUAL:** Estilo base del elemento de navegaciÃ³n. */
+.navegacion-prototipo-enlace {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: var(--font-size-xs);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+/* **EFECTO HOVER DEL ENLACE:** Feedback visual al pasar el ratÃ³n. */
+.navegacion-prototipo-enlace:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+}
+
+/* **ESTADO ACTIVO DEL ENLACE:** Resalta el enlace de la pÃ¡gina actual. */
+.navegacion-prototipo-enlace.activo {
+  background-color: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* **AJUSTAR BODY:** AÃ±ade un relleno superior cuando la barra de navegaciÃ³n estÃ¡ presente. */
+body.con-navegacion-prototipo {
+  padding-top: 48px;
+}
+
+/* **AJUSTAR SIDEBAR:** Posiciona la barra lateral justo debajo de la barra de navegaciÃ³n. */
+.con-navegacion-prototipo .barra-lateral {
+  top: 48px;
+  height: calc(100vh - 48px);
+}
+
+/* **RESPONSIVE PARA LA NAVEGACIÃ“N SUPERIOR** */
+@media (max-width: 768px) {
+
+  /* En mÃ³viles, la navegaciÃ³n se apila verticalmente. */
+  .navegacion-prototipo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  /* Asegura que los enlaces ocupen todo el ancho y permitan scroll horizontal. */
+  .navegacion-prototipo-enlaces {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Ajuste mayor del relleno superior del body cuando la barra es mÃ¡s alta. */
+  body.con-navegacion-prototipo {
+    padding-top: 80px;
+  }
+
+  /* Ajuste de la posiciÃ³n y altura de la barra lateral. */
+  .con-navegacion-prototipo .barra-lateral {
+    top: 80px;
+    height: calc(100vh - 80px);
+  }
+}
 
 /* ============================================================================
-   ANGULAR MATERIAL + SISTEMA DE DISEÑO PERSONALIZADO
-   Material Design 3 + Principios UX/UI
-   ============================================================================ */
+    RESET BÃSICO Y VARIABLES
+    ============================================================================ */
 
-@use '@angular/material' as mat;
-@use 'assets/styles/variables' as vars;
-
-/* ----------------------------------------------------------------------------
-   CONFIGURACIÓN DE THEME (Material 3)
-   ---------------------------------------------------------------------------- */
-
-html {
-  @include mat.theme((
-    color: (
-      primary: mat.$cyan-palette,
-      tertiary: mat.$orange-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-}
-
-/* ----------------------------------------------------------------------------
-   ESTILOS BASE DE ANGULAR MATERIAL
-   ---------------------------------------------------------------------------- */
-
-body {
-  color-scheme: light;
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-  margin: 0;
-  height: 100%;
-}
-
-html, body { 
-  height: 100%; 
-}
-
-/* ============================================================================
-   SISTEMA DE DISEÑO PERSONALIZADO
-   Principios UX/UI: Nielsen, Shneiderman, WCAG 2.1, Gestalt
-   ============================================================================ */
-
+/* **RESET BÃSICO:** Elimina mÃ¡rgenes y paddings por defecto, y usa border-box. */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html {
-  font-size: 16px; /* Mínimo WCAG */
+/* **VARIABLES CSS:** DefiniciÃ³n de colores, espaciado, tipografÃ­a y sombras. */
+:root {
+  /* Colores primarios (del Prototipo original + Cyan/Orange) */
+  --primary: #00bcd4;
+  /* Cyan - Material */
+  --primary-dark: #0097a7;
+  --secondary: #ff6d00;
+  /* Orange - Material */
+  --secondary-dark: #e65100;
+
+  /* Colores de marca personalizados (gradiente Prototipo) */
+  --brand-primary: #667eea;
+  --brand-secondary: #764ba2;
+
+  /* Colores semÃ¡nticos (WCAG AA compliant) */
+  --success: #4CAF50;
+  --danger: #f44336;
+  --warning: #ff9800;
+  --info: #2196F3;
+
+  /* Escala de grises (contraste 4.5:1 mÃ­nimo) */
+  --gray-900: #212121;
+  --gray-800: #424242;
+  --gray-700: #616161;
+  --gray-600: #757575;
+  --gray-500: #9e9e9e;
+  --gray-400: #bdbdbd;
+  --gray-300: #e0e0e0;
+  --gray-200: #eeeeee;
+  --gray-100: #f5f5f5;
+  --white: #ffffff;
+
+  /* Colores de texto */
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-700);
+  --text-disabled: var(--gray-500);
+
+  /* Backgrounds */
+  --bg-primary: var(--white);
+  --bg-secondary: var(--gray-100);
+  --bg-dark: #263238;
+
+  /* Sidebar */
+  --sidebar-bg: #263238;
+  /* Material Blue Grey 900 */
+  --sidebar-active: #37474f;
+  /* Material Blue Grey 800 */
+  --sidebar-text: #eceff1;
+  /* Material Blue Grey 50 */
+
+  /* Borders y sombras */
+  --border-color: var(--gray-300);
+  --border-radius: 4px;
+  /* Material Design estÃ¡ndar */
+  --border-radius-lg: 8px;
+
+  /* Sombras Material Design */
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-2: 0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
+  --shadow-3: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.10);
+  --shadow-4: 0 15px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* TipografÃ­a */
+  --font-family: 'Roboto', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-xs: 12px;
+  --line-height-base: 1.5;
+
+  /* Transiciones */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* **TIPOGRAFÃA BASE:** ConfiguraciÃ³n de la fuente, color y fondo general. */
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  /* Sobrescribir con nuestras preferencias */
-  font-family: vars.$font-family-sans;
-  font-size: vars.$font-size-base;
-  line-height: vars.$line-height-base;
-  color: vars.$text-primary;
-  background-color: vars.$bg-secondary;
-  overflow-x: hidden;
-}
-
-/* ----------------------------------------------------------------------------
-   TIPOGRAFÍA - JERARQUÍA VISUAL
-   ---------------------------------------------------------------------------- */
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: vars.$font-weight-semibold;
-  line-height: vars.$line-height-tight;
-  color: vars.$text-primary;
-  margin-bottom: vars.$spacing-md;
+/* **JERARQUÃA TIPOGRÃFICA:** Estilos para los encabezados (h1 a h6). */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
 }
 
 h1 {
-  font-size: vars.$font-size-h1;
-  letter-spacing: vars.$letter-spacing-tight;
+  font-size: 2.5rem;
+  font-weight: 300;
 }
 
 h2 {
-  font-size: vars.$font-size-h2;
+  font-size: 2rem;
+  font-weight: 400;
 }
 
 h3 {
-  font-size: vars.$font-size-h3;
+  font-size: 1.75rem;
 }
 
 h4 {
-  font-size: vars.$font-size-h4;
+  font-size: 1.5rem;
 }
 
 h5 {
-  font-size: vars.$font-size-h5;
+  font-size: 1.25rem;
 }
 
 h6 {
-  font-size: vars.$font-size-h6;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-p {
-  margin-bottom: vars.$spacing-md;
-  max-width: 75ch;
+/* ============================================================================
+    LAYOUT PRINCIPAL (Contenedor, Sidebar, Contenido Principal)
+    ============================================================================ */
+
+/* **CONTENEDOR APP:** Layout principal usando Flexbox. */
+.contenedor-app {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
 }
 
-/* ----------------------------------------------------------------------------
-   ENLACES - ACCESIBILIDAD
-   ---------------------------------------------------------------------------- */
+/* **BARRA LATERAL (SIDEBAR):** MenÃº fijo de navegaciÃ³n. */
+.barra-lateral {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-3);
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+}
 
-a {
-  color: vars.$primary;
+/* **CABECERA DE LA BARRA LATERAL:** Ãrea superior para el logo/tÃ­tulo. */
+.barra-lateral-cabecera {
+  padding: var(--spacing-lg);
+  background-color: #1a252f;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* **TÃTULO DE LA CABECERA:** Estilo del texto del tÃ­tulo. */
+.barra-lateral-cabecera h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--white);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* **NAVEGACIÃ“N DE LA BARRA LATERAL:** Contenedor de enlaces con scroll. */
+.barra-lateral-navegacion {
+  flex: 1;
+  padding: var(--spacing-md) 0;
+  overflow-y: auto;
+}
+
+/* **ÃTEM DE NAVEGACIÃ“N:** Estilo de cada enlace del menÃº lateral. */
+.item-navegacion {
+  display: flex;
+  align-items: center;
+  padding: 12px var(--spacing-lg);
+  color: var(--sidebar-text);
   text-decoration: none;
-  transition: color vars.$transition-fast;
-  
-  &:hover {
-    color: darken(vars.$primary, 10%);
-    text-decoration: underline;
-  }
-  
-  &:focus {
-    outline: vars.$focus-outline-width vars.$focus-outline-style vars.$focus-outline-color;
-    outline-offset: vars.$focus-outline-offset;
-    border-radius: vars.$border-radius-sm;
-  }
-  
-  &:focus:not(:focus-visible) {
-    outline: none;
-  }
+  transition: background-color var(--transition-fast);
+  border-left: 4px solid transparent;
+  font-weight: 500;
 }
 
-/* ----------------------------------------------------------------------------
-   BOTONES PERSONALIZADOS
-   ---------------------------------------------------------------------------- */
+/* **HOVER DEL ÃTEM:** Feedback visual al pasar el ratÃ³n. */
+.item-navegacion:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
 
-.btn {
+/* **ÃTEM ACTIVO:** Resalta el elemento seleccionado. */
+.item-navegacion.activo {
+  background-color: var(--sidebar-active);
+  border-left-color: var(--primary);
+  color: var(--white);
+}
+
+/* **ICONO DE NAVEGACIÃ“N:** Placeholder para el icono del elemento. */
+.icono-navegacion {
+  width: 24px;
+  height: 24px;
+  margin-right: var(--spacing-md);
+  background-color: var(--gray-500);
+  border-radius: var(--border-radius);
+  flex-shrink: 0;
+}
+
+/* **CONTENIDO PRINCIPAL:** Ãrea de trabajo, con margen para la barra lateral. */
+.contenido-principal {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* **BARRA SUPERIOR (TOPBAR):** Barra fija en la parte superior del contenido. */
+.barra-superior {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* **TÃTULO DE LA BARRA SUPERIOR:** Estilo del tÃ­tulo de la secciÃ³n actual. */
+.barra-superior-titulo {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* **INFORMACIÃ“N DE USUARIO:** Contenedor para el nombre y avatar. */
+.informacion-usuario {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* **NOMBRE DE USUARIO:** Estilo del texto del nombre. */
+.nombre-usuario {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* **AVATAR DE USUARIO:** CÃ­rculo que representa la imagen de perfil. */
+.avatar-usuario {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* **ÃREA DE CONTENIDO:** Relleno y ancho mÃ¡ximo del contenido de la pÃ¡gina. */
+.contenido {
+  flex: 1;
+  padding: var(--spacing-xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ============================================================================
+    COMPONENTES (Tarjetas, EstadÃ­sticas, Botones)
+    ============================================================================ */
+
+/* **TARJETA (CARD):** Contenedor con esquinas redondeadas y sombra. */
+.tarjeta {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-2);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  transition: box-shadow var(--transition-base);
+}
+
+/* **HOVER DE LA TARJETA:** Aumenta la sombra. */
+.tarjeta:hover {
+  box-shadow: var(--shadow-3);
+}
+
+/* **CABECERA DE LA TARJETA:** Ãrea superior con separaciÃ³n inferior. */
+.tarjeta-cabecera {
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* **TÃTULO DE LA TARJETA:** Estilo del tÃ­tulo dentro de la cabecera. */
+.tarjeta-titulo {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* **REJILLA DE ESTADÃSTICAS:** Layout Grid para las tarjetas de resumen. */
+.rejilla-estadisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* **TARJETA DE ESTADÃSTICA:** Tarjeta con borde izquierdo destacado y efecto de elevaciÃ³n. */
+.tarjeta-estadistica {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-2);
+  border-left: 4px solid var(--primary);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* **HOVER DE ESTADÃSTICA:** Efecto de elevaciÃ³n al pasar el ratÃ³n. */
+.tarjeta-estadistica:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-3);
+}
+
+/* **VALOR DE LA ESTADÃSTICA:** NÃºmero principal grande y de color primario. */
+.valor-estadistica {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* **ETIQUETA DE LA ESTADÃSTICA:** Texto descriptivo en mayÃºsculas. */
+.etiqueta-estadistica {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+/* **BOTÃ“N BASE:** Estilos comunes para todos los botones. */
+.boton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: vars.$spacing-sm;
-  
-  padding: 12px 24px;
+  gap: var(--spacing-sm);
+  padding: 10px 20px;
   border: none;
-  border-radius: vars.$border-radius;
-  
-  font-family: vars.$font-family-sans;
-  font-size: vars.$font-size-base;
-  font-weight: vars.$font-weight-medium;
-  line-height: 1.5;
-  text-align: center;
-  white-space: nowrap;
-  
-  cursor: pointer;
-  user-select: none;
-  
-  transition: all vars.$transition-base;
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-  
-  &:focus {
-    outline: none;
-    box-shadow: vars.$box-shadow-focus;
-  }
-  
-  &.btn-primary {
-    background: linear-gradient(135deg, vars.$primary 0%, vars.$secondary 100%);
-    color: vars.$text-inverse;
-    box-shadow: vars.$box-shadow;
-    
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: vars.$box-shadow-hover;
-    }
-    
-    &:active:not(:disabled) {
-      transform: translateY(0);
-    }
-  }
-  
-  &.btn-secondary {
-    background: vars.$bg-primary;
-    color: vars.$text-primary;
-    border: 1px solid vars.$border-color;
-    
-    &:hover:not(:disabled) {
-      background: vars.$bg-secondary;
-      border-color: vars.$gray-500;
-    }
-  }
-  
-  &.btn-success {
-    background: vars.$success;
-    color: vars.$text-inverse;
-    
-    &:hover:not(:disabled) {
-      background: darken(vars.$success, 8%);
-    }
-  }
-  
-  &.btn-danger {
-    background: vars.$danger;
-    color: vars.$text-inverse;
-    
-    &:hover:not(:disabled) {
-      background: darken(vars.$danger, 8%);
-    }
-  }
-  
-  &.btn-block {
-    width: 100%;
-  }
-  
-  &.btn-sm {
-    padding: 8px 16px;
-    font-size: vars.$font-size-sm;
-  }
-  
-  &.btn-lg {
-    padding: 16px 32px;
-    font-size: 1.125rem;
-  }
-}
-
-/* ----------------------------------------------------------------------------
-   CARDS
-   ---------------------------------------------------------------------------- */
-
-.card {
-  background: vars.$bg-primary;
-  border: 1px solid vars.$border-color;
-  border-radius: vars.$border-radius-lg;
-  box-shadow: vars.$box-shadow;
-  padding: vars.$spacing-lg;
-  margin-bottom: vars.$spacing-md;
-  
-  transition: box-shadow vars.$transition-base;
-  
-  &:hover {
-    box-shadow: vars.$box-shadow-hover;
-  }
-  
-  .card-header {
-    margin-bottom: vars.$spacing-md;
-    padding-bottom: vars.$spacing-md;
-    border-bottom: 1px solid vars.$border-color;
-    
-    h3, h4 {
-      margin-bottom: 0;
-    }
-  }
-  
-  .card-footer {
-    margin-top: vars.$spacing-md;
-    padding-top: vars.$spacing-md;
-    border-top: 1px solid vars.$border-color;
-  }
-}
-
-/* ----------------------------------------------------------------------------
-   FORMULARIOS
-   ---------------------------------------------------------------------------- */
-
-label {
-  display: block;
-  margin-bottom: vars.$spacing-sm;
-  font-size: vars.$font-size-sm;
-  font-weight: vars.$font-weight-medium;
-  color: vars.$text-secondary;
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: vars.$letter-spacing-wide;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-1);
+  text-decoration: none;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="tel"],
-input[type="url"],
-input[type="search"],
-input[type="date"],
-textarea,
-select {
+/* **HOVER DEL BOTÃ“N:** Efecto de elevaciÃ³n. */
+.boton:hover {
+  box-shadow: var(--shadow-2);
+  transform: translateY(-1px);
+}
+
+/* **ESTADO ACTIVO DEL BOTÃ“N:** Efecto de "presionado". */
+.boton:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-1);
+}
+
+/* **BOTÃ“N PRIMARIO:** Color principal. */
+.boton-primario {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+/* **HOVER DEL BOTÃ“N PRIMARIO:** Color principal oscuro. */
+.boton-primario:hover {
+  background-color: var(--primary-dark);
+}
+
+/* **BOTÃ“N SECUNDARIO:** Color secundario. */
+.boton-secundario {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+/* **BOTÃ“N Ã‰XITO:** Color de Ã©xito (verde). */
+.boton-exito {
+  background-color: var(--success);
+  color: var(--white);
+}
+
+/* **BOTÃ“N PELIGRO:** Color de peligro (rojo). */
+.boton-peligro {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
+/* **BOTÃ“N CONTORNO:** Estilo de botÃ³n sin relleno, con borde primario. */
+.boton-contorno {
+  background-color: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  box-shadow: none;
+}
+
+/* **HOVER DEL BOTÃ“N CONTORNO:** Se rellena con el color primario. */
+.boton-contorno:hover {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+/* **BOTÃ“N PEQUEÃ‘O:** TamaÃ±o reducido. */
+.boton-sm {
+  padding: 6px 12px;
+  font-size: var(--font-size-sm);
+}
+
+/* **BOTÃ“N GRANDE:** TamaÃ±o aumentado. */
+.boton-lg {
+  padding: 14px 28px;
+  font-size: 1.125rem;
+}
+
+/* **ICONO DE BOTÃ“N:** Placeholder para iconos. */
+.boton-icono {
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  border-radius: var(--border-radius);
+}
+
+/* ============================================================================
+    HERRAMIENTAS DE DATOS (Toolbar, BÃºsqueda, Chips)
+    ============================================================================ */
+
+/* **BARRA DE HERRAMIENTAS:** Contenedor de bÃºsqueda y acciones. */
+.barra-herramientas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+/* **BARRA DE BÃšSQUEDA:** Contenedor del campo de bÃºsqueda. */
+.barra-busqueda {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm) var(--spacing-md);
+  flex: 1;
+  min-width: 300px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* **FOCO EN BÃšSQUEDA:** Efecto al hacer clic en el campo. */
+.barra-busqueda:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+}
+
+/* **ICONO DE BÃšSQUEDA:** Placeholder para el icono de lupa. */
+.icono-busqueda {
+  width: 20px;
+  height: 20px;
+  background-color: var(--gray-500);
+  margin-right: var(--spacing-sm);
+}
+
+/* **CAMPO DE BÃšSQUEDA:** Estilo del campo de texto sin borde. */
+.entrada-busqueda {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background: transparent;
+}
+
+/* **PLACEHOLDER DE BÃšSQUEDA:** Estilo del texto de ayuda. */
+.entrada-busqueda::placeholder {
+  color: var(--gray-500);
+}
+
+/* **CONTENEDOR DE CHIPS:** Agrupa los elementos de filtro (chips). */
+.contenedor-chips {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* **CHIP/FILTRO:** Estilo de etiqueta de filtro interactiva. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+/* **HOVER DEL CHIP:** Feedback visual. */
+.chip:hover {
+  background-color: var(--gray-100);
+  border-color: var(--gray-400);
+}
+
+/* **CHIP ACTIVO:** Resalta el filtro seleccionado. */
+.chip.activo {
+  background-color: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* ============================================================================
+    TARJETAS DE PREGUNTA
+    ============================================================================ */
+
+/* **REJILLA DE PREGUNTAS:** Layout para mostrar varias preguntas. */
+.rejilla-pregunta {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+/* **TARJETA DE PREGUNTA:** Tarjeta individual para una pregunta. */
+.tarjeta-pregunta {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-2);
+  border-left: 4px solid var(--primary);
+  transition: box-shadow var(--transition-base), transform var(--transition-fast);
+}
+
+/* **HOVER DE PREGUNTA:** Efecto de elevaciÃ³n. */
+.tarjeta-pregunta:hover {
+  box-shadow: var(--shadow-3);
+  transform: translateY(-2px);
+}
+
+/* **CABECERA DE PREGUNTA:** Contenedor de tÃ­tulo y acciones. */
+.pregunta-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+/* **CONTENIDO DE PREGUNTA:** Cuerpo de texto y detalles. */
+.pregunta-contenido {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* **TEXTO DE PREGUNTA:** Estilo del enunciado. */
+.pregunta-texto {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* **CONTENEDOR DE INSIGNIAS:** Agrupa etiquetas. */
+.insignias {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* **INSIGNIA/ETIQUETA:** Estilo base de las etiquetas de metadata. */
+.insignia {
+  display: inline-flex;
+  padding: 4px 8px;
+  background-color: var(--gray-200);
+  color: var(--text-secondary);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* **INSIGNIAS POR COLOR:** Variantes de color. */
+.insignia-primaria {
+  background-color: rgba(0, 188, 212, 0.1);
+  color: var(--primary);
+}
+
+.insignia-exito {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--success);
+}
+
+.insignia-peligro {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--danger);
+}
+
+/* **ACCIONES DE PREGUNTA:** Contenedor de botones de acciÃ³n rÃ¡pida. */
+.pregunta-acciones {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+/* **BOTÃ“N DE ACCIÃ“N:** BotÃ³n pequeÃ±o y cuadrado para editar/eliminar. */
+.boton-accion {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gray-100);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+/* **HOVER DEL BOTÃ“N DE ACCIÃ“N:** Efecto de escala. */
+.boton-accion:hover {
+  background-color: var(--gray-200);
+  transform: scale(1.05);
+}
+
+/* **ICONO DE ACCIÃ“N:** Placeholder para el icono. */
+.icono-accion {
+  width: 18px;
+  height: 18px;
+  background-color: var(--gray-600);
+}
+
+/* **METADATA DE PREGUNTA:** InformaciÃ³n adicional como fecha, autor. */
+.pregunta-metadata {
+  display: flex;
+  gap: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================================================================
+    FORMULARIOS (Entradas, Checkbox, Radio)
+    ============================================================================ */
+
+/* **GRUPO DE FORMULARIO:** Contenedor de etiqueta y campo. */
+.grupo-formulario {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* **ETIQUETA DE FORMULARIO:** Estilo de la etiqueta del campo. */
+.etiqueta-formulario {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* **INDICADOR DE REQUERIDO:** AÃ±ade un asterisco a campos obligatorios. */
+.etiqueta-formulario.requerido::after {
+  content: ' *';
+  color: var(--danger);
+}
+
+/* **ENTRADAS BASE:** Estilo para campos de texto, Ã¡reas de texto y selects. */
+.entrada-formulario,
+.area-texto-formulario,
+.seleccion-formulario {
   width: 100%;
-  padding: 12px 16px;
-  
-  font-family: vars.$font-family-sans;
-  font-size: vars.$font-size-base;
-  line-height: vars.$line-height-base;
-  color: vars.$text-primary;
-  
-  background-color: vars.$bg-primary;
-  border: 1px solid vars.$border-color;
-  border-radius: vars.$border-radius;
-  
-  transition: border-color vars.$transition-fast, box-shadow vars.$transition-fast;
-  
-  &:focus {
-    outline: none;
-    border-color: vars.$primary;
-    box-shadow: vars.$box-shadow-focus;
-  }
-  
-  &.error,
-  &.ng-invalid.ng-touched {
-    border-color: vars.$danger;
-    
-    &:focus {
-      box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.25);
+  padding: 12px var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* **FOCO EN ENTRADAS:** Efecto visual al interactuar. */
+.entrada-formulario:focus,
+.area-texto-formulario:focus,
+.seleccion-formulario:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+}
+
+/* **PLACEHOLDER DE ENTRADA:** Estilo del texto de ayuda. */
+.entrada-formulario::placeholder {
+  color: var(--gray-500);
+}
+
+/* **ÃREA DE TEXTO:** ConfiguraciÃ³n de altura mÃ­nima y redimensionamiento. */
+.area-texto-formulario {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* **GRUPO DE CHECKBOX:** Contenedor de opciones de casilla. */
+.grupo-casilla,
+.grupo-radio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* **ÃTEM DE CHECKBOX/RADIO:** Estilo del contenedor de cada opciÃ³n. */
+.item-casilla,
+.item-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-fast);
+}
+
+/* **HOVER DE ÃTEM:** Feedback visual. */
+.item-casilla:hover,
+.item-radio:hover {
+  background-color: var(--gray-100);
+}
+
+/* **INPUT CHECKBOX/RADIO:** Estilo personalizado del control. */
+.entrada-casilla,
+.entrada-radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--gray-400);
+  border-radius: var(--border-radius);
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+/* **ESTADO MARCADO:** Fondo primario al seleccionar. */
+.entrada-casilla:checked,
+.entrada-radio:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* **MARCA DE CHECKBOX:** Estilo del 'tick' blanco. */
+.entrada-casilla:checked::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* **INPUT RADIO:** Forma circular. */
+.entrada-radio {
+  border-radius: 50%;
+}
+
+/* **MARCA DE RADIO:** CÃ­rculo interior blanco. */
+.entrada-radio:checked::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ============================================================================
+    LAYOUT DE EXAMEN
+    ============================================================================ */
+
+/* **CONTENEDOR DE EXAMEN:** Limita el ancho del examen. */
+.contenedor-examen {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* **CABECERA DE EXAMEN:** Contiene tÃ­tulo y temporizador. */
+.examen-cabecera {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-2);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* **TÃTULO DE EXAMEN:** Estilo del nombre del examen. */
+.examen-titulo {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* **TEMPORIZADOR DE EXAMEN:** Estilo del contador de tiempo. */
+.examen-temporizador {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* **ICONO DE TEMPORIZADOR:** Placeholder para el icono de reloj. */
+.icono-temporizador {
+  width: 24px;
+  height: 24px;
+  background-color: var(--primary);
+  border-radius: 50%;
+}
+
+/* **CAJA DE PREGUNTA:** Contenedor de una pregunta individual. */
+.caja-pregunta {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-2);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* **NÃšMERO DE PREGUNTA:** Indicador del nÃºmero de la pregunta. */
+.numero-pregunta {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* **INDICADOR DE TIPO DE PREGUNTA:** Etiqueta del tipo de pregunta (ej: OpciÃ³n MÃºltiple). */
+.indicador-tipo-pregunta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 12px;
+  background-color: rgba(33, 150, 243, 0.1);
+  color: var(--info);
+  border-radius: 16px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  margin-bottom: var(--spacing-md);
+}
+
+/* **ENUNCIADO DE PREGUNTA:** Texto principal de la pregunta. */
+.enunciado-pregunta {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* **LISTA DE RESPUESTAS:** Contenedor de las opciones de respuesta. */
+.lista-respuestas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* **OPCIÃ“N DE RESPUESTA:** Estilo de cada opciÃ³n seleccionable. */
+.opcion-respuesta {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+/* **HOVER DE OPCIÃ“N:** Resalta la opciÃ³n al pasar el ratÃ³n. */
+.opcion-respuesta:hover {
+  border-color: var(--primary);
+  background-color: rgba(0, 188, 212, 0.05);
+}
+
+/* ============================================================================
+    REFUERZOS PARA COMPONENTES DINÁMICOS
+   ============================================================================ */
+
+/* Mejora de la opción seleccionada para que el radio button cambie de color */
+.opcion-respuesta.seleccionada {
+  border-color: var(--primary);
+  background-color: rgba(0, 188, 212, 0.08);
+  box-shadow: 0 0 0 1px var(--primary);
+  /* Refuerzo visual */
+
+  .entrada-radio {
+    border-color: var(--primary);
+    background-color: var(--primary);
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   }
-  
-  &:disabled {
-    background-color: vars.$gray-200;
-    color: vars.$text-disabled;
-    cursor: not-allowed;
-  }
-  
-  &::placeholder {
-    color: vars.$gray-400;
-  }
 }
 
-textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.error-message {
-  display: block;
-  margin-top: vars.$spacing-sm;
-  font-size: vars.$font-size-sm;
-  color: vars.$danger;
-}
-
-.success-message {
-  display: block;
-  margin-top: vars.$spacing-sm;
-  font-size: vars.$font-size-sm;
-  color: vars.$success;
-}
-
-/* ----------------------------------------------------------------------------
-   UTILIDADES
-   ---------------------------------------------------------------------------- */
-
-.container {
-  max-width: vars.$container-max-width;
-  margin: 0 auto;
-  padding: 0 vars.$spacing-md;
-}
-
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-
-.text-primary { color: vars.$primary; }
-.text-success { color: vars.$success; }
-.text-danger { color: vars.$danger; }
-.text-warning { color: vars.$warning; }
-.text-info { color: vars.$info; }
-.text-muted { color: vars.$text-muted; }
-
-.mt-1 { margin-top: vars.$spacing-sm !important; }
-.mt-2 { margin-top: vars.$spacing-md !important; }
-.mt-3 { margin-top: vars.$spacing-lg !important; }
-.mt-4 { margin-top: vars.$spacing-xl !important; }
-
-.mb-1 { margin-bottom: vars.$spacing-sm !important; }
-.mb-2 { margin-bottom: vars.$spacing-md !important; }
-.mb-3 { margin-bottom: vars.$spacing-lg !important; }
-.mb-4 { margin-bottom: vars.$spacing-xl !important; }
-
-.pt-1 { padding-top: vars.$spacing-sm !important; }
-.pt-2 { padding-top: vars.$spacing-md !important; }
-.pt-3 { padding-top: vars.$spacing-lg !important; }
-
-.pb-1 { padding-bottom: vars.$spacing-sm !important; }
-.pb-2 { padding-bottom: vars.$spacing-md !important; }
-.pb-3 { padding-bottom: vars.$spacing-lg !important; }
-
-/* ----------------------------------------------------------------------------
-   LOADING
-   ---------------------------------------------------------------------------- */
-
-.loading {
+/* Estilo para el contenedor de Acceso (Login) que sea realmente centrado */
+.contenedor-acceso {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px;
-  color: vars.$text-muted;
+  min-height: calc(100vh - 100px);
+  /* Ajustado para que no choque con la barra superior */
+  padding: var(--spacing-lg);
 }
 
-/* ----------------------------------------------------------------------------
-   ACCESIBILIDAD
-   ---------------------------------------------------------------------------- */
-
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: vars.$primary;
-  color: vars.$text-inverse;
-  padding: vars.$spacing-sm vars.$spacing-md;
-  z-index: 100;
-  text-decoration: none;
-  
-  &:focus {
-    top: 0;
-  }
+.caja-acceso {
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-3);
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+/* Estilos de información importante en el acceso */
+.caja-info {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--gray-100);
+  border-left: 4px solid var(--warning);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
+/* Utility para botones de gran tamaño */
+.boton-grande {
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+/* **NAVEGACIÃ“N DE EXAMEN:** Botones de anterior/siguiente y progreso. */
+.navegacion-examen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* **PROGRESO DE PREGUNTA:** Indicador de avance. */
+.progreso-pregunta {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ============================================================================
+    ACCESIBILIDAD Y UTILIDADES
+    ============================================================================ */
+
+/* **ACCESIBILIDAD FOCUS VISIBLE:** Asegura un contorno visible para el foco del teclado. */
 *:focus-visible {
-  outline: vars.$focus-outline-width vars.$focus-outline-style vars.$focus-outline-color;
-  outline-offset: vars.$focus-outline-offset;
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
-/* ----------------------------------------------------------------------------
-   RESPONSIVE
-   ---------------------------------------------------------------------------- */
+/* **CLASES DE UTILIDAD (TEXTO)** */
+.texto-centrado {
+  text-align: center;
+}
 
-@media (max-width: vars.$breakpoint-tablet) {
-  html {
-    font-size: 14px;
+.texto-derecha {
+  text-align: right;
+}
+
+.texto-apagado {
+  color: var(--text-secondary);
+}
+
+.texto-primario {
+  color: var(--primary);
+}
+
+.texto-exito {
+  color: var(--success);
+}
+
+.texto-peligro {
+  color: var(--danger);
+}
+
+/* **CLASES DE UTILIDAD (MARGEN)** */
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+
+.mt-lg {
+  margin-top: var(--spacing-lg);
+}
+
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================================================
+    RESPONSIVE
+
+/* **MÃ“VILES Y TABLETAS (hasta 768px):** Ajustes de layout. */
+@media (max-width: 768px) {
+
+  /* Reduce el ancho del sidebar. */
+  .barra-lateral {
+    width: 200px;
   }
-  
-  .container {
-    padding: 0 vars.$spacing-sm;
+
+  /* Ajusta el margen del contenido principal. */
+  .contenido-principal {
+    margin-left: 200px;
   }
-  
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.5rem; }
+
+  /* Reduce el padding general del contenido. */
+  .contenido {
+    padding: var(--spacing-md);
+  }
+
+  /* Las estadÃ­sticas se apilan en una sola columna. */
+  .rejilla-estadisticas {
+    grid-template-columns: 1fr;
+  }
+
+  /* La barra de herramientas se apila verticalmente. */
+  .barra-herramientas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* La barra de bÃºsqueda ocupa todo el ancho disponible. */
+  .barra-busqueda {
+    min-width: 100%;
+  }
+}
+
+/* **MÃ“VILES PEQUEÃ‘OS (hasta 480px):** Sidebar se oculta por defecto. */
+@media (max-width: 480px) {
+
+  /* Oculta el sidebar fuera de la pantalla. */
+  .barra-lateral {
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+  }
+
+  /* Muestra el sidebar cuando tiene la clase 'open'. */
+  .barra-lateral.abierta {
+    transform: translateX(0);
+  }
+
+  /* Elimina el margen para que el contenido ocupe todo el ancho. */
+  .contenido-principal {
+    margin-left: 0;
+  }
 }

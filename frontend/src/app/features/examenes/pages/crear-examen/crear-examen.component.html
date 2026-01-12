@@ -1,0 +1,78 @@
+<div class="tarjeta">
+    <form [formGroup]="examForm" (ngSubmit)="onSubmit()">
+        <h3 style="margin-bottom: var(--spacing-lg); color: var(--text-primary);">Configuración del Examen</h3>
+
+        <div class="grupo-formulario">
+            <label for="examTitle" class="etiqueta-formulario requerido">Título del examen</label>
+            <input type="text" id="examTitle" formControlName="title" class="entrada-formulario"
+                placeholder="Ej: Examen Final Matemáticas - 1º Trimestre">
+        </div>
+
+        <div class="rejilla-configuracion-examen">
+            <div class="grupo-formulario">
+                <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
+                <select id="subject" formControlName="subject" class="seleccion-formulario">
+                    <option value="">Seleccionar...</option>
+                    <option *ngFor="let asig of asignaturas" [value]="asig">{{ asig }}</option>
+                </select>
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="numQuestions" class="etiqueta-formulario requerido">Número de preguntas</label>
+                <input type="number" id="numQuestions" formControlName="numQuestions" class="entrada-formulario">
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
+                <input type="number" id="duration" formControlName="duration" class="entrada-formulario">
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="passingGrade" class="etiqueta-formulario requerido">Nota mínima (%)</label>
+                <input type="number" id="passingGrade" formControlName="passingGrade" class="entrada-formulario">
+            </div>
+        </div>
+
+        <div style="margin: var(--spacing-lg) 0;">
+            <button type="button" class="boton boton-secundario" (click)="generatePreview()" [disabled]="isGenerating">
+                {{ isGenerating ? 'Generando preguntas...' : 'Generar Vista Previa de Preguntas' }}
+            </button>
+        </div>
+
+        <div class="seleccion-preguntas" *ngIf="generatedQuestions.length > 0">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                <h3 style="margin: 0; color: var(--text-primary);">Preguntas Seleccionadas</h3>
+                <span class="contador-seleccionado">
+                    <div style="width: 16px; height: 16px; background-color: var(--primary); border-radius: 50%;"></div>
+                    {{ generatedQuestions.length }} preguntas listas
+                </span>
+            </div>
+
+            <div class="lista-preguntas">
+                <div *ngFor="let pregunta of generatedQuestions" class="item-seleccion-pregunta">
+                    <div class="contenido-seleccion-pregunta">
+                        <div class="texto-seleccion-pregunta">
+                            {{ pregunta.enunciado }}
+                        </div>
+                        <div class="meta-seleccion-pregunta">
+                            <span class="insignia insignia-primaria">{{ pregunta.asignatura }}</span>
+                            <span class="insignia">{{ pregunta.tema }}</span>
+                            <span class="insignia">Dificultad: {{ pregunta.dificultad }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="acciones-formulario" style="margin-top: var(--spacing-xl);">
+            <a [routerLink]="['/dashboard']" class="boton boton-contorno">Cancelar</a>
+
+            <button type="submit" class="boton boton-primario"
+                [disabled]="generatedQuestions.length === 0 || isLoading">
+                <div class="boton-icono"></div>
+                {{ isLoading ? 'Procesando PDF...' : 'Crear y Descargar Examen (PDF)' }}
+            </button>
+        </div>
+    </form>
+</div>

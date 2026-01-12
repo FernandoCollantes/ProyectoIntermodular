@@ -1,0 +1,43 @@
+<div class="rejilla-estadisticas">
+    <div *ngFor="let stat of stats" class="tarjeta-estadistica">
+        <div class="valor-estadistica">{{ stat.value }}</div>
+        <div class="etiqueta-estadistica">{{ stat.label }}</div>
+    </div>
+</div>
+
+<div class="tarjeta">
+    <div class="tarjeta-cabecera">
+        <h3 class="tarjeta-titulo">Acciones Rápidas</h3>
+    </div>
+    <div class="barra-herramientas" style="margin-bottom: 0;">
+        <a [routerLink]="['/preguntas/crear']" class="boton boton-primario">
+            <div class="boton-icono"></div>
+            Nueva Pregunta
+        </a>
+        <a [routerLink]="['/examenes/crear']" class="boton boton-secundario">
+            <div class="boton-icono"></div>
+            Crear Examen
+        </a>
+        <a [routerLink]="['/examenes']" class="boton boton-contorno">
+            <div class="boton-icono"></div>
+            Ver Resultados
+        </a>
+    </div>
+</div>
+
+<div class="tarjeta">
+    <div class="tarjeta-cabecera">
+        <h3 class="tarjeta-titulo">Actividad Reciente</h3>
+    </div>
+
+    <div *ngIf="actividades.length === 0"
+        style="color: var(--text-secondary); text-align: center; padding: var(--spacing-xl);">
+        <p>No hay actividad reciente para mostrar</p>
+    </div>
+
+    <div *ngIf="actividades.length > 0" class="lista-actividad">
+        <div *ngFor="let act of actividades" class="item-actividad">
+            {{ act.descripcion }}
+        </div>
+    </div>
+</div>

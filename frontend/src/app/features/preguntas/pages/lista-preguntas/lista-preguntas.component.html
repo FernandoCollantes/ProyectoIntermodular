@@ -1,0 +1,45 @@
+<div class="barra-herramientas">
+    <div class="barra-busqueda">
+        <div class="icono-busqueda"></div>
+        <input type="text" class="entrada-busqueda" placeholder="Buscar preguntas..." [(ngModel)]="searchText"
+            (input)="search()">
+    </div>
+    <a [routerLink]="['/preguntas/crear']" class="boton boton-primario">
+        <div class="boton-icono"></div>
+        Nueva Pregunta
+    </a>
+</div>
+
+<div class="contenedor-chips">
+    <div class="chip" [class.activo]="filterSubject === ''" (click)="filterSubject = ''; search()">TODAS</div>
+    <div *ngFor="let sub of subjects" class="chip" [class.activo]="filterSubject === sub"
+        (click)="filterSubject = sub; search()">
+        {{ sub }}
+    </div>
+</div>
+
+<div class="rejilla-pregunta">
+    <div *ngFor="let pregunta of questions" class="tarjeta-pregunta">
+        <div class="pregunta-cabecera">
+            <div class="insignias">
+                <span class="insignia insignia-primaria">{{ pregunta.asignatura }}</span>
+                <span class="insignia">{{ pregunta.tema }}</span>
+            </div>
+            <div class="pregunta-acciones">
+                <button class="boton-accion" title="Editar" [routerLink]="['/preguntas/editar', pregunta._id]">
+                    <div class="icono-accion"></div>
+                </button>
+                <button class="boton-accion" title="Eliminar" (click)="deleteQuestion(pregunta._id!)">
+                    <div class="icono-accion"></div>
+                </button>
+            </div>
+        </div>
+        <div class="pregunta-contenido">
+            <p class="pregunta-texto">{{ pregunta.enunciado }}</p>
+        </div>
+        <div class="pregunta-metadata">
+            <span>Dificultad: {{ pregunta.dificultad }}</span>
+            <span>Correcta: {{ pregunta.respuesta_correcta }}</span>
+        </div>
+    </div>
+</div>

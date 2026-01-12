@@ -1,0 +1,39 @@
+<div class="contenedor-app">
+    <!-- SIDEBAR -->
+    <aside class="barra-lateral">
+        <div class="barra-lateral-cabecera">
+            <h2>EXAMGEN</h2>
+        </div>
+        <nav class="barra-lateral-navegacion">
+            <a [routerLink]="['/dashboard']" routerLinkActive="activo" class="item-navegacion">
+                <div class="icono-navegacion"></div>
+                <span>Dashboard</span>
+            </a>
+            <a [routerLink]="['/preguntas']" routerLinkActive="activo" class="item-navegacion">
+                <div class="icono-navegacion"></div>
+                <span>Mis Preguntas</span>
+            </a>
+            <a [routerLink]="['/examenes']" routerLinkActive="activo" class="item-navegacion">
+                <div class="icono-navegacion"></div>
+                <span>Mis Exámenes</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="contenido-principal">
+        <!-- TOPBAR -->
+        <header class="barra-superior">
+            <h1 class="barra-superior-titulo">{{ getPageTitle() }}</h1>
+            <div class="informacion-usuario">
+                <span class="nombre-usuario">{{ userName }}</span>
+                <div class="avatar-usuario">{{ userInitials }}</div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <div class="contenido">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</div>

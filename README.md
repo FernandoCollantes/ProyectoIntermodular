@@ -137,7 +137,7 @@ npm run dev
 ## Frontend - Aplicación Angular
 
 ### Tecnologías
-* Angular 17: Framework principal para la aplicación web.
+* Angular 16: Framework principal para la aplicación web.
 * TypeScript: Lenguaje fuertemente tipado.
 * Angular Material: Componentes UI profesionales con paleta Cyan/Orange personalizada.
 * SCSS: Sistema de diseño modular con variables CSS.
@@ -237,7 +237,7 @@ Vista se actualiza automáticamente (Data Binding)
 
 * **TypeScript Strict Mode:** Activado para mayor seguridad de tipos.
 * **Lazy Loading:** Módulos se cargan bajo demanda para mejorar rendimiento inicial.
-* **Standalone Components:** (Futuro) Migración gradual a componentes standalone de Angular 17.
+* **Standalone Components:** (Futuro) Migración gradual a componentes standalone de Angular 16.
 * **Testing:** Configurado con Jasmine y Karma para tests unitarios e de integración.
 
 ---
@@ -261,6 +261,41 @@ Ambas capas se comunican mediante **API REST**:
 7. Frontend actualiza la lista de preguntas reactivamente
 
 ---
+
+🛠️ Proceso de Integración: Del Prototipo al MVVM Dinámico
+El núcleo de este proyecto consistió en transformar un prototipo visual estático (HTML/CSS puro) en una aplicación web robusta y escalable. Este proceso se dividió en tres fases críticas:
+
+1. Refactorización del Diseño (System Design)
+Se extrajo la lógica visual del prototipo original para crear un Sistema de Estilos Globales en Angular.
+
+Abstracción de Variables: Se centralizaron colores (Cyan/Orange), espaciados y sombras en :root de styles.scss, garantizando que cualquier cambio de marca se refleje instantáneamente en toda la app.
+
+Componentización: Se identificaron patrones repetitivos (tarjetas de estadísticas, botones de acción, inputs) y se encapsularon en componentes reutilizables, eliminando la duplicidad de código.
+
+2. Implementación del Patrón MVVM
+Para asegurar una arquitectura mantenible, se separaron las responsabilidades siguiendo el estándar de Angular:
+
+Model: Definición de interfaces estrictas en TypeScript para Preguntas, Exámenes y Respuestas, asegurando que los datos que viajan desde la API de Andy coincidan exactamente con lo que el frontend espera.
+
+ViewModel (Lógica Reactiva): Se implementaron FormGroups y FormBuilders para gestionar la validación de datos en tiempo real (especialmente en Crear Pregunta y Acceso Alumno), desacoplando la lógica de validación de la plantilla HTML.
+
+View (Plantillas Dinámicas): El HTML estático se sustituyó por directivas estructurales (*ngFor, *ngIf) y Property Binding. Esto permite que componentes como el Dashboard o la Lista de Exámenes se rendericen dinámicamente según la información procesada por el ViewModel.
+
+3. Dinamización y Simulación de Flujos
+Se prepararon los componentes críticos para la integración final con el backend:
+
+Interactividad en Realizar Examen: Se desarrolló la lógica de navegación entre preguntas y captura de respuestas, permitiendo que la interfaz sea totalmente funcional incluso antes de la conexión final con la base de datos de MongoDB.
+
+Seguridad de Tipos: El uso de TypeScript permitió detectar errores de lógica en la gestión de arrays de preguntas y opciones durante la fase de desarrollo, algo imposible en el prototipo HTML original.
+
+🎯 Hitos Recientes Logrados
+✅ Dashboard Dinámico: Rejilla de estadísticas vinculada a objetos TypeScript para fácil actualización.
+
+✅ Formulario de Acceso: Validación reactiva de credenciales y códigos de examen con feedback visual al usuario.
+
+✅ Motor de Exámenes: Interfaz de realización de pruebas con control de estado (pregunta actual, progreso y envío final).
+
+✅ Consistencia UI/UX: Integración de Angular Material respetando el diseño personalizado del prototipo inicial.
 
 ## 📄 Licencia
 

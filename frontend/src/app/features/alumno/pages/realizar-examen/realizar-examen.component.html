@@ -1,0 +1,61 @@
+﻿<div class="contenedor-examen" style="padding-top: var(--spacing-lg);">
+
+  <div class="cabecera-examen">
+    <div>
+      <h1 class="titulo-examen">{{ examenTitulo }}</h1>
+      <p style="color: var(--text-secondary); font-size: var(--font-size-sm); margin: var(--spacing-xs) 0 0 0;">
+        Alumno: {{ alumnoNombre }}
+      </p>
+    </div>
+    <div class="temporizador-examen">
+      <div class="icono-temporizador"></div>
+      <span>{{ tiempoRestante }}</span>
+    </div>
+  </div>
+
+  <div class="caja-pregunta">
+    <div class="numero-pregunta">Pregunta {{ indiceActual + 1 }} de {{ preguntasPrueba.length }}</div>
+
+    <div class="indicador-tipo-pregunta">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink: 0; color: var(--info);">
+        <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2" fill="none" />
+        <circle cx="8" cy="8" r="3" fill="currentColor" />
+      </svg>
+      <span>Pregunta de respuesta única</span>
+    </div>
+
+    <h2 class="enunciado-pregunta">
+      {{ preguntaActual.enunciado }}
+    </h2>
+
+    <div class="lista-respuestas">
+      <label *ngFor="let opcion of preguntaActual.opciones; let i = index" class="opcion-respuesta"
+        [class.seleccionada]="preguntaActual.respuestaSeleccionada === i">
+        <input type="radio" [name]="'answer-' + indiceActual" [value]="i"
+          [checked]="preguntaActual.respuestaSeleccionada === i" (change)="seleccionarOpcion(i)" class="entrada-radio">
+        <span>{{ i === 0 ? 'A' : i === 1 ? 'B' : i === 2 ? 'C' : i === 3 ? 'D' : '' }}) {{ opcion }}</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="navegacion-examen">
+    <button class="boton boton-contorno" (click)="irAnterior()" [disabled]="indiceActual === 0">
+      Anterior
+    </button>
+
+    <div class="progreso-pregunta">
+      <strong>Progreso:</strong> {{ preguntasResueltas }}/{{ preguntasPrueba.length }} respondidas
+    </div>
+
+    <button class="boton boton-primario" (click)="irSiguiente()"
+      [disabled]="indiceActual === preguntasPrueba.length - 1">
+      Siguiente
+    </button>
+  </div>
+
+  <div style="margin-top: var(--spacing-xl); text-align: center;">
+    <button class="boton boton-exito boton-grande" (click)="finalizarExamen()">
+      Finalizar Examen
+    </button>
+  </div>
+</div>
