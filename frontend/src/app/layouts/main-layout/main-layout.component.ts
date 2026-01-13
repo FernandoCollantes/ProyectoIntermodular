@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core'; // 1. Importamos ViewEncapsulation
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
     standalone: true,
     imports: [CommonModule, RouterModule, RouterOutlet, MatIconModule],
     templateUrl: './main-layout.component.html',
-    styleUrls: ['./main-layout.component.scss']
+    styleUrls: ['./main-layout.component.scss'],
+    // 2. AÑADIMOS ESTO: Rompe la barrera de Angular para que el CSS global de tus prototipos funcione
+    encapsulation: ViewEncapsulation.None 
 })
 export class MainLayoutComponent {
     userName = 'Fernando Collantes';

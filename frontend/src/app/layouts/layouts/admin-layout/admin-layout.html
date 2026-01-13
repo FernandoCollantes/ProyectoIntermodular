@@ -1,0 +1,37 @@
+<div class="contenedor-app">
+  <aside class="barra-lateral">
+    <div class="barra-lateral-cabecera">
+      <h2>ExamGen</h2>
+    </div>
+    
+    <nav class="barra-lateral-navegacion">
+      <a routerLink="/dashboard" routerLinkActive="activo" class="item-navegacion">
+        <span class="icono-navegacion"></span> Dashboard
+      </a>
+      <a routerLink="/mis-preguntas" routerLinkActive="activo" class="item-navegacion">
+        <span class="icono-navegacion"></span> Mis Preguntas
+      </a>
+      <a routerLink="/crear-pregunta" routerLinkActive="activo" class="item-navegacion">
+        <span class="icono-navegacion"></span> Crear Pregunta
+      </a>
+      <a routerLink="/crear-examen" routerLinkActive="activo" class="item-navegacion">
+        <span class="icono-navegacion"></span> Crear Examen
+      </a>
+    </nav>
+  </aside>
+
+  <main class="contenido-principal">
+    <header class="barra-superior">
+      <h1 class="barra-superior-titulo">Panel de Administración</h1>
+      
+      <div class="informacion-usuario">
+        <span class="nombre-usuario">Prof. Fernando Collantes</span>
+        <div class="avatar-usuario">FC</div>
+      </div>
+    </header>
+
+    <section class="contenido">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

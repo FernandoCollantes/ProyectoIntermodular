@@ -1,62 +1,92 @@
 <div class="tarjeta">
-    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
-        <div
-            style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-            <div class="grupo-formulario">
-                <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
-                <select id="subject" class="seleccion-formulario" formControlName="asignatura">
-                    <option value="">Seleccionar asignatura...</option>
-                    <option *ngFor="let asig of asignaturas" [value]="asig">{{ asig }}</option>
-                </select>
-            </div>
-
-            <div class="grupo-formulario">
-                <label for="tema" class="etiqueta-formulario requerido">Tema / RA</label>
-                <select id="tema" class="seleccion-formulario" formControlName="tema">
-                    <option value="">Seleccionar tema...</option>
-                    <option *ngFor="let t of temas" [value]="t">{{ t }}</option>
-                </select>
-            </div>
+  <form>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+      <div class="grupo-formulario">
+        <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
+        <select id="subject" class="seleccion-formulario">
+          <option value="">Seleccionar asignatura...</option>
+          <option value="IPE">IPE</option>
+          <option value="LENGUAJE DE MARCAS">LENGUAJE DE MARCAS</option>
+          <option value="PROGRAMACIÓN">PROGRAMACIÓN</option>
+          <option value="INGLÉS">INGLÉS</option>
+        </select>
+      </div>
+      
+      <div class="grupo-formulario">
+        <label for="category" class="etiqueta-formulario requerido">RA</label>
+        <select id="category" class="seleccion-formulario">
+          <option value="">Seleccionar resultado de aprendizaje...</option>
+          <option value="RA1">RA1</option>
+          <option value="RA2">RA2</option>
+          <option value="RA3">RA3</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grupo-formulario">
+      <label for="statement" class="etiqueta-formulario requerido">Enunciado de la pregunta</label>
+      <textarea id="statement" class="area-texto-formulario" placeholder="Escribe aquí el enunciado de la pregunta..." rows="4"></textarea>
+    </div>
+    
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario requerido">Tipo de pregunta</label>
+      <div class="grupo-radio">
+        <label class="item-radio">
+          <input type="radio" name="questionType" value="single" class="entrada-radio" checked>
+          <span>Respuesta única (una sola respuesta correcta)</span>
+        </label>
+        <label class="item-radio">
+          <input type="radio" name="questionType" value="multiple" class="entrada-radio">
+          <span>Respuesta múltiple (varias respuestas correctas)</span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario requerido">Opciones de respuesta</label>
+      <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+        Marca con el radio button la respuesta correcta
+      </p>
+      
+      <div class="contenedor-opciones-respuesta">
+        <div class="entrada-opcion-respuesta">
+          <input type="radio" name="correctAnswer" value="a">
+          <label style="font-weight: 500; min-width: 20px;">A)</label>
+          <input type="text" class="entrada-formulario" placeholder="Escribe la opción A">
         </div>
-
-        <div class="grupo-formulario">
-            <label for="enunciado" class="etiqueta-formulario requerido">Enunciado de la pregunta</label>
-            <textarea id="enunciado" class="area-texto-formulario" formControlName="enunciado" rows="4"></textarea>
+        <div class="entrada-opcion-respuesta">
+          <input type="radio" name="correctAnswer" value="b">
+          <label style="font-weight: 500; min-width: 20px;">B)</label>
+          <input type="text" class="entrada-formulario" placeholder="Escribe la opción B">
         </div>
-
-        <div class="grupo-formulario">
-            <label class="etiqueta-formulario requerido">Respuesta Correcta</label>
-            <input type="text" class="entrada-formulario" formControlName="respuesta_correcta"
-                placeholder="La respuesta correcta">
+        <div class="entrada-opcion-respuesta">
+          <input type="radio" name="correctAnswer" value="c">
+          <label style="font-weight: 500; min-width: 20px;">C)</label>
+          <input type="text" class="entrada-formulario" placeholder="Escribe la opción C">
         </div>
-
-        <div class="grupo-formulario">
-            <label class="etiqueta-formulario requerido">Opciones Incorrectas</label>
-            <div class="contenedor-opciones-respuesta" formArrayName="incorrect_options">
-                <div *ngFor="let control of incorrectOptions.controls; let i = index" class="entrada-opcion-respuesta">
-                    <label style="min-width: 20px;">{{ i + 1 }})</label>
-                    <input type="text" [formControlName]="i" class="entrada-formulario" placeholder="Opción incorrecta">
-                    <button type="button" (click)="removeIncorrectOption(i)" *ngIf="incorrectOptions.length > 1"
-                        class="boton-accion">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </div>
-            </div>
-            <button type="button" class="boton boton-contorno" (click)="addIncorrectOption()" style="margin-top: 10px;">
-                + Añadir distractora
-            </button>
+        <div class="entrada-opcion-respuesta">
+          <input type="radio" name="correctAnswer" value="d">
+          <label style="font-weight: 500; min-width: 20px;">D)</label>
+          <input type="text" class="entrada-formulario" placeholder="Escribe la opción D">
         </div>
-
-        <div class="grupo-formulario">
-            <label for="difficulty" class="etiqueta-formulario">Dificultad (1-10)</label>
-            <input type="number" id="difficulty" class="seleccion-formulario" formControlName="dificultad">
-        </div>
-
-        <div class="acciones-formulario">
-            <a [routerLink]="['/preguntas']" class="boton boton-contorno">Cancelar</a>
-            <button type="submit" class="boton boton-primario" [disabled]="questionForm.invalid || isLoading">
-                {{ isLoading ? 'Guardando...' : 'Guardar Pregunta' }}
-            </button>
-        </div>
-    </form>
+      </div>
+    </div>
+    
+    <div class="grupo-formulario">
+      <label for="difficulty" class="etiqueta-formulario">Nivel de dificultad</label>
+      <select id="difficulty" class="seleccion-formulario">
+        <option value="facil">Fácil</option>
+        <option value="media" selected>Media</option>
+        <option value="dificil">Difícil</option>
+      </select>
+    </div>
+    
+    <div class="acciones-formulario">
+      <a routerLink="/preguntas" class="boton boton-contorno">Cancelar</a>
+      <button type="submit" class="boton boton-primario">
+        <div class="boton-icono"></div>
+        Guardar Pregunta
+      </button>
+    </div>
+  </form>
 </div>

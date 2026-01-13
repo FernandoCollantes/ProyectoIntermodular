@@ -1,185 +1,49 @@
 ﻿/* ============================================================================
-    PROTOTIPO PROFESIONAL - GENERACIÃ“N DINÃMICA DE EXÃMENES
-    Basado en principios UX/UI: Nielsen, Shneiderman, WCAG 2.1, Gestalt
-    Paleta: Cyan/Orange (Angular Material) + Colores personalizados
-    ============================================================================ */
-/* ============================================================================
-    BARRA DE NAVEGACIÃ“N SUPERIOR ENTRE PROTOTIPOS
-    ============================================================================ */
-
-/* **NAVEGACIÃ“N PROTOTIPO (Barra Superior Fija):** Fija la barra, define fondo, sombra y usa Flexbox para alinear elementos. */
-.navegacion-prototipo {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: var(--sidebar-bg);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  box-shadow: var(--shadow-2);
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-}
-
-/* **MARCA DE LA NAVEGACIÃ“N:** Estilo del nombre de la marca o logo. */
-.navegacion-prototipo-marca {
-  color: var(--white);
-  font-weight: 500;
-  font-size: var(--font-size-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-/* **CONTENEDOR DE ENLACES:** Usa Flexbox para la disposiciÃ³n horizontal de los enlaces. */
-.navegacion-prototipo-enlaces {
-  display: flex;
-  gap: var(--spacing-xs);
-  flex-wrap: wrap;
-  align-items: center;
-  overflow-x: auto;
-  flex: 1;
-}
-
-/* **ENLACE INDIVIDUAL:** Estilo base del elemento de navegaciÃ³n. */
-.navegacion-prototipo-enlace {
-  display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  color: var(--sidebar-text);
-  text-decoration: none;
-  font-size: var(--font-size-xs);
-  border-radius: var(--border-radius);
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-  border: 1px solid transparent;
-}
-
-/* **EFECTO HOVER DEL ENLACE:** Feedback visual al pasar el ratÃ³n. */
-.navegacion-prototipo-enlace:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--white);
-}
-
-/* **ESTADO ACTIVO DEL ENLACE:** Resalta el enlace de la pÃ¡gina actual. */
-.navegacion-prototipo-enlace.activo {
-  background-color: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
-}
-
-/* **AJUSTAR BODY:** AÃ±ade un relleno superior cuando la barra de navegaciÃ³n estÃ¡ presente. */
-body.con-navegacion-prototipo {
-  padding-top: 48px;
-}
-
-/* **AJUSTAR SIDEBAR:** Posiciona la barra lateral justo debajo de la barra de navegaciÃ³n. */
-.con-navegacion-prototipo .barra-lateral {
-  top: 48px;
-  height: calc(100vh - 48px);
-}
-
-/* **RESPONSIVE PARA LA NAVEGACIÃ“N SUPERIOR** */
-@media (max-width: 768px) {
-
-  /* En mÃ³viles, la navegaciÃ³n se apila verticalmente. */
-  .navegacion-prototipo {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
-
-  /* Asegura que los enlaces ocupen todo el ancho y permitan scroll horizontal. */
-  .navegacion-prototipo-enlaces {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  /* Ajuste mayor del relleno superior del body cuando la barra es mÃ¡s alta. */
-  body.con-navegacion-prototipo {
-    padding-top: 80px;
-  }
-
-  /* Ajuste de la posiciÃ³n y altura de la barra lateral. */
-  .con-navegacion-prototipo .barra-lateral {
-    top: 80px;
-    height: calc(100vh - 80px);
-  }
-}
-
-/* ============================================================================
-    RESET BÃSICO Y VARIABLES
-    ============================================================================ */
-
-/* **RESET BÃSICO:** Elimina mÃ¡rgenes y paddings por defecto, y usa border-box. */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* **VARIABLES CSS:** DefiniciÃ³n de colores, espaciado, tipografÃ­a y sombras. */
+   1. VARIABLES & CONFIGURACIÓN (CORE)
+   ============================================================================ */
 :root {
-  /* Colores primarios (del Prototipo original + Cyan/Orange) */
+  /* Colores primarios (Cyan & Orange - Material Design) */
   --primary: #00bcd4;
-  /* Cyan - Material */
   --primary-dark: #0097a7;
   --secondary: #ff6d00;
-  /* Orange - Material */
   --secondary-dark: #e65100;
 
-  /* Colores de marca personalizados (gradiente Prototipo) */
-  --brand-primary: #667eea;
-  --brand-secondary: #764ba2;
-
-  /* Colores semÃ¡nticos (WCAG AA compliant) */
+  /* Semántica */
   --success: #4CAF50;
   --danger: #f44336;
   --warning: #ff9800;
   --info: #2196F3;
 
-  /* Escala de grises (contraste 4.5:1 mÃ­nimo) */
-  --gray-900: #212121;
+  /* Escala de grises (Neutrales) */
+  --gray-900: #212121; /* Texto principal fuerte */
   --gray-800: #424242;
-  --gray-700: #616161;
+  --gray-700: #616161; /* Texto secundario */
   --gray-600: #757575;
-  --gray-500: #9e9e9e;
+  --gray-500: #9e9e9e; /* Placeholders/Iconos */
   --gray-400: #bdbdbd;
-  --gray-300: #e0e0e0;
-  --gray-200: #eeeeee;
-  --gray-100: #f5f5f5;
+  --gray-300: #e0e0e0; /* Bordes */
+  --gray-200: #eeeeee; /* Fondos claros */
+  --gray-100: #f5f5f5; /* Fondos muy claros */
   --white: #ffffff;
 
-  /* Colores de texto */
+  /* Texto y Fondo Referenciados */
   --text-primary: var(--gray-900);
   --text-secondary: var(--gray-700);
-  --text-disabled: var(--gray-500);
-
-  /* Backgrounds */
   --bg-primary: var(--white);
   --bg-secondary: var(--gray-100);
-  --bg-dark: #263238;
 
-  /* Sidebar */
-  --sidebar-bg: #263238;
-  /* Material Blue Grey 900 */
-  --sidebar-active: #37474f;
-  /* Material Blue Grey 800 */
-  --sidebar-text: #eceff1;
-  /* Material Blue Grey 50 */
+  /* Sidebar Específicos */
+  --sidebar-bg: #263238;     /* Blue Grey 900 */
+  --sidebar-active: #37474f; /* Blue Grey 800 */
+  --sidebar-text: #eceff1;   /* Blue Grey 50 */
 
-  /* Borders y sombras */
+  /* UI Elements */
   --border-color: var(--gray-300);
   --border-radius: 4px;
-  /* Material Design estÃ¡ndar */
   --border-radius-lg: 8px;
-
-  /* Sombras Material Design */
-  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-2: 0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
-  --shadow-3: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.10);
-  --shadow-4: 0 15px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05);
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  --shadow-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+  --shadow-3: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -188,213 +52,46 @@ body.con-navegacion-prototipo {
   --spacing-lg: 24px;
   --spacing-xl: 32px;
 
-  /* TipografÃ­a */
-  --font-family: 'Roboto', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-size-base: 16px;
-  --font-size-sm: 14px;
-  --font-size-xs: 12px;
-  --line-height-base: 1.5;
-
-  /* Transiciones */
+  /* Tipografía */
+  --font-family: 'Roboto', sans-serif;
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* **TIPOGRAFÃA BASE:** ConfiguraciÃ³n de la fuente, color y fondo general. */
-body {
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
-  color: var(--text-primary);
-  background-color: var(--bg-secondary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* **JERARQUÃA TIPOGRÃFICA:** Estilos para los encabezados (h1 a h6). */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 500;
-  line-height: 1.2;
-  margin-bottom: var(--spacing-md);
-  color: var(--text-primary);
-}
-
-h1 {
-  font-size: 2.5rem;
-  font-weight: 300;
-}
-
-h2 {
-  font-size: 2rem;
-  font-weight: 400;
-}
-
-h3 {
-  font-size: 1.75rem;
-}
-
-h4 {
-  font-size: 1.5rem;
-}
-
-h5 {
-  font-size: 1.25rem;
-}
-
-h6 {
-  font-size: 1rem;
-  font-weight: 500;
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================================================
-    LAYOUT PRINCIPAL (Contenedor, Sidebar, Contenido Principal)
-    ============================================================================ */
+   2. RESET & BASE
+   ============================================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* **CONTENEDOR APP:** Layout principal usando Flexbox. */
-.contenedor-app {
-  display: flex;
-  min-height: 100vh;
+body {
+  font-family: var(--font-family);
   background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* **BARRA LATERAL (SIDEBAR):** MenÃº fijo de navegaciÃ³n. */
-.barra-lateral {
-  width: 260px;
-  background-color: var(--sidebar-bg);
-  color: var(--sidebar-text);
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-3);
-  position: fixed;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-}
-
-/* **CABECERA DE LA BARRA LATERAL:** Ãrea superior para el logo/tÃ­tulo. */
-.barra-lateral-cabecera {
-  padding: var(--spacing-lg);
-  background-color: #1a252f;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* **TÃTULO DE LA CABECERA:** Estilo del texto del tÃ­tulo. */
-.barra-lateral-cabecera h2 {
-  font-size: 1.5rem;
+/* Títulos Generales */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: var(--spacing-md);
   font-weight: 500;
-  color: var(--white);
-  margin: 0;
-  letter-spacing: 0.5px;
+  color: var(--text-primary);
 }
 
-/* **NAVEGACIÃ“N DE LA BARRA LATERAL:** Contenedor de enlaces con scroll. */
-.barra-lateral-navegacion {
-  flex: 1;
-  padding: var(--spacing-md) 0;
-  overflow-y: auto;
-}
+/* ============================================================================
+   3. LAYOUT PRINCIPAL (App Shell)
+   ============================================================================ */
+.contenedor-app { display: flex; min-height: 100vh; }
 
-/* **ÃTEM DE NAVEGACIÃ“N:** Estilo de cada enlace del menÃº lateral. */
-.item-navegacion {
-  display: flex;
-  align-items: center;
-  padding: 12px var(--spacing-lg);
-  color: var(--sidebar-text);
-  text-decoration: none;
-  transition: background-color var(--transition-fast);
-  border-left: 4px solid transparent;
-  font-weight: 500;
-}
-
-/* **HOVER DEL ÃTEM:** Feedback visual al pasar el ratÃ³n. */
-.item-navegacion:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* **ÃTEM ACTIVO:** Resalta el elemento seleccionado. */
-.item-navegacion.activo {
-  background-color: var(--sidebar-active);
-  border-left-color: var(--primary);
-  color: var(--white);
-}
-
-/* **ICONO DE NAVEGACIÃ“N:** Placeholder para el icono del elemento. */
-.icono-navegacion {
-  width: 24px;
-  height: 24px;
-  margin-right: var(--spacing-md);
-  background-color: var(--gray-500);
-  border-radius: var(--border-radius);
-  flex-shrink: 0;
-}
-
-/* **CONTENIDO PRINCIPAL:** Ãrea de trabajo, con margen para la barra lateral. */
+/* Wrapper del contenido derecho (excluyendo sidebar) */
 .contenido-principal {
   flex: 1;
-  margin-left: 260px;
+  margin-left: 260px; /* Ancho del sidebar */
   display: flex;
   flex-direction: column;
 }
 
-/* **BARRA SUPERIOR (TOPBAR):** Barra fija en la parte superior del contenido. */
-.barra-superior {
-  background-color: var(--bg-primary);
-  padding: var(--spacing-md) var(--spacing-lg);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--shadow-1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/* **TÃTULO DE LA BARRA SUPERIOR:** Estilo del tÃ­tulo de la secciÃ³n actual. */
-.barra-superior-titulo {
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-/* **INFORMACIÃ“N DE USUARIO:** Contenedor para el nombre y avatar. */
-.informacion-usuario {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-/* **NOMBRE DE USUARIO:** Estilo del texto del nombre. */
-.nombre-usuario {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* **AVATAR DE USUARIO:** CÃ­rculo que representa la imagen de perfil. */
-.avatar-usuario {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--primary);
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-  font-size: 1rem;
-}
-
-/* **ÃREA DE CONTENIDO:** Relleno y ancho mÃ¡ximo del contenido de la pÃ¡gina. */
+/* Contenedor central de las páginas */
 .contenido {
   flex: 1;
   padding: var(--spacing-xl);
@@ -404,40 +101,323 @@ h6 {
 }
 
 /* ============================================================================
-    COMPONENTES (Tarjetas, EstadÃ­sticas, Botones)
-    ============================================================================ */
+   4. COMPONENTES COMPARTIDOS (Shared)
+   ============================================================================ */
 
-/* **TARJETA (CARD):** Contenedor con esquinas redondeadas y sombra. */
+/* --- 4.1 SIDEBAR (Barra Lateral) --- */
+.barra-lateral {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  position: fixed;
+  height: 100vh;
+  left: 0; top: 0; z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-2);
+}
+
+.barra-lateral-cabecera {
+  padding: var(--spacing-lg);
+  background-color: #1a252f; /* Tono más oscuro */
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.barra-lateral-cabecera h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--white);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.barra-lateral-navegacion {
+  flex: 1;
+  padding: var(--spacing-md) 0;
+  overflow-y: auto;
+}
+
+/* Items del Menú */
+.item-navegacion {
+  display: flex;
+  align-items: center;
+  padding: 12px var(--spacing-lg);
+  color: var(--sidebar-text);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  border-left: 4px solid transparent;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.item-navegacion:hover {
+  background-color: rgba(255,255,255,0.05);
+  color: var(--white);
+}
+
+.item-navegacion.activo {
+  background-color: var(--sidebar-active);
+  border-left-color: var(--primary); /* Línea Cian */
+  color: var(--white);
+}
+
+.icono-navegacion {
+  width: 24px;
+  height: 24px;
+  margin-right: var(--spacing-md);
+  background-color: var(--gray-500);
+  border-radius: var(--border-radius);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.item-navegacion.activo .icono-navegacion {
+  background-color: var(--primary);
+  opacity: 1;
+}
+
+/* --- 4.2 HEADER (Barra Superior) --- */
+.barra-superior {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-1);
+  position: sticky; top: 0; z-index: 100;
+}
+
+/* --- 4.3 BOTONES --- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+  gap: 8px;
+
+  &.boton-primario { background-color: var(--primary); color: var(--white); }
+  &.boton-secundario { background-color: var(--secondary); color: var(--white); }
+  &.boton-contorno { 
+    background-color: transparent; 
+    border: 2px solid var(--primary); 
+    color: var(--primary); 
+    font-weight: 600;
+  }
+  
+  &:hover { 
+    transform: translateY(-1px); 
+    box-shadow: var(--shadow-2); 
+    filter: brightness(110%);
+  }
+}
+
+.boton-icono {
+  width: 18px; height: 18px;
+  background-color: currentColor; /* Hereda color del texto */
+  display: inline-block;
+}
+
+/* --- 4.4 TARJETAS (Cards Genéricas) --- */
 .tarjeta {
   background-color: var(--bg-primary);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-2);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
-  transition: box-shadow var(--transition-base);
 }
 
-/* **HOVER DE LA TARJETA:** Aumenta la sombra. */
-.tarjeta:hover {
-  box-shadow: var(--shadow-3);
-}
-
-/* **CABECERA DE LA TARJETA:** Ãrea superior con separaciÃ³n inferior. */
 .tarjeta-cabecera {
   padding-bottom: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
 }
 
-/* **TÃTULO DE LA TARJETA:** Estilo del tÃ­tulo dentro de la cabecera. */
-.tarjeta-titulo {
-  font-size: 1.25rem;
-  font-weight: 500;
-  margin: 0;
-  color: var(--text-primary);
+/* ============================================================================
+   5. FORMULARIOS (ESTILOS CORREGIDOS - PROTOTIPO ORIGINAL)
+   ============================================================================ */
+
+.grupo-formulario {
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
 }
 
-/* **REJILLA DE ESTADÃSTICAS:** Layout Grid para las tarjetas de resumen. */
+/* ETIQUETAS: Fuertes, Negritas y Mayúsculas */
+.etiqueta-formulario,
+label.etiqueta-formulario {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.85rem;       /* 14px aprox */
+  font-weight: 700;         /* BOLD (Negrita fuerte) */
+  color: var(--gray-900);   /* Negro casi puro */
+  text-transform: uppercase; /* MAYÚSCULAS */
+  letter-spacing: 0.5px;
+}
+
+/* Asterisco de requerido */
+.etiqueta-formulario.requerido::after {
+  content: " *";
+  color: var(--danger);
+}
+
+/* Inputs y Selects */
+.entrada-formulario,
+.seleccion-formulario,
+.area-texto-formulario {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.15);
+  }
+  
+  &::placeholder { color: var(--gray-500); }
+}
+
+.area-texto-formulario {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Layout Grid para formularios complejos */
+.rejilla-configuracion-examen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Acciones al pie del formulario */
+.acciones-formulario {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Componentes específicos de formularios: Radios y Checkboxes personalizados */
+/* ============================================================================
+   OPCIONES ADICIONALES (Checkboxes y Radios Limpios)
+   ============================================================================ */
+
+/* Contenedor gris suave para agrupar las opciones (opcional, da estructura) */
+.contenedor-opciones-adicionales {
+  background-color: var(--gray-100);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-sm);
+  
+  /* Grid para separar las opciones automáticamente */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--spacing-lg); /* Espacio generoso entre opciones */
+}
+
+/* El ítem individual (Checkbox + Texto) */
+.item-opcion {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Separación entre la cajita y el texto */
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+
+.item-opcion:hover {
+  opacity: 0.8;
+}
+
+/* Estilo del texto de la opción */
+.item-opcion span {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 400; /* Peso normal, no negrita */
+}
+
+/* RESET y Estilo del Input (Checkbox/Radio) */
+.item-opcion input[type="checkbox"],
+.item-opcion input[type="radio"] {
+  /* Quitamos estilos de caja de texto si se hubieran colado */
+  appearance: auto; 
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  
+  /* Color del Check (Naranja o Cian según prefieras) */
+  accent-color: var(--secondary); 
+}
+
+/* Estado Focus (Teclado): Un anillo suave, no un borde cuadrado */
+.item-opcion input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.item-radio {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  span { color: var(--text-primary); }
+  input[type="radio"] { accent-color: var(--primary); transform: scale(1.1); }
+}
+
+/* Lista de preguntas (Crear Examen) */
+.lista-preguntas {
+  display: flex; flex-direction: column; gap: var(--spacing-sm);
+  max-height: 400px; overflow-y: auto;
+  border: 1px solid var(--gray-300); border-radius: var(--border-radius);
+  padding: var(--spacing-md); background: var(--bg-secondary);
+}
+
+.item-seleccion-pregunta {
+  display: flex; align-items: flex-start; gap: var(--spacing-md);
+  padding: var(--spacing-md); background: var(--bg-primary);
+  border: 1px solid var(--gray-300); border-radius: var(--border-radius);
+  cursor: pointer; transition: all 0.2s;
+
+  &:hover { border-color: var(--primary); }
+  &:has(input:checked) { border-color: var(--primary); background-color: rgba(0, 188, 212, 0.05); }
+}
+
+/* Opciones A, B, C, D (Crear Pregunta) */
+.contenedor-opciones-respuesta {
+  display: flex; flex-direction: column; gap: var(--spacing-md);
+  background-color: var(--bg-secondary); padding: var(--spacing-lg);
+  border-radius: var(--border-radius); border: 1px solid var(--gray-300);
+}
+
+.entrada-opcion-respuesta {
+  display: flex; align-items: center; gap: var(--spacing-md);
+  .entrada-formulario { flex: 1; }
+  label { font-weight: 700; color: var(--text-secondary); width: 25px; }
+}
+
+/* ============================================================================
+   6. MÓDULOS ESPECÍFICOS
+   ============================================================================ */
+
+/* --- 6.1 DASHBOARD --- */
 .rejilla-estadisticas {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -445,797 +425,130 @@ h6 {
   margin-bottom: var(--spacing-xl);
 }
 
-/* **TARJETA DE ESTADÃSTICA:** Tarjeta con borde izquierdo destacado y efecto de elevaciÃ³n. */
 .tarjeta-estadistica {
   background-color: var(--bg-primary);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-2);
   border-left: 4px solid var(--primary);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast);
+  
+  &:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
 }
 
-/* **HOVER DE ESTADÃSTICA:** Efecto de elevaciÃ³n al pasar el ratÃ³n. */
-.tarjeta-estadistica:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-3);
-}
-
-/* **VALOR DE LA ESTADÃSTICA:** NÃºmero principal grande y de color primario. */
 .valor-estadistica {
-  font-size: 2.5rem;
-  font-weight: 300;
-  color: var(--primary);
-  margin-bottom: var(--spacing-xs);
+  font-size: 2.5rem; font-weight: 300; color: var(--primary);
 }
 
-/* **ETIQUETA DE LA ESTADÃSTICA:** Texto descriptivo en mayÃºsculas. */
 .etiqueta-estadistica {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 500;
+  font-size: 14px; color: var(--text-secondary);
+  text-transform: uppercase; font-weight: 500;
 }
 
-/* **BOTÃ“N BASE:** Estilos comunes para todos los botones. */
-.boton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--border-radius);
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-1);
-  text-decoration: none;
-}
-
-/* **HOVER DEL BOTÃ“N:** Efecto de elevaciÃ³n. */
-.boton:hover {
-  box-shadow: var(--shadow-2);
-  transform: translateY(-1px);
-}
-
-/* **ESTADO ACTIVO DEL BOTÃ“N:** Efecto de "presionado". */
-.boton:active {
-  transform: translateY(0);
-  box-shadow: var(--shadow-1);
-}
-
-/* **BOTÃ“N PRIMARIO:** Color principal. */
-.boton-primario {
-  background-color: var(--primary);
-  color: var(--white);
-}
-
-/* **HOVER DEL BOTÃ“N PRIMARIO:** Color principal oscuro. */
-.boton-primario:hover {
-  background-color: var(--primary-dark);
-}
-
-/* **BOTÃ“N SECUNDARIO:** Color secundario. */
-.boton-secundario {
-  background-color: var(--secondary);
-  color: var(--white);
-}
-
-/* **BOTÃ“N Ã‰XITO:** Color de Ã©xito (verde). */
-.boton-exito {
-  background-color: var(--success);
-  color: var(--white);
-}
-
-/* **BOTÃ“N PELIGRO:** Color de peligro (rojo). */
-.boton-peligro {
-  background-color: var(--danger);
-  color: var(--white);
-}
-
-/* **BOTÃ“N CONTORNO:** Estilo de botÃ³n sin relleno, con borde primario. */
-.boton-contorno {
-  background-color: transparent;
-  border: 2px solid var(--primary);
-  color: var(--primary);
-  box-shadow: none;
-}
-
-/* **HOVER DEL BOTÃ“N CONTORNO:** Se rellena con el color primario. */
-.boton-contorno:hover {
-  background-color: var(--primary);
-  color: var(--white);
-}
-
-/* **BOTÃ“N PEQUEÃ‘O:** TamaÃ±o reducido. */
-.boton-sm {
-  padding: 6px 12px;
-  font-size: var(--font-size-sm);
-}
-
-/* **BOTÃ“N GRANDE:** TamaÃ±o aumentado. */
-.boton-lg {
-  padding: 14px 28px;
-  font-size: 1.125rem;
-}
-
-/* **ICONO DE BOTÃ“N:** Placeholder para iconos. */
-.boton-icono {
-  width: 18px;
-  height: 18px;
-  background-color: currentColor;
-  border-radius: var(--border-radius);
-}
-
-/* ============================================================================
-    HERRAMIENTAS DE DATOS (Toolbar, BÃºsqueda, Chips)
-    ============================================================================ */
-
-/* **BARRA DE HERRAMIENTAS:** Contenedor de bÃºsqueda y acciones. */
+/* --- 6.2 MIS PREGUNTAS (Listado) --- */
 .barra-herramientas {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-lg);
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--spacing-lg); flex-wrap: wrap; gap: var(--spacing-md);
 }
 
-/* **BARRA DE BÃšSQUEDA:** Contenedor del campo de bÃºsqueda. */
 .barra-busqueda {
-  display: flex;
-  align-items: center;
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-sm) var(--spacing-md);
-  flex: 1;
-  min-width: 300px;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  display: flex; align-items: center; background-color: var(--bg-primary);
+  border: 1px solid var(--border-color); border-radius: var(--border-radius);
+  padding: var(--spacing-sm) var(--spacing-md); flex: 1; min-width: 300px;
+  
+  &:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1); }
 }
 
-/* **FOCO EN BÃšSQUEDA:** Efecto al hacer clic en el campo. */
-.barra-busqueda:focus-within {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
-}
-
-/* **ICONO DE BÃšSQUEDA:** Placeholder para el icono de lupa. */
-.icono-busqueda {
-  width: 20px;
-  height: 20px;
-  background-color: var(--gray-500);
-  margin-right: var(--spacing-sm);
-}
-
-/* **CAMPO DE BÃšSQUEDA:** Estilo del campo de texto sin borde. */
 .entrada-busqueda {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: var(--font-size-base);
-  color: var(--text-primary);
-  background: transparent;
+  flex: 1; border: none; outline: none; font-size: 1rem; background: transparent;
 }
 
-/* **PLACEHOLDER DE BÃšSQUEDA:** Estilo del texto de ayuda. */
-.entrada-busqueda::placeholder {
-  color: var(--gray-500);
-}
-
-/* **CONTENEDOR DE CHIPS:** Agrupa los elementos de filtro (chips). */
 .contenedor-chips {
-  display: flex;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
-  margin-bottom: var(--spacing-lg);
+  display: flex; gap: var(--spacing-sm); flex-wrap: wrap; margin-bottom: var(--spacing-lg);
 }
 
-/* **CHIP/FILTRO:** Estilo de etiqueta de filtro interactiva. */
 .chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 12px;
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  padding: 6px 16px; border-radius: 20px; font-size: 0.875rem; font-weight: 500;
+  cursor: pointer; background-color: var(--gray-200); color: var(--text-secondary);
+  transition: all 0.2s; border: 1px solid transparent;
+
+  &:hover { background-color: var(--gray-300); }
+  &.activo { background-color: var(--primary); color: white; }
 }
 
-/* **HOVER DEL CHIP:** Feedback visual. */
-.chip:hover {
-  background-color: var(--gray-100);
-  border-color: var(--gray-400);
-}
-
-/* **CHIP ACTIVO:** Resalta el filtro seleccionado. */
-.chip.activo {
-  background-color: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
-}
-
-/* ============================================================================
-    TARJETAS DE PREGUNTA
-    ============================================================================ */
-
-/* **REJILLA DE PREGUNTAS:** Layout para mostrar varias preguntas. */
 .rejilla-pregunta {
-  display: grid;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--spacing-lg);
 }
 
-/* **TARJETA DE PREGUNTA:** Tarjeta individual para una pregunta. */
 .tarjeta-pregunta {
-  background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-2);
-  border-left: 4px solid var(--primary);
-  transition: box-shadow var(--transition-base), transform var(--transition-fast);
+  background: var(--bg-primary); border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius-lg); padding: var(--spacing-lg);
+  display: flex; flex-direction: column;
+  border-left: 4px solid var(--primary); /* Marca de la casa */
+  transition: all 0.2s;
+
+  &:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
 }
 
-/* **HOVER DE PREGUNTA:** Efecto de elevaciÃ³n. */
-.tarjeta-pregunta:hover {
-  box-shadow: var(--shadow-3);
-  transform: translateY(-2px);
-}
-
-/* **CABECERA DE PREGUNTA:** Contenedor de tÃ­tulo y acciones. */
 .pregunta-cabecera {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-md);
+  display: flex; justify-content: space-between; margin-bottom: var(--spacing-md);
 }
 
-/* **CONTENIDO DE PREGUNTA:** Cuerpo de texto y detalles. */
-.pregunta-contenido {
-  margin-bottom: var(--spacing-md);
-  color: var(--text-primary);
-  line-height: 1.6;
-}
-
-/* **TEXTO DE PREGUNTA:** Estilo del enunciado. */
-.pregunta-texto {
-  font-size: var(--font-size-base);
-  margin-bottom: var(--spacing-sm);
-}
-
-/* **CONTENEDOR DE INSIGNIAS:** Agrupa etiquetas. */
-.insignias {
-  display: flex;
-  gap: var(--spacing-sm);
-  flex-wrap: wrap;
-}
-
-/* **INSIGNIA/ETIQUETA:** Estilo base de las etiquetas de metadata. */
+/* **INSIGNIA/ETIQUETA:** Estilo base */
 .insignia {
-  display: inline-flex;
-  padding: 4px 8px;
+  font-size: 0.75rem;
+  padding: 4px 10px;        /* Un poco más de aire horizontal */
+  border-radius: 12px;
   background-color: var(--gray-200);
   color: var(--text-secondary);
-  border-radius: var(--border-radius);
-  font-size: var(--font-size-xs);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  display: inline-flex;     /* Para que respete los paddings */
+  align-items: center;
 }
 
-/* **INSIGNIAS POR COLOR:** Variantes de color. */
-.insignia-primaria {
-  background-color: rgba(0, 188, 212, 0.1);
-  color: var(--primary);
+/* **COLORES SEMÁNTICO (DIFICULTAD)** */
+
+/* Verde: Para "Fácil" o "Aprobado" */
+.insignia-exito { 
+  background-color: rgba(76, 175, 80, 0.15); 
+  color: var(--success); 
 }
 
-.insignia-exito {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: var(--success);
+/* Naranja: Para "Media" (Esta faltaba en el original, la añadimos para completar) */
+.insignia-advertencia { 
+  background-color: rgba(255, 152, 0, 0.15); 
+  color: var(--warning); 
 }
 
-.insignia-peligro {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: var(--danger);
+/* Rojo: Para "Difícil" o "Suspenso" */
+.insignia-peligro { 
+  background-color: rgba(244, 67, 54, 0.15); 
+  color: var(--danger); 
 }
 
-/* **ACCIONES DE PREGUNTA:** Contenedor de botones de acciÃ³n rÃ¡pida. */
-.pregunta-acciones {
-  display: flex;
-  gap: var(--spacing-sm);
-  justify-content: flex-end;
+/* Azul: Para etiquetas generales (Asignaturas, etc.) */
+.insignia-primaria { 
+  background-color: rgba(0, 188, 212, 0.15); 
+  color: var(--primary-dark); 
 }
 
-/* **BOTÃ“N DE ACCIÃ“N:** BotÃ³n pequeÃ±o y cuadrado para editar/eliminar. */
+.pregunta-acciones { display: flex; gap: 4px; }
+
 .boton-accion {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--gray-100);
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary); transition: background 0.2s;
+
+  &:hover { background-color: var(--gray-200); color: var(--primary); }
 }
 
-/* **HOVER DEL BOTÃ“N DE ACCIÃ“N:** Efecto de escala. */
-.boton-accion:hover {
-  background-color: var(--gray-200);
-  transform: scale(1.05);
-}
+.pregunta-contenido { flex: 1; margin-bottom: var(--spacing-md); }
 
-/* **ICONO DE ACCIÃ“N:** Placeholder para el icono. */
-.icono-accion {
-  width: 18px;
-  height: 18px;
-  background-color: var(--gray-600);
-}
-
-/* **METADATA DE PREGUNTA:** InformaciÃ³n adicional como fecha, autor. */
 .pregunta-metadata {
-  display: flex;
-  gap: var(--spacing-lg);
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border-color);
-}
-
-/* ============================================================================
-    FORMULARIOS (Entradas, Checkbox, Radio)
-    ============================================================================ */
-
-/* **GRUPO DE FORMULARIO:** Contenedor de etiqueta y campo. */
-.grupo-formulario {
-  margin-bottom: var(--spacing-lg);
-}
-
-/* **ETIQUETA DE FORMULARIO:** Estilo de la etiqueta del campo. */
-.etiqueta-formulario {
-  display: block;
-  margin-bottom: var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--text-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* **INDICADOR DE REQUERIDO:** AÃ±ade un asterisco a campos obligatorios. */
-.etiqueta-formulario.requerido::after {
-  content: ' *';
-  color: var(--danger);
-}
-
-/* **ENTRADAS BASE:** Estilo para campos de texto, Ã¡reas de texto y selects. */
-.entrada-formulario,
-.area-texto-formulario,
-.seleccion-formulario {
-  width: 100%;
-  padding: 12px var(--spacing-md);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-/* **FOCO EN ENTRADAS:** Efecto visual al interactuar. */
-.entrada-formulario:focus,
-.area-texto-formulario:focus,
-.seleccion-formulario:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
-}
-
-/* **PLACEHOLDER DE ENTRADA:** Estilo del texto de ayuda. */
-.entrada-formulario::placeholder {
-  color: var(--gray-500);
-}
-
-/* **ÃREA DE TEXTO:** ConfiguraciÃ³n de altura mÃ­nima y redimensionamiento. */
-.area-texto-formulario {
-  min-height: 120px;
-  resize: vertical;
-}
-
-/* **GRUPO DE CHECKBOX:** Contenedor de opciones de casilla. */
-.grupo-casilla,
-.grupo-radio {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-/* **ÃTEM DE CHECKBOX/RADIO:** Estilo del contenedor de cada opciÃ³n. */
-.item-casilla,
-.item-radio {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--border-radius);
-  transition: background-color var(--transition-fast);
-}
-
-/* **HOVER DE ÃTEM:** Feedback visual. */
-.item-casilla:hover,
-.item-radio:hover {
-  background-color: var(--gray-100);
-}
-
-/* **INPUT CHECKBOX/RADIO:** Estilo personalizado del control. */
-.entrada-casilla,
-.entrada-radio {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--gray-400);
-  border-radius: var(--border-radius);
-  appearance: none;
-  cursor: pointer;
-  position: relative;
-  transition: all var(--transition-fast);
-}
-
-/* **ESTADO MARCADO:** Fondo primario al seleccionar. */
-.entrada-casilla:checked,
-.entrada-radio:checked {
-  background-color: var(--primary);
-  border-color: var(--primary);
-}
-
-/* **MARCA DE CHECKBOX:** Estilo del 'tick' blanco. */
-.entrada-casilla:checked::after {
-  content: '';
-  position: absolute;
-  left: 6px;
-  top: 2px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-/* **INPUT RADIO:** Forma circular. */
-.entrada-radio {
-  border-radius: 50%;
-}
-
-/* **MARCA DE RADIO:** CÃ­rculo interior blanco. */
-.entrada-radio:checked::after {
-  content: '';
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: white;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* ============================================================================
-    LAYOUT DE EXAMEN
-    ============================================================================ */
-
-/* **CONTENEDOR DE EXAMEN:** Limita el ancho del examen. */
-.contenedor-examen {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-/* **CABECERA DE EXAMEN:** Contiene tÃ­tulo y temporizador. */
-.examen-cabecera {
-  background-color: var(--bg-primary);
-  padding: var(--spacing-lg);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-2);
-  margin-bottom: var(--spacing-lg);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* **TÃTULO DE EXAMEN:** Estilo del nombre del examen. */
-.examen-titulo {
-  font-size: 1.5rem;
-  font-weight: 400;
-  margin: 0;
-}
-
-/* **TEMPORIZADOR DE EXAMEN:** Estilo del contador de tiempo. */
-.examen-temporizador {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: var(--primary);
-}
-
-/* **ICONO DE TEMPORIZADOR:** Placeholder para el icono de reloj. */
-.icono-temporizador {
-  width: 24px;
-  height: 24px;
-  background-color: var(--primary);
-  border-radius: 50%;
-}
-
-/* **CAJA DE PREGUNTA:** Contenedor de una pregunta individual. */
-.caja-pregunta {
-  background-color: var(--bg-primary);
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-2);
-  margin-bottom: var(--spacing-lg);
-}
-
-/* **NÃšMERO DE PREGUNTA:** Indicador del nÃºmero de la pregunta. */
-.numero-pregunta {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  font-weight: 500;
-  margin-bottom: var(--spacing-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* **INDICADOR DE TIPO DE PREGUNTA:** Etiqueta del tipo de pregunta (ej: OpciÃ³n MÃºltiple). */
-.indicador-tipo-pregunta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: 4px 12px;
-  background-color: rgba(33, 150, 243, 0.1);
-  color: var(--info);
-  border-radius: 16px;
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  margin-bottom: var(--spacing-md);
-}
-
-/* **ENUNCIADO DE PREGUNTA:** Texto principal de la pregunta. */
-.enunciado-pregunta {
-  font-size: 1.125rem;
-  line-height: 1.6;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-lg);
-}
-
-/* **LISTA DE RESPUESTAS:** Contenedor de las opciones de respuesta. */
-.lista-respuestas {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-/* **OPCIÃ“N DE RESPUESTA:** Estilo de cada opciÃ³n seleccionable. */
-.opcion-respuesta {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-md);
-  border: 2px solid var(--border-color);
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-/* **HOVER DE OPCIÃ“N:** Resalta la opciÃ³n al pasar el ratÃ³n. */
-.opcion-respuesta:hover {
-  border-color: var(--primary);
-  background-color: rgba(0, 188, 212, 0.05);
-}
-
-/* ============================================================================
-    REFUERZOS PARA COMPONENTES DINÁMICOS
-   ============================================================================ */
-
-/* Mejora de la opción seleccionada para que el radio button cambie de color */
-.opcion-respuesta.seleccionada {
-  border-color: var(--primary);
-  background-color: rgba(0, 188, 212, 0.08);
-  box-shadow: 0 0 0 1px var(--primary);
-  /* Refuerzo visual */
-
-  .entrada-radio {
-    border-color: var(--primary);
-    background-color: var(--primary);
-
-    &::after {
-      content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background-color: white;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  }
-}
-
-/* Estilo para el contenedor de Acceso (Login) que sea realmente centrado */
-.contenedor-acceso {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 100px);
-  /* Ajustado para que no choque con la barra superior */
-  padding: var(--spacing-lg);
-}
-
-.caja-acceso {
-  width: 100%;
-  max-width: 450px;
-  background-color: var(--bg-primary);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
-  box-shadow: var(--shadow-3);
-}
-
-/* Estilos de información importante en el acceso */
-.caja-info {
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-md);
-  background-color: var(--gray-100);
-  border-left: 4px solid var(--warning);
-  border-radius: var(--border-radius);
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-/* Utility para botones de gran tamaño */
-.boton-grande {
-  padding: 16px 32px;
-  font-size: 1.1rem;
-  width: 100%;
-}
-
-/* **NAVEGACIÃ“N DE EXAMEN:** Botones de anterior/siguiente y progreso. */
-.navegacion-examen {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* **PROGRESO DE PREGUNTA:** Indicador de avance. */
-.progreso-pregunta {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-/* ============================================================================
-    ACCESIBILIDAD Y UTILIDADES
-    ============================================================================ */
-
-/* **ACCESIBILIDAD FOCUS VISIBLE:** Asegura un contorno visible para el foco del teclado. */
-*:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-/* **CLASES DE UTILIDAD (TEXTO)** */
-.texto-centrado {
-  text-align: center;
-}
-
-.texto-derecha {
-  text-align: right;
-}
-
-.texto-apagado {
-  color: var(--text-secondary);
-}
-
-.texto-primario {
-  color: var(--primary);
-}
-
-.texto-exito {
-  color: var(--success);
-}
-
-.texto-peligro {
-  color: var(--danger);
-}
-
-/* **CLASES DE UTILIDAD (MARGEN)** */
-.mt-sm {
-  margin-top: var(--spacing-sm);
-}
-
-.mt-md {
-  margin-top: var(--spacing-md);
-}
-
-.mt-lg {
-  margin-top: var(--spacing-lg);
-}
-
-.mb-sm {
-  margin-bottom: var(--spacing-sm);
-}
-
-.mb-md {
-  margin-bottom: var(--spacing-md);
-}
-
-.mb-lg {
-  margin-bottom: var(--spacing-lg);
-}
-
-/* ============================================================================
-    RESPONSIVE
-
-/* **MÃ“VILES Y TABLETAS (hasta 768px):** Ajustes de layout. */
-@media (max-width: 768px) {
-
-  /* Reduce el ancho del sidebar. */
-  .barra-lateral {
-    width: 200px;
-  }
-
-  /* Ajusta el margen del contenido principal. */
-  .contenido-principal {
-    margin-left: 200px;
-  }
-
-  /* Reduce el padding general del contenido. */
-  .contenido {
-    padding: var(--spacing-md);
-  }
-
-  /* Las estadÃ­sticas se apilan en una sola columna. */
-  .rejilla-estadisticas {
-    grid-template-columns: 1fr;
-  }
-
-  /* La barra de herramientas se apila verticalmente. */
-  .barra-herramientas {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  /* La barra de bÃºsqueda ocupa todo el ancho disponible. */
-  .barra-busqueda {
-    min-width: 100%;
-  }
-}
-
-/* **MÃ“VILES PEQUEÃ‘OS (hasta 480px):** Sidebar se oculta por defecto. */
-@media (max-width: 480px) {
-
-  /* Oculta el sidebar fuera de la pantalla. */
-  .barra-lateral {
-    transform: translateX(-100%);
-    transition: transform var(--transition-base);
-  }
-
-  /* Muestra el sidebar cuando tiene la clase 'open'. */
-  .barra-lateral.abierta {
-    transform: translateX(0);
-  }
-
-  /* Elimina el margen para que el contenido ocupe todo el ancho. */
-  .contenido-principal {
-    margin-left: 0;
-  }
+  display: flex; justify-content: space-between; font-size: 0.75rem;
+  color: var(--text-secondary); padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--gray-200);
 }

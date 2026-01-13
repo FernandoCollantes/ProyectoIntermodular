@@ -1,78 +1,153 @@
 <div class="tarjeta">
-    <form [formGroup]="examForm" (ngSubmit)="onSubmit()">
-        <h3 style="margin-bottom: var(--spacing-lg); color: var(--text-primary);">Configuración del Examen</h3>
+  <form>
+    <h3 style="margin-bottom: var(--spacing-lg); color: var(--text-primary)">
+      Configuración del Examen
+    </h3>
 
-        <div class="grupo-formulario">
-            <label for="examTitle" class="etiqueta-formulario requerido">Título del examen</label>
-            <input type="text" id="examTitle" formControlName="title" class="entrada-formulario"
-                placeholder="Ej: Examen Final Matemáticas - 1º Trimestre">
-        </div>
+    <div class="grupo-formulario">
+      <label for="examTitle" class="etiqueta-formulario requerido">Título del examen</label>
+      <input
+        type="text"
+        id="examTitle"
+        class="entrada-formulario"
+        placeholder="Ej: Examen Final Matemáticas - 1º Trimestre"
+      />
+    </div>
 
-        <div class="rejilla-configuracion-examen">
-            <div class="grupo-formulario">
-                <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
-                <select id="subject" formControlName="subject" class="seleccion-formulario">
-                    <option value="">Seleccionar...</option>
-                    <option *ngFor="let asig of asignaturas" [value]="asig">{{ asig }}</option>
-                </select>
+    <div class="rejilla-configuracion-examen">
+      <div class="grupo-formulario">
+        <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
+        <select id="subject" class="seleccion-formulario">
+          <option value="">Seleccionar...</option>
+          <option value="IPE">IPE</option>
+          <option value="LENGUAJE DE MARCAS">LENGUAJE DE MARCAS</option>
+          <option value="PROGRAMACIÓN">PROGRAMACIÓN</option>
+          <option value="INGLÉS">INGLÉS</option>
+        </select>
+      </div>
+
+      <div class="grupo-formulario">
+        <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
+        <input
+          type="number"
+          id="duration"
+          class="entrada-formulario"
+          placeholder="60"
+          min="5"
+          max="180"
+        />
+      </div>
+
+      <div class="grupo-formulario">
+        <label for="passingGrade" class="etiqueta-formulario requerido">Nota mínima (%)</label>
+        <input
+          type="number"
+          id="passingGrade"
+          class="entrada-formulario"
+          placeholder="50"
+          min="0"
+          max="100"
+        />
+      </div>
+
+      <div class="grupo-formulario">
+        <label for="attempts" class="etiqueta-formulario">Intentos permitidos</label>
+        <select id="attempts" class="seleccion-formulario">
+          <option value="1" selected>1 intento</option>
+          <option value="2">2 intentos</option>
+          <option value="3">3 intentos</option>
+          <option value="unlimited">Ilimitados</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="seleccion-preguntas">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--spacing-lg);
+        "
+      >
+        <h3 style="margin: 0; color: var(--text-primary)">Seleccionar Preguntas</h3>
+        <span class="contador-seleccionado">
+          <div
+            style="width: 16px; height: 16px; background-color: var(--primary); border-radius: 50%"
+          ></div>
+          3 preguntas seleccionadas
+        </span>
+      </div>
+
+      <div class="barra-busqueda" style="margin-bottom: var(--spacing-md)">
+        <div class="icono-busqueda"></div>
+        <input type="text" class="entrada-busqueda" placeholder="Buscar preguntas..." />
+      </div>
+
+      <div class="lista-preguntas">
+        <label class="item-seleccion-pregunta">
+          <input type="checkbox" checked />
+          <div class="contenido-seleccion-pregunta">
+            <div class="texto-seleccion-pregunta">
+              ¿Cuál es la solución de la ecuación 2x + 5 = 13?
             </div>
-
-            <div class="grupo-formulario">
-                <label for="numQuestions" class="etiqueta-formulario requerido">Número de preguntas</label>
-                <input type="number" id="numQuestions" formControlName="numQuestions" class="entrada-formulario">
+            <div class="meta-seleccion-pregunta">
+              <span class="insignia insignia-primaria">MAT</span>
+              <span class="insignia">ÁLGEBRA</span>
+              <span class="insignia">MEDIA</span>
             </div>
+          </div>
+        </label>
 
-            <div class="grupo-formulario">
-                <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
-                <input type="number" id="duration" formControlName="duration" class="entrada-formulario">
+        <label class="item-seleccion-pregunta">
+          <input type="checkbox" checked />
+          <div class="contenido-seleccion-pregunta">
+            <div class="texto-seleccion-pregunta">
+              ¿Cuál es el área de un círculo con radio de 5 cm?
             </div>
-
-            <div class="grupo-formulario">
-                <label for="passingGrade" class="etiqueta-formulario requerido">Nota mínima (%)</label>
-                <input type="number" id="passingGrade" formControlName="passingGrade" class="entrada-formulario">
+            <div class="meta-seleccion-pregunta">
+              <span class="insignia insignia-primaria">MAT</span>
+              <span class="insignia">GEOMETRÍA</span>
+              <span class="insignia">FÁCIL</span>
             </div>
-        </div>
+          </div>
+        </label>
+      </div>
+    </div>
 
-        <div style="margin: var(--spacing-lg) 0;">
-            <button type="button" class="boton boton-secundario" (click)="generatePreview()" [disabled]="isGenerating">
-                {{ isGenerating ? 'Generando preguntas...' : 'Generar Vista Previa de Preguntas' }}
-            </button>
-        </div>
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario">Opciones de configuración</label>
 
-        <div class="seleccion-preguntas" *ngIf="generatedQuestions.length > 0">
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
-                <h3 style="margin: 0; color: var(--text-primary);">Preguntas Seleccionadas</h3>
-                <span class="contador-seleccionado">
-                    <div style="width: 16px; height: 16px; background-color: var(--primary); border-radius: 50%;"></div>
-                    {{ generatedQuestions.length }} preguntas listas
-                </span>
-            </div>
+      <div class="contenedor-opciones-adicionales">
+        <label class="item-opcion">
+          <input type="checkbox" name="aleatorio" />
+          <span>Mezclar preguntas aleatoriamente</span>
+        </label>
 
-            <div class="lista-preguntas">
-                <div *ngFor="let pregunta of generatedQuestions" class="item-seleccion-pregunta">
-                    <div class="contenido-seleccion-pregunta">
-                        <div class="texto-seleccion-pregunta">
-                            {{ pregunta.enunciado }}
-                        </div>
-                        <div class="meta-seleccion-pregunta">
-                            <span class="insignia insignia-primaria">{{ pregunta.asignatura }}</span>
-                            <span class="insignia">{{ pregunta.tema }}</span>
-                            <span class="insignia">Dificultad: {{ pregunta.dificultad }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <label class="item-opcion">
+          <input type="checkbox" name="respuestas_inmediatas" />
+          <span>Mostrar respuestas al finalizar</span>
+        </label>
 
-        <div class="acciones-formulario" style="margin-top: var(--spacing-xl);">
-            <a [routerLink]="['/dashboard']" class="boton boton-contorno">Cancelar</a>
+        <label class="item-opcion">
+          <input type="checkbox" name="limite_tiempo" checked />
+          <span>Habilitar límite de tiempo</span>
+        </label>
 
-            <button type="submit" class="boton boton-primario"
-                [disabled]="generatedQuestions.length === 0 || isLoading">
-                <div class="boton-icono"></div>
-                {{ isLoading ? 'Procesando PDF...' : 'Crear y Descargar Examen (PDF)' }}
-            </button>
-        </div>
-    </form>
+        <label class="item-opcion">
+          <input type="checkbox" name="navegacion_libre" />
+          <span>Permitir volver atrás</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="acciones-formulario">
+      <a [routerLink]="['/dashboard']" class="boton boton-contorno">Cancelar</a>
+      <button type="button" class="boton boton-secundario">Guardar como borrador</button>
+      <button type="submit" class="boton boton-primario">
+        <div class="boton-icono"></div>
+        Crear y Publicar Examen
+      </button>
+    </div>
+  </form>
 </div>

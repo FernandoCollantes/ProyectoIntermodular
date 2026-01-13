@@ -1,2 +1,75 @@
-// Styles from Prototipo-7 are already in global styles.scss
-// Component-specific overrides can be added here if needed
+.contenedor-acceso {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  padding: var(--spacing-xl);
+}
+
+.caja-acceso {
+  width: 100%;
+  max-width: 540px;
+  background-color: var(--white);
+  padding: 56px 48px;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transition: transform var(--transition-base);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.cabecera-acceso {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo-acceso {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  margin: 0 auto 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &::before {
+    content: 'E';
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--white);
+  }
+}
+
+.titulo-acceso {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.entrada-codigo-acceso {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 18px;
+  
+  &:focus {
+    letter-spacing: 0.4em;
+  }
+}
+
+.caja-info {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.08) 0%, rgba(33, 150, 243, 0.12) 100%);
+  border-left: 4px solid var(--info);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 28px;
+  p { font-size: 0.875rem; color: var(--text-secondary); margin: 0; }
+}

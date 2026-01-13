@@ -1,0 +1,71 @@
+<div class="barra-herramientas">
+  <div class="barra-busqueda">
+    <div class="icono-busqueda"></div>
+    <input type="text" class="entrada-busqueda" placeholder="Buscar preguntas...">
+  </div>
+  <a [routerLink]="['/preguntas/crear']" class="boton boton-primario">
+    <div class="boton-icono"></div>
+    Nueva Pregunta
+  </a>
+</div>
+
+<div class="contenedor-chips">
+  <div class="chip activo">TODAS</div>
+  <div class="chip">INGLÉS</div>
+  <div class="chip">LENGUAJE DE MARCAS</div>
+  <div class="chip">PROGRAMACIÓN</div>
+  <div class="chip">IPE</div>
+</div>
+
+<div class="rejilla-pregunta">
+  
+  <div class="tarjeta-pregunta">
+    <div class="pregunta-cabecera">
+      <div class="insignias">
+        <span class="insignia insignia-primaria">MAT</span>
+        <span class="insignia">ÁLGEBRA</span>
+      </div>
+      <div class="pregunta-acciones">
+        <button class="boton-accion" title="Editar">
+          <div class="icono-accion"></div>
+        </button>
+        <button class="boton-accion" title="Eliminar">
+          <div class="icono-accion"></div>
+        </button>
+      </div>
+    </div>
+    <div class="pregunta-contenido">
+      <p class="pregunta-texto">¿Cuál es la solución de la ecuación 2x + 5 = 13?</p>
+    </div>
+    <div class="pregunta-metadata">
+      <span>Creada: 15 Nov 2025</span>
+      <span>Usada en: 3 exámenes</span>
+      <span>Dificultad: <span class="insignia insignia-advertencia">Media</span></span>
+    </div>
+  </div>
+
+  <div class="tarjeta-pregunta">
+    <div class="pregunta-cabecera">
+      <div class="insignias">
+        <span class="insignia insignia-exito">IPE</span> <span class="insignia">EMPRESA</span>
+      </div>
+      <div class="pregunta-acciones">
+        <button class="boton-accion" title="Editar">
+          <div class="icono-accion"></div>
+        </button>
+        <button class="boton-accion" title="Eliminar">
+          <div class="icono-accion"></div>
+        </button>
+      </div>
+    </div>
+    <div class="pregunta-contenido">
+      <p class="pregunta-texto">¿Qué es un currículum vitae?</p>
+    </div>
+    <div class="pregunta-metadata">
+      <span>Creada: 10 Nov 2025</span>
+      <span>Usada en: 5 exámenes</span>
+      <span>Dificultad: <span class="insignia insignia-exito">Fácil</span></span>
+    </div>
+  </div>
+
+</div>

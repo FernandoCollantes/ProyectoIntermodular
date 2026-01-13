@@ -1,2 +1,85 @@
-// Styles from Prototipo-8 are already in global styles.scss
-// Component-specific overrides can be added here if needed
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+}
+
+.contenedor-examen {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.cabecera-examen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--white);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-small);
+  margin-bottom: var(--spacing-xl);
+}
+
+.temporizador-examen {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: #fff3e0; // Simulación de warning-light
+  color: #e65100; // Simulación de warning-dark
+  font-weight: 600;
+  border-radius: var(--border-radius);
+}
+
+.caja-pregunta {
+  background-color: var(--white);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-medium);
+}
+
+.enunciado-pregunta {
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.5;
+}
+
+.lista-respuestas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.opcion-respuesta {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+
+  &:hover {
+    border-color: var(--primary);
+  }
+
+  &.seleccionada {
+    border-color: var(--primary);
+    background-color: rgba(0, 188, 212, 0.05);
+  }
+
+  input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+  }
+}
+
+.navegacion-examen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-xl);
+}

@@ -1,2 +1,27 @@
 // Layout styles are inherited from global styles.scss
-// This file is intentionally minimal
+// This file is intentionally minimal/* Aquí solo definimos lo que NO pusimos en el styles.scss global */
+.barra-lateral-cabecera {
+  padding: var(--spacing-lg);
+  h2 { color: white; margin: 0; }
+}
+
+.informacion-usuario {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.avatar-usuario {
+  width: 36px;
+  height: 36px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* El resto de estilos (barra-superior, barra-lateral, etc.) 
+   YA los está cogiendo del styles.scss global */

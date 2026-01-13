@@ -7,44 +7,36 @@
         Introduce el código de acceso proporcionado por tu profesor
       </p>
     </div>
-
-    <form class="formulario-acceso" [formGroup]="accesoForm" (ngSubmit)="onSubmit()">
-
+    
+    <form class="formulario-acceso">
       <div class="grupo-formulario">
         <label for="examCode" class="etiqueta-formulario requerido">Código del examen</label>
-        <input type="text" id="examCode" formControlName="examCode" class="entrada-formulario entrada-codigo-acceso"
-          placeholder="ABC123" maxlength="6">
-        <small *ngIf="accesoForm.get('examCode')?.touched && accesoForm.get('examCode')?.invalid"
-          style="color: var(--error);">
-          El código debe tener 6 caracteres.
-        </small>
+        <input 
+          type="text" 
+          id="examCode" 
+          class="entrada-formulario entrada-codigo-acceso" 
+          placeholder="ABC123"
+          maxlength="6"
+        >
       </div>
-
+      
       <div class="grupo-formulario">
         <label for="studentName" class="etiqueta-formulario requerido">Tu nombre completo</label>
-        <input type="text" id="studentName" formControlName="studentName" class="entrada-formulario"
-          placeholder="Ej: Fernando Collantes">
+        <input type="text" id="studentName" class="entrada-formulario" placeholder="Ej: Fernando Collantes">
       </div>
-
+      
       <div class="grupo-formulario">
         <label for="studentEmail" class="etiqueta-formulario requerido">Tu correo electrónico</label>
-        <input type="email" id="studentEmail" formControlName="studentEmail" class="entrada-formulario"
-          placeholder="fernandocollantes.24@campuscamara.es">
-        <small *ngIf="accesoForm.get('studentEmail')?.touched && accesoForm.get('studentEmail')?.invalid"
-          style="color: var(--error);">
-          Introduce un email válido.
-        </small>
+        <input type="email" id="studentEmail" class="entrada-formulario" placeholder="tu@email.com">
       </div>
-
-      <button type="submit" class="boton boton-primario boton-grande" style="width: 100%;"
-        [disabled]="accesoForm.invalid">
-        Acceder al Examen
-      </button>
-
+      
+      <button [routerLink]="['/alumno/realizar-examen']" class="boton boton-primario">
+  Acceder al Examen
+</button>
+      
       <div class="caja-info">
         <p>
-          <strong>Importante:</strong> Una vez inicies el examen, el tiempo comenzará a correr.
-          Asegúrate de tener buena conexión a internet y tiempo suficiente para completarlo.
+          <strong>Importante:</strong> Una vez inicies el examen, el tiempo comenzará a correr. 
         </p>
       </div>
     </form>
