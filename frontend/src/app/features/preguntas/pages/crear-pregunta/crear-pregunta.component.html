@@ -1,92 +1,88 @@
 <div class="tarjeta">
+  <div class="tarjeta-cabecera">
+    <h2 class="tarjeta-titulo">Crear Nueva Pregunta</h2>
+  </div>
+
   <form>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-      <div class="grupo-formulario">
-        <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
-        <select id="subject" class="seleccion-formulario">
-          <option value="">Seleccionar asignatura...</option>
-          <option value="IPE">IPE</option>
-          <option value="LENGUAJE DE MARCAS">LENGUAJE DE MARCAS</option>
-          <option value="PROGRAMACIÓN">PROGRAMACIÓN</option>
-          <option value="INGLÉS">INGLÉS</option>
-        </select>
-      </div>
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario">Asignatura</label>
+      <select class="seleccion-formulario">
+        <option value="" disabled selected>Selecciona una asignatura...</option>
+        <option value="matematicas">Matemáticas</option>
+        <option value="historia">Historia</option>
+        <option value="ciencias">Ciencias</option>
+      </select>
+    </div>
+
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario">Enunciado de la pregunta</label>
       
-      <div class="grupo-formulario">
-        <label for="category" class="etiqueta-formulario requerido">RA</label>
-        <select id="category" class="seleccion-formulario">
-          <option value="">Seleccionar resultado de aprendizaje...</option>
-          <option value="RA1">RA1</option>
-          <option value="RA2">RA2</option>
-          <option value="RA3">RA3</option>
-        </select>
+      <div class="contenedor-editor">
+        <div class="barra-herramientas-editor">
+          <button type="button" class="boton-herramienta" title="Negrita"><b>B</b></button>
+          <button type="button" class="boton-herramienta" title="Cursiva"><i>I</i></button>
+          <button type="button" class="boton-herramienta" title="Subrayado"><u>U</u></button>
+          
+          <div class="separador-herramientas"></div>
+          
+          <button type="button" class="boton-herramienta" title="Lista con viñetas">•</button>
+          <button type="button" class="boton-herramienta" title="Lista numerada">1.</button>
+        </div>
+        
+        <textarea class="area-texto-editor" placeholder="Escribe tu pregunta aquí..."></textarea>
       </div>
     </div>
-    
+
     <div class="grupo-formulario">
-      <label for="statement" class="etiqueta-formulario requerido">Enunciado de la pregunta</label>
-      <textarea id="statement" class="area-texto-formulario" placeholder="Escribe aquí el enunciado de la pregunta..." rows="4"></textarea>
-    </div>
-    
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Tipo de pregunta</label>
-      <div class="grupo-radio">
-        <label class="item-radio">
-          <input type="radio" name="questionType" value="single" class="entrada-radio" checked>
-          <span>Respuesta única (una sola respuesta correcta)</span>
-        </label>
-        <label class="item-radio">
-          <input type="radio" name="questionType" value="multiple" class="entrada-radio">
-          <span>Respuesta múltiple (varias respuestas correctas)</span>
-        </label>
-      </div>
-    </div>
-    
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Opciones de respuesta</label>
-      <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--spacing-md);">
-        Marca con el radio button la respuesta correcta
-      </p>
+      <label class="etiqueta-formulario">Opciones de respuesta</label>
       
       <div class="contenedor-opciones-respuesta">
+        
         <div class="entrada-opcion-respuesta">
-          <input type="radio" name="correctAnswer" value="a">
-          <label style="font-weight: 500; min-width: 20px;">A)</label>
+          <input type="radio" name="correctAnswer" value="a" checked>
+          <label style="font-weight: 600; min-width: 20px;">A)</label>
           <input type="text" class="entrada-formulario" placeholder="Escribe la opción A">
         </div>
+
         <div class="entrada-opcion-respuesta">
           <input type="radio" name="correctAnswer" value="b">
-          <label style="font-weight: 500; min-width: 20px;">B)</label>
+          <label style="font-weight: 600; min-width: 20px;">B)</label>
           <input type="text" class="entrada-formulario" placeholder="Escribe la opción B">
         </div>
+
         <div class="entrada-opcion-respuesta">
           <input type="radio" name="correctAnswer" value="c">
-          <label style="font-weight: 500; min-width: 20px;">C)</label>
+          <label style="font-weight: 600; min-width: 20px;">C)</label>
           <input type="text" class="entrada-formulario" placeholder="Escribe la opción C">
         </div>
+
         <div class="entrada-opcion-respuesta">
           <input type="radio" name="correctAnswer" value="d">
-          <label style="font-weight: 500; min-width: 20px;">D)</label>
+          <label style="font-weight: 600; min-width: 20px;">D)</label>
           <input type="text" class="entrada-formulario" placeholder="Escribe la opción D">
         </div>
+
       </div>
     </div>
-    
+
     <div class="grupo-formulario">
-      <label for="difficulty" class="etiqueta-formulario">Nivel de dificultad</label>
-      <select id="difficulty" class="seleccion-formulario">
+      <label class="etiqueta-formulario">Nivel de dificultad</label>
+      <select class="seleccion-formulario">
         <option value="facil">Fácil</option>
         <option value="media" selected>Media</option>
         <option value="dificil">Difícil</option>
       </select>
     </div>
-    
+
     <div class="acciones-formulario">
-      <a routerLink="/preguntas" class="boton boton-contorno">Cancelar</a>
+      <a [routerLink]="['/preguntas']" class="boton boton-contorno">
+        Cancelar
+      </a>
       <button type="submit" class="boton boton-primario">
-        <div class="boton-icono"></div>
+        <div class="boton-icono"></div> 
         Guardar Pregunta
       </button>
     </div>
+
   </form>
 </div>

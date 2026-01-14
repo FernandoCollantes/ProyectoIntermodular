@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+// Ajusta estas rutas de importación si tus carpetas se llaman diferente
+import { MisExamenesComponent } from './pages/mis-examenes/mis-examenes.component';
+import { CrearExamenComponent } from './pages/crear-examen/crear-examen.component';
 
 const routes: Routes = [
   {
-    path: 'crear',
-    loadComponent: () => import('./pages/crear-examen/crear-examen.component').then(m => m.CrearExamenComponent)
+    path: '', 
+    component: MisExamenesComponent // Carga la lista al entrar a /examenes
   },
   {
-    path: '',
-    redirectTo: 'crear',
-    pathMatch: 'full'
+    path: 'crear',
+    component: CrearExamenComponent // Carga el formulario en /examenes/crear
   }
 ];
 

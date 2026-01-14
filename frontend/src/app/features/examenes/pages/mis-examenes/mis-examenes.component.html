@@ -1,0 +1,76 @@
+<div class="barra-herramientas">
+  <div class="barra-busqueda">
+    <div class="icono-busqueda"></div>
+    <input type="text" class="entrada-busqueda" placeholder="Buscar examen por título...">
+  </div>
+
+  <div style="display: flex; gap: 10px;">
+    
+    <button class="boton boton-secundario">
+      <div class="boton-icono"></div> Exportar PDF
+    </button>
+
+    <a [routerLink]="['/examenes/crear']" class="boton boton-primario">
+      <div class="boton-icono"></div>
+      Nuevo Examen
+    </a>
+
+  </div>
+</div>
+
+<div class="contenedor-chips">
+  <div class="chip activo">TODOS</div>
+  <div class="chip">1º EVALUACIÓN</div>
+  <div class="chip">RECUPERACIÓN</div>
+  <div class="chip">FINAL</div>
+</div>
+
+<div class="rejilla-pregunta"> <div class="tarjeta-pregunta">
+    <div class="pregunta-cabecera">
+      <div class="insignias">
+        <span class="insignia insignia-primaria">MAT</span>
+        <span class="insignia">1º BAC</span>
+      </div>
+      <div class="pregunta-acciones">
+        <button class="boton-accion" title="Descargar PDF">⬇️</button>
+        <button class="boton-accion" title="Editar">✏️</button>
+      </div>
+    </div>
+    
+    <div class="pregunta-contenido">
+      <h3 style="margin: 0 0 10px 0; color: var(--gray-900);">Examen Final Álgebra</h3>
+      <p class="pregunta-texto" style="color: var(--gray-600);">Contiene 15 preguntas sobre polinomios y ecuaciones.</p>
+    </div>
+
+    <div class="pregunta-metadata">
+      <span>📅 14 Ene 2026</span>
+      <span>👥 25 Alumnos</span>
+      <span><span class="insignia insignia-exito">Borrador</span></span>
+    </div>
+  </div>
+
+  <div class="tarjeta-pregunta">
+    <div class="pregunta-cabecera">
+      <div class="insignias">
+        <span class="insignia insignia-primaria">PROG</span>
+        <span class="insignia">2º DAM</span>
+      </div>
+      <div class="pregunta-acciones">
+        <button class="boton-accion" title="Descargar PDF">⬇️</button>
+        <button class="boton-accion" title="Editar">✏️</button>
+      </div>
+    </div>
+    
+    <div class="pregunta-contenido">
+      <h3 style="margin: 0 0 10px 0; color: var(--gray-900);">Java - Objetos y Clases</h3>
+      <p class="pregunta-texto" style="color: var(--gray-600);">Prueba teórica tipo test con 20 items.</p>
+    </div>
+
+    <div class="pregunta-metadata">
+      <span>📅 10 Dic 2025</span>
+      <span>👥 30 Alumnos</span>
+      <span><span class="insignia insignia-advertencia">Finalizado</span></span>
+    </div>
+  </div>
+
+</div>

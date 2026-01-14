@@ -552,3 +552,91 @@ label.etiqueta-formulario {
   color: var(--text-secondary); padding-top: var(--spacing-sm);
   border-top: 1px solid var(--gray-200);
 }
+/* ============================================================================
+   7. ESTILOS ESPECÍFICOS: CREAR PREGUNTA (Fiel al Prototipo 5)
+   ============================================================================ */
+
+/* --- Editor de Texto Simulado --- */
+.contenedor-editor {
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  background-color: var(--white);
+}
+
+.barra-herramientas-editor {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background-color: var(--gray-100);
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.boton-herramienta {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--gray-700);
+  font-size: 14px;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--gray-300);
+  }
+}
+
+.separador-herramientas {
+  width: 1px;
+  height: 20px;
+  background-color: var(--gray-400);
+  margin: 0 5px;
+}
+
+.area-texto-editor {
+  width: 100%;
+  border: none;
+  padding: 16px;
+  min-height: 150px;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--gray-800);
+}
+
+/* --- Opciones de Respuesta (Diseño Radio + Label + Input) --- */
+.contenedor-opciones-respuesta {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* var(--spacing-md) */
+}
+
+.entrada-opcion-respuesta {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* var(--spacing-md) */
+  padding: 15px;
+  background-color: var(--gray-100); /* var(--bg-secondary) */
+  border-radius: var(--border-radius);
+}
+
+/* Ajuste específico para el radio button dentro de la tarjeta gris */
+.entrada-opcion-respuesta input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+/* El input de texto ocupa el resto */
+.entrada-opcion-respuesta .entrada-formulario {
+  flex: 1;
+  background-color: var(--white);
+}

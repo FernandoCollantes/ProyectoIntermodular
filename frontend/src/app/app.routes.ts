@@ -1,9 +1,12 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  // RUTAS DEL PROFESOR (Con Layout y Sidebar)
+  // -----------------------------------------------------------------------
+  // 1. ZONA PRIVADA (PROFESOR) - Usa MainLayoutComponent
+  // -----------------------------------------------------------------------
   {
     path: '',
+    // Carga el Layout que acabamos de editar (con Sidebar y Header)
     loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
@@ -18,11 +21,14 @@ export const routes: Routes = [
         path: 'examenes',
         loadChildren: () => import('./features/examenes/examenes-module').then(m => m.ExamenesModule)
       },
+      // Redirección por defecto: Si entran a la raíz, van al dashboard
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
 
-  // RUTAS DEL ALUMNO (Sin Layout, a pantalla completa)
+  // -----------------------------------------------------------------------
+  // 2. ZONA PÚBLICA (ALUMNO) - Sin Layout (Pantalla completa)
+  // -----------------------------------------------------------------------
   {
     path: 'alumno',
     children: [
@@ -37,6 +43,8 @@ export const routes: Routes = [
     ]
   },
 
-  // Comodín para errores
+  // -----------------------------------------------------------------------
+  // 3. RUTAS NO ENCONTRADAS
+  // -----------------------------------------------------------------------
   { path: '**', redirectTo: 'dashboard' }
 ];

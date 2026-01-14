@@ -1,0 +1,115 @@
+/* Variables locales (o asegúrate de importarlas si están en _variables.scss) */
+:host {
+  display: block;
+}
+
+.barra-lateral {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background-color: var(--gray-900); /* Fondo oscuro */
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+}
+
+.marca {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  gap: 12px;
+}
+
+.logo-marca {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 6px;
+}
+
+.texto-marca {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+}
+
+.navegacion {
+  flex: 1;
+  padding: 24px 16px;
+  overflow-y: auto;
+}
+
+.titulo-seccion-nav {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  font-weight: 600;
+  margin: 24px 12px 12px;
+  letter-spacing: 1px;
+  
+  &:first-child { margin-top: 0; }
+}
+
+.item-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  color: var(--gray-400);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  margin-bottom: 4px;
+
+  &:hover {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--white);
+  }
+
+  &.activo {
+    background: linear-gradient(90deg, rgba(0,188,212,0.15) 0%, transparent 100%);
+    color: var(--primary);
+    border-left: 3px solid var(--primary);
+  }
+}
+
+/* Iconos placeholder (cuadraditos) */
+.icono-nav {
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  opacity: 0.7;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.usuario-lateral {
+  padding: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-usuario {
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.nombre-usuario { font-weight: 600; font-size: 0.9rem; }
+.rol-usuario { font-size: 0.75rem; color: var(--gray-500); }

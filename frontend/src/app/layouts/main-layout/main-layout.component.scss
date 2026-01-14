@@ -1,27 +1,32 @@
-// Layout styles are inherited from global styles.scss
-// This file is intentionally minimal/* Aquí solo definimos lo que NO pusimos en el styles.scss global */
-.barra-lateral-cabecera {
-  padding: var(--spacing-lg);
-  h2 { color: white; margin: 0; }
+:host {
+  display: block;
 }
 
-.informacion-usuario {
+.contenedor-app {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
+  min-height: 100vh;
+  background-color: var(--gray-100); /* Fondo general de la app */
 }
 
-.avatar-usuario {
-  width: 36px;
-  height: 36px;
-  background-color: var(--primary);
-  color: white;
-  border-radius: 50%;
+.contenido-principal {
+  flex: 1;
+  margin-left: 260px; /* IMPORTANTE: Mismo ancho que el Sidebar */
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
+  flex-direction: column;
+  min-width: 0;
+  transition: margin-left 0.3s ease;
 }
 
-/* El resto de estilos (barra-superior, barra-lateral, etc.) 
-   YA los está cogiendo del styles.scss global */
+.contenido-interno {
+  padding: 32px; /* Espaciado interno para las páginas */
+  flex: 1;
+}
+
+/* Ajuste Responsivo Básico */
+@media (max-width: 768px) {
+  .contenido-principal {
+    margin-left: 0; /* En móvil quitamos el margen */
+  }
+  
+  /* Nota: Más adelante añadiremos lógica para ocultar/mostrar el sidebar en móvil */
+}
