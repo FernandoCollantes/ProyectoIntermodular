@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, '../'))); // Acceso a la raíz del p
 app.use('/api/asignaturas', require('./routes/asignaturasRoutes')); 
 app.use('/api/preguntas', require('./routes/preguntasRoutes'));
 app.use('/api/examenes', require('./routes/examenesRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
 
 connect().then(() => {
     app.listen(3000, () => {
