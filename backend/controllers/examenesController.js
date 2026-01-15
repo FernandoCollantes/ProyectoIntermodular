@@ -10,23 +10,34 @@ exports.previewExam = async (req, res) => {
     } catch (e) { res.status(500).json({success:false, message: e.message}); }
 };
 
-// --- MODIFICADO ---
+
 exports.saveExam = async (req, res) => {
     try {
-        const { nombre, asignaturaId, preguntasIds, autor, tipo } = req.body; // Añadido tipo
+        console.log("DEBUG: Controlador saveExam invocado."); // LOG 1
+        console.log("DEBUG: Body recibido:", req.body);      // LOG 2
+
+        const { nombre, asignaturaId, preguntasIds, autor, tipo } = req.body;
 
         if (!nombre || !asignaturaId || !preguntasIds) {
+            console.log("DEBUG: Faltan datos obligatorios."); // LOG 3
             return res.status(400).json({ success: false, message: 'Datos incompletos.' });
         }
 
+        console.log("DEBUG: Llamando a examenesService.saveExamToDb..."); // LOG 4
         const savedExam = await examenesService.saveExamToDb({ 
             nombre, asignaturaId, preguntasIds, autor, tipo 
         });
+        
+        console.log("DEBUG: Examen guardado con éxito. ID:", savedExam._id); // LOG 5
+        console.log("DEBUG: Examen guardado con éxito. ID:", savedExam.tipo); // LOG 6
         res.status(201).json({ success: true, message: 'Guardado', examId: savedExam._id });
-    } catch (e) { res.status(500).json({success:false, message: e.message}); }
+    } catch (e) { 
+        console.error("DEBUG ERROR:", e); // LOG DE ERROR
+        res.status(500).json({success:false, message: e.message}); 
+    }
 };
 
-// --- MODIFICADO ---
+
 exports.searchExams = async (req, res) => {
     try {
         const { subjectId, autor, tipo } = req.query; // Añadido tipo
@@ -56,7 +67,7 @@ exports.downloadExamById = async (req, res) => {
     } catch (e) { res.status(500).send("Error PDF: " + e.message); }
 };
 
-// --- NUEVO: OBTENER EXAMEN PARA ALUMNO ---
+// --- OBTENER EXAMEN PARA ALUMNO ---
 exports.getExamForStudent = async (req, res) => {
     try {
         // Recuperamos el examen
@@ -64,7 +75,7 @@ exports.getExamForStudent = async (req, res) => {
         
         if (!examDoc) return res.status(404).json({ success: false, message: "Examen no encontrado" });
 
-        // IMPORTANTE: Limpiamos las respuestas correctas antes de enviarlo
+        // Limpiamos las respuestas correctas antes de enviarlo
         // Usamos la clase Pregunta para formatear cada item
         const preguntasLimpias = examDoc.preguntas.map(q => new PreguntaClass(q).getClientData());
         
@@ -80,7 +91,7 @@ exports.getExamForStudent = async (req, res) => {
     } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };
 
-// --- NUEVO: CORREGIR ---
+// --- CORREGIR ---
 exports.submitExam = async (req, res) => {
     try {
         const { id } = req.params; // ID del examen
@@ -96,7 +107,7 @@ exports.submitExam = async (req, res) => {
     }
 };
 
-// --- NUEVO: OBTENER INTENTOS ---
+// --- OBTENER INTENTOS ---
 exports.getAttempts = async (req, res) => {
     try {
         // En el futuro, aquí leeríamos req.user.id

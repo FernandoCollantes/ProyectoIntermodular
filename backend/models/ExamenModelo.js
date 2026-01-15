@@ -5,14 +5,13 @@ const ExamenSchema = new Schema({
     nombre: { type: String, required: true },
     
     asignatura: { 
-        type: String, // ID String manual (Código)
+        type: String, // Código manual (ej: MP0485)
         ref: 'Asignatura',
         required: true 
     },
     
     autor: { type: String, default: 'admin' },
-    
-    // NUEVO CAMPO: Diferenciador
+
     tipo: {
         type: String,
         enum: ['OFICIAL', 'PRACTICA'],

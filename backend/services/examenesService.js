@@ -37,14 +37,19 @@ exports.generateExamPreview = async (subjectId, amount) => {
     }
 };
 
-// --- MODIFICADO: Guardar con TIPO ---
+// --- Guardar con TIPO ---
 exports.saveExamToDb = async (examData) => {
     try {
-        const { nombre, asignaturaId, preguntasIds, autor, tipo } = examData; // Añadido tipo
+        console.log("DEBUG SERVICE INPUT:", examData); // Ver qué llega
+
+        const { nombre, asignaturaId, preguntasIds, autor, tipo } = examData;
         const preguntasDocs = await PreguntaModel.find({ _id: { $in: preguntasIds } });
-        
         const allCriterios = preguntasDocs.flatMap(q => q.criterios_evaluacion);
         const criteriosIdsStrings = [...new Set(allCriterios.map(id => id.toString()))];
+
+        // Forzamos el tipo explícitamente para ver si es undefined
+        const tipoFinal = tipo || 'PRACTICA';
+        console.log("DEBUG TIPO A GUARDAR:", tipoFinal);
 
         const nuevoExamenDB = new ExamenModel({
             nombre,
@@ -52,15 +57,18 @@ exports.saveExamToDb = async (examData) => {
             preguntas: preguntasIds,
             criterios_abarcados: criteriosIdsStrings,
             autor: autor || 'admin',
-            tipo: tipo || 'PRACTICA' // Valor por defecto
+            tipo: tipoFinal // Asignación directa
         });
+        
+        console.log("DEBUG MONGOOSE OBJECT:", nuevoExamenDB); // Ver qué creó Mongoose
+        
         return await nuevoExamenDB.save();
     } catch (error) {
         throw new Error('Error guardando examen: ' + error.message);
     }
 };
 
-// --- MODIFICADO: Buscar con filtro de TIPO ---
+// --- Buscar con filtro de TIPO ---
 exports.searchExams = async (subjectId, autor, tipo) => {
     try {
         const match = {};
@@ -105,26 +113,6 @@ exports.generateExamPreview = async (subjectId, amount) => {
     }
 };
 
-exports.saveExamToDb = async (examData) => {
-    try {
-        const { nombre, asignaturaId, preguntasIds, autor } = examData;
-        const preguntasDocs = await PreguntaModel.find({ _id: { $in: preguntasIds } });
-        const allCriterios = preguntasDocs.flatMap(q => q.criterios_evaluacion);
-        const criteriosIdsStrings = [...new Set(allCriterios.map(id => id.toString()))];
-
-        const nuevoExamenDB = new ExamenModel({
-            nombre,
-            asignatura: asignaturaId,
-            preguntas: preguntasIds,
-            criterios_abarcados: criteriosIdsStrings,
-            autor: autor || 'admin'
-        });
-        return await nuevoExamenDB.save();
-    } catch (error) {
-        throw new Error('Error guardando examen: ' + error.message);
-    }
-};
-
 exports.searchExams = async (subjectId, autor) => {
     try {
         const match = {};
@@ -134,7 +122,7 @@ exports.searchExams = async (subjectId, autor) => {
     } catch (error) { throw new Error('Error buscando exámenes: ' + error.message); }
 };
 
-// --- NUEVA LÓGICA: CORRECCIÓN DE EXAMEN ---
+// --- CORRECCIÓN DE EXAMEN ---
 
 exports.submitExamAttempt = async (examId, userAnswers) => {
     try {
