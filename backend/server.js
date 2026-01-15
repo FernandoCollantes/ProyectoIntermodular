@@ -1,26 +1,27 @@
 const express = require('express');
-const cors = require('cors'); // Middleware para permitir peticiones desde otros dominios
+const cors = require('cors');
 const path = require('path');
 const app = express();
-const { connect } = require('./dataBase.js'); // Importamos nuestra función de conexión
+const { connect } = require('./dataBase.js');
 
-// 1. Configuración de Middlewares
-app.use(cors()); // Permite que el frontend hable con este backend
-app.use(express.json()); // Permite que el servidor entienda datos JSON en el cuerpo de las peticiones (req.body)
+app.use(cors());
+app.use(express.json());
 
-// 2. Configuración para servir archivos estáticos
-// Esto sirve todo lo que haya en la carpeta 'Pagina' (index.html, index.js, estilos)
-// cuando entres a http://localhost:3000
-app.use(express.static(path.join(__dirname, 'Pagina')));
+// 1. Servir la aplicación principal (Gestor de Exámenes)
+// Cuando entras a http://localhost:3000, verás index.html de 'Pagina'
+//app.use(express.static(path.join(__dirname, 'Pagina')));
 
-// 3. Definición de Rutas
-// Todas las rutas que empiecen por /api/preguntas se manejan en preguntasRoutes.js
-app.use('/api/preguntas', require('./routes/preguntasRoutes.js'));
+// 2. RESTAURADO: Servir la página de presentación y archivos raíz
+// Esto permite acceder a otros archivos HTML o assets que tengas fuera de 'Pagina'
+app.use(express.static(path.join(__dirname, 'presentacion')));
+app.use(express.static(path.join(__dirname, '../'))); // Acceso a la raíz del proyecto (opcional, úsalo con cuidado)
 
+// --- RUTAS MODULARES ---
+app.use('/api/asignaturas', require('./routes/asignaturasRoutes')); 
+app.use('/api/preguntas', require('./routes/preguntasRoutes'));
+app.use('/api/examenes', require('./routes/examenesRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
 
-
-// 3. Inicio del Servidor
-// Primero conectamos a la BD, y solo si tenemos éxito, levantamos el servidor express
 connect().then(() => {
     app.listen(3000, () => {
         console.log('Servidor escuchando en el puerto 3000');
