@@ -12,4 +12,6 @@ router.get('/:id/take', controller.getExamForStudent); // Obtener examen para ha
 router.post('/:id/submit', controller.submitExam);     // Enviar respuestas y corregir
 router.get('/student/attempts', controller.getAttempts); // Obtener historial de intentos
 
+router.get('/:id/export-json', controller.exportExamAsJson); // Obtener examen como JSON
+
 module.exports = router;

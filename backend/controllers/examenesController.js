@@ -116,3 +116,20 @@ exports.getAttempts = async (req, res) => {
         res.json({ success: true, intentos });
     } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };
+
+exports.exportExamAsJson = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const jsonData = await examenesService.getExamForExport(id);
+
+        // Configuramos headers para descarga de archivo
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="${jsonData.meta.titulo}.json"`);
+
+        // Enviamos el JSON formateado (pretty print con 2 espacios)
+        res.send(JSON.stringify(jsonData, null, 2));
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

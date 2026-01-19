@@ -242,3 +242,44 @@ exports.generateExamPdf = (examData) => {
     });
     return doc;
 };
+
+exports.getExamForExport = async (examId) => {
+    try {
+        // Recuperamos el examen con todos los datos populados
+        const exam = await ExamenModel.findById(examId)
+            .populate('asignatura', 'nombre') // Solo nombre
+            .populate({
+                path: 'preguntas',
+                populate: { path: 'criterios_evaluacion', select: 'nombre' } // Nombres de los criterios
+            })
+            .lean();
+
+        if (!exam) throw new Error("Examen no encontrado para exportar");
+
+        // TRANSFORMACIÓN DE DATOS (DTO)
+        // Convertimos la estructura de Mongo a un JSON genérico para compartir
+        const exportData = {
+            meta: {
+                titulo: exam.nombre,
+                asignatura: exam.asignatura.nombre, // Texto plano, no ID
+                autor: exam.autor,
+                fecha: exam.fecha_creacion,
+                tipo: exam.tipo
+            },
+            preguntas: exam.preguntas.map(p => ({
+                pregunta: p.enunciado,
+                opciones: p.opciones,
+                // IMPORTANTE: Incluimos la respuesta correcta porque es para IMPORTAR en otra app (Kahoot),
+                // el profesor de la otra app necesita saber cuál es la correcta.
+                respuesta_correcta: p.respuesta_correcta, 
+                temas: p.criterios_evaluacion.map(c => c.nombre), // Array de nombres
+                dificultad: p.dificultad
+            }))
+        };
+
+        return exportData;
+
+    } catch (error) {
+        throw new Error("Error exportando examen: " + error.message);
+    }
+};

@@ -512,23 +512,34 @@ async function searchExams() {
     } catch(e){examsListContainer.innerHTML='Error';}
 }
 
-function displayExamsList(e) {
-    if(!e||e.length===0){examsListContainer.innerHTML='Sin resultados'; return;}
-    examsListContainer.innerHTML = e.map(x=> {
-        // Renderizado condicional del botón "Realizar"
-        const isOfficial = x.tipo === 'OFICIAL';
-        const badgeColor = isOfficial ? 'bg-red-100 text-red-800 border-red-200' : 'bg-green-100 text-green-800 border-green-200';
-        
-        // Botón Realizar solo si NO es oficial (o como se desee, aquí lo pongo para Practica)
-        const takeButton = !isOfficial 
-            ? `<button onclick="takeExam('${x._id}')" class="text-green-600 text-xs font-bold border border-green-200 px-3 py-1 rounded hover:bg-green-50">✍️ Realizar</button>`
-            : `<span class="text-xs text-gray-400 font-bold px-3 py-1 border border-gray-200 bg-gray-50 rounded cursor-not-allowed" title="Solo profesor">🔒 Oficial</span>`;
+function displayExamsList(exams) {
+    if (!exams || exams.length === 0) {
+        examsListContainer.innerHTML = '<p class="text-center text-gray-500 py-4">Sin resultados.</p>';
+        return;
+    }
 
-        return `<div class="flex flex-col sm:flex-row justify-between items-center bg-white p-3 rounded shadow-sm border border-gray-200">
-            <div class="mb-2 sm:mb-0"><h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">${escapeHTML(x.nombre)} <span class="text-xs px-2 py-0.5 rounded border ${badgeColor}">${x.tipo||'PRACTICA'}</span></h4><p class="text-xs text-gray-500">${escapeHTML(x.asignatura?.nombre)} • ${escapeHTML(x.autor)}</p></div>
+    examsListContainer.innerHTML = exams.map(x => {
+        const badgeColor = x.tipo === 'OFICIAL' ? 'bg-red-100 text-red-800 border-red-200' : 'bg-green-100 text-green-800 border-green-200';
+        
+        // Botón Realizar (condicional)
+        const takeButton = x.tipo !== 'OFICIAL' 
+            ? `<button onclick="takeExam('${x._id}')" class="text-green-600 text-xs font-bold border border-green-200 px-3 py-1 rounded hover:bg-green-50">✍️ Realizar</button>`
+            : `<span class="text-xs text-gray-400 font-bold px-3 py-1 border border-gray-200 bg-gray-50 rounded cursor-not-allowed">🔒 Oficial</span>`;
+
+        return `
+        <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-3 rounded shadow-sm border border-gray-200">
+            <div class="mb-2 sm:mb-0">
+                <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                    ${escapeHTML(x.nombre)} 
+                    <span class="text-xs px-2 py-0.5 rounded border ${badgeColor}">${x.tipo||'PRACTICA'}</span>
+                </h4>
+                <p class="text-xs text-gray-500">${escapeHTML(x.asignatura?.nombre)} • ${escapeHTML(x.autor)}</p>
+            </div>
             <div class="flex gap-2">
                 ${takeButton}
-                <a href="${URL_EXAMENES}/${x._id}/pdf" target="_blank" class="text-indigo-600 text-xs font-bold border border-indigo-200 px-3 py-1 rounded hover:bg-indigo-50">📥 PDF</a>
+                <a href="${URL_EXAMENES}/${x._id}/pdf" target="_blank" class="text-indigo-600 text-xs font-bold border border-indigo-200 px-3 py-1 rounded hover:bg-indigo-50" title="Descargar PDF">📥 PDF</a>
+                <!-- NUEVO BOTÓN JSON -->
+                <a href="${URL_EXAMENES}/${x._id}/export-json" target="_blank" class="text-gray-600 text-xs font-bold border border-gray-300 px-3 py-1 rounded hover:bg-gray-100" title="Exportar para otra App">JSON</a>
             </div>
         </div>`;
     }).join('');
