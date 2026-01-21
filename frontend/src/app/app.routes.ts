@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   // -----------------------------------------------------------------------
@@ -8,6 +9,7 @@ export const routes: Routes = [
     path: '',
     // Carga el Layout que acabamos de editar (con Sidebar y Header)
     loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
@@ -41,6 +43,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/alumno/pages/realizar-examen/realizar-examen.component').then(m => m.RealizarExamenComponent)
       }
     ]
+  },
+
+  // -----------------------------------------------------------------------
+  // 3. AUTH (LOGIN)
+  // -----------------------------------------------------------------------
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth-routing-module').then(m => m.AuthRoutingModule)
   },
 
   // -----------------------------------------------------------------------

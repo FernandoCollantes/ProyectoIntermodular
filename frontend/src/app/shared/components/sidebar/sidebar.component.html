@@ -1,63 +1,92 @@
-<aside class="barra-lateral">
+<aside class="barra-lateral" [class.collapsed]="collapsed">
   <div class="barra-lateral-cabecera">
-    <h2>EXAMGEN</h2>
+    <!-- Dynamic Logo Logic -->
+    <div class="logo-container">
+      <img [src]="collapsed ? 'assets/Logo2.png' : 'assets/Logo1.png'" [alt]="collapsed ? 'Logo Icon' : 'Campus Hub'"
+        [class.logo-icon]="collapsed" [class.logo-full]="!collapsed">
+    </div>
+
+    <!-- Collapse Toggle Button -->
+    <button class="btn-toggle-sidebar" (click)="toggle.emit()">
+      <span *ngIf="collapsed">➜</span> <!-- Simple Icon placeholder -->
+      <span *ngIf="!collapsed">⬅</span>
+    </button>
   </div>
-  //ENLACES TEMPORALES A ZONA ALUMNO
-  <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-  
-  <small style="color: var(--gray-500); display: block; padding-left: 20px; margin-bottom: 10px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">
-    Zona Alumno (Temp)
-  </small>
 
-  <ul style="list-style: none; padding: 0; margin: 0;">
-    <li>
-      <a routerLink="/alumno/acceso" class="nav-link" style="display: flex; align-items: center; padding: 12px 20px; color: var(--gray-400); text-decoration: none; transition: all 0.2s;">
-        <span style="margin-right: 12px; font-size: 1.1rem;">🔒</span>
-        <span>Acceso Alumno</span>
+  <div class="nav-scrollable">
+    <!-- Login / Access Links -->
+    <div class="grupo-accesos">
+      <ul class="lista-accesos">
+        <li>
+          <a routerLink="/auth/login" class="nav-link" title="Acceso Profesor">
+            <span class="nav-icon">👨‍🏫</span>
+            <span class="nav-text" *ngIf="!collapsed">Acceso Profesor</span>
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/alumno/acceso" class="nav-link" title="Acceso Alumno">
+            <span class="nav-icon">🔒</span>
+            <span class="nav-text" *ngIf="!collapsed">Acceso Alumno</span>
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/alumno/realizar-examen" class="nav-link" title="Realizar Examen">
+            <span class="nav-icon">📝</span>
+            <span class="nav-text" *ngIf="!collapsed">Realizar Examen</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <nav class="barra-lateral-navegacion">
+
+      <a routerLink="/dashboard" routerLinkActive="activo" class="item-navegacion" title="Dashboard">
+        <div class="icono-custom tipo-imagen">
+          <img src="assets/Logo2.png" alt="D">
+        </div>
+        <span class="nav-text" *ngIf="!collapsed">Dashboard</span>
       </a>
-    </li>
 
-    <li>
-      <a routerLink="/alumno/realizar-examen" class="nav-link" style="display: flex; align-items: center; padding: 12px 20px; color: var(--gray-400); text-decoration: none; transition: all 0.2s;">
-        <span style="margin-right: 12px; font-size: 1.1rem;">📝</span>
-        <span>Realizar Examen</span>
+      <a routerLink="/preguntas" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}"
+        class="item-navegacion" title="Mis Preguntas">
+        <div class="icono-custom tipo-texto">P</div>
+        <span class="nav-text" *ngIf="!collapsed">Mis Preguntas</span>
       </a>
-    </li>
-  </ul>
 
-</div>
-  
-  <nav class="barra-lateral-navegacion">
-    
-    <a routerLink="/dashboard" routerLinkActive="activo" class="item-navegacion">
-      <div class="icono-navegacion"></div> <span>Dashboard</span>
-    </a>
+      <a routerLink="/examenes" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}"
+        class="item-navegacion" title="Mis Exámenes">
+        <div class="icono-custom tipo-texto">E</div>
+        <span class="nav-text" *ngIf="!collapsed">Mis Exámenes</span>
+      </a>
 
-    <a routerLink="/preguntas" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}" class="item-navegacion">
-      <div class="icono-navegacion"></div> <span>Mis Preguntas</span>
-    </a>
+      <a href="#" class="item-navegacion" title="Asignaturas">
+        <div class="icono-custom tipo-texto">A</div>
+        <span class="nav-text" *ngIf="!collapsed">Asignaturas</span>
+      </a>
 
-    <a routerLink="/examenes" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}" class="item-navegacion">
-      <div class="icono-navegacion"></div> <span>Mis Exámenes</span>
-    </a>
+      <div class="separator"></div>
 
-    <a href="#" class="item-navegacion">
-      <div class="icono-navegacion"></div> <span>Asignaturas</span>
-    </a>
+      <a routerLink="/preguntas/crear" routerLinkActive="activo" class="item-navegacion" title="Crear Pregunta">
+        <div class="icono-custom tipo-texto">P+</div>
+        <span class="nav-text" *ngIf="!collapsed">Crear Pregunta</span>
+      </a>
 
-    <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 10px 20px;"></div>
+      <a routerLink="/examenes/crear" routerLinkActive="activo" class="item-navegacion" title="Crear Examen">
+        <div class="icono-custom tipo-texto">E+</div>
+        <span class="nav-text" *ngIf="!collapsed">Crear Examen</span>
+      </a>
 
-    <a routerLink="/preguntas/crear" routerLinkActive="activo" class="item-navegacion">
-      <div class="icono-navegacion"></div> <span>Crear Pregunta</span>
-    </a>
+      <a routerLink="/examenes" class="item-navegacion" title="Exportar">
+        <div class="icono-custom tipo-svg">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+          </svg>
+        </div>
+        <span class="nav-text" *ngIf="!collapsed">Exportar</span>
+      </a>
 
-    <a routerLink="/examenes/crear" routerLinkActive="activo" class="item-navegacion">
-      <div class="icono-navegacion"></div> <span>Crear Examen</span>
-    </a>
-
-    <a routerLink="/examenes" class="item-navegacion">
-      <div class="icono-navegacion"></div> <span>Exportar</span>
-    </a>
-
-  </nav>
+    </nav>
+  </div>
 </aside>

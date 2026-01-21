@@ -6,6 +6,7 @@ export interface Pregunta {
     asignatura: string;
     tema: string;
     dificultad: number;
+    criterios: string[];
 }
 
 // Ahora el DTO es idéntico a lo que espera Mongoose
@@ -16,4 +17,5 @@ export interface CrearPreguntaDto {
     dificultad: number;
     respuesta_correcta: string;
     opciones: string[]; // <--- Cambiado de incorrect_options a opciones
+    criterios: string[];
 }

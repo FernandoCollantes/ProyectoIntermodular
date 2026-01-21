@@ -1,103 +1,133 @@
-/* header.component.scss */
-:host {
-  display: block;
+/* Header Styles */
+.barra-superior {
+  height: 70px;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  /* Flexbox para alinear elementos */
+  align-items: center;
+  /* Centrar verticalmente */
+  justify-content: space-between;
+  /* Título izquierda, acciones derecha */
+  padding: 0 30px;
+  /* Espaciado lateral */
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.barra-superior {
-  height: 64px;
-  background-color: var(--white);
+.info-izquierda {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  /* El ancho y posición lo controlará el Layout padre */
+  gap: 15px;
 }
 
 .titulo-pagina {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--gray-900);
   margin: 0;
+  font-size: 1.4rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.badge-ciclo {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+
+  &.dam {
+    background-color: #e67e22;
+  }
+
+  &.daw {
+    background-color: #9b59b6;
+  }
 }
 
 .acciones-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
 
-.boton-icono-header {
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #34495e;
+}
+
+.btn-switch {
   background: none;
   border: none;
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
-  color: var(--gray-600);
+  font-size: 1.2rem;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.2s;
 
   &:hover {
-    background-color: var(--gray-100);
-    color: var(--primary);
+    background-color: #f0f2f5;
   }
-}
-
-/* Badge rojo de notificaciones */
-.badge-notificacion {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: var(--danger);
-  color: white;
-  font-size: 10px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--white);
 }
 
 .separador-vertical {
   width: 1px;
-  height: 24px;
-  background-color: var(--gray-300);
+  height: 30px;
+  background-color: #ddd;
 }
 
 .boton-perfil-header {
-  background: none;
-  border: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  /* Alinea icono y texto */
+  gap: 10px;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  color: var(--gray-700);
-  font-weight: 500;
-  font-size: 0.9rem;
-  padding: 8px 16px;
+  padding: 5px 10px;
   border-radius: 8px;
+  /* Bordes redondeados */
   transition: background-color 0.2s;
-
-  &:hover {
-    background-color: var(--gray-100);
-    color: var(--danger);
-  }
 }
 
-/* Cuadrados placeholders para iconos (luego pondremos SVGs reales) */
-.icono-campana, .icono-salir {
-  width: 20px;
-  height: 20px;
-  background-color: currentColor;
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  /* Aquí iría: mask-image: url('assets/icons/bell.svg'); */
-  opacity: 0.8;
+.boton-perfil-header:hover {
+  background-color: #f5f5f5;
+  /* Fondo gris claro al pasar el ratón */
+}
+
+.texto-salir {
+  font-size: 0.95rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.icono-salir {
+  width: 32px;
+  /* Tamaño del icono */
+  height: 32px;
+  border-radius: 50%;
+  /* Círculo perfecto */
+  background-color: #ddd;
+  /* Placeholder gris para la foto */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M16 13v-2H7V8l-5 4 5 4v-3h9zM20 3h-9c-1.1 0-2 .9-2 2v4h2V5h9v14h-9v-4H9v4c0 1.1.9 2 2 2h9c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+}
+
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
 }

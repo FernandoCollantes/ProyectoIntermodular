@@ -36,4 +36,38 @@ export class PreguntaService {
             map(response => response.question)
         );
     }
+
+    /**
+     * Get evaluation criteria based on subject.
+     * MOCKED for now.
+     */
+    getCriterios(asignatura: string): Observable<string[]> {
+        // Mock data
+        const criteriosDAM = [
+            'CE1. Interpreta el diseño de la base de datos',
+            'CE2. Implementa consultas SQL complejas',
+            'CE3. Desarrolla componentes de interfaz de usuario',
+            'CE4. Realiza pruebas unitarias'
+        ];
+
+        const criteriosDAW = [
+            'CE1. Diseña interfaces web responsive',
+            'CE2. Implementa lógica de cliente con JavaScript',
+            'CE3. Gestiona el despliegue de aplicaciones web',
+            'CE4. Integra servicios RESTful'
+        ];
+
+        let criterios: string[] = [];
+        if (asignatura === 'DAM') {
+            criterios = criteriosDAM;
+        } else if (asignatura === 'DAW') {
+            criterios = criteriosDAW;
+        }
+
+        // Return as observable
+        return new Observable(observer => {
+            observer.next(criterios);
+            observer.complete();
+        });
+    }
 }

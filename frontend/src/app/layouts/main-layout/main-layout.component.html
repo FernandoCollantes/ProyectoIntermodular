@@ -1,16 +1,15 @@
 <div class="contenedor-app">
-  
-  <app-sidebar></app-sidebar>
 
-  <main class="contenido-principal">
-    
-    <app-header 
-      [titulo]="'Panel de Profesor'" 
-      [iniciales]="'JP'">
+  <app-sidebar [collapsed]="sidebarCollapsed" (toggle)="onToggleSidebar()"></app-sidebar>
+
+  <main class="contenido-principal" [class.sidebar-collapsed]="sidebarCollapsed">
+
+    <app-header [titulo]="getPageTitle()" [user]="user$ | async" [cycle]="cycle$ | async" (logout)="onLogout()"
+      (switchCycle)="onSwitchCycle()">
     </app-header>
 
     <div class="contenido-interno">
-      <router-outlet></router-outlet> 
+      <router-outlet></router-outlet>
     </div>
 
   </main>

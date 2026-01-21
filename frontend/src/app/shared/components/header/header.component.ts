@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core'; // <--- Añadir Input
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,15 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  // Recibimos los datos del padre (MainLayout)
   @Input() titulo: string = 'ExamGen';
-  @Input() iniciales: string = 'US';
+  @Input() user: User | null = null;
+  @Input() cycle: 'DAM' | 'DAW' | null = null;
+
+  @Output() logout = new EventEmitter<void>();
+  @Output() switchCycle = new EventEmitter<void>();
+
+  get iniciales(): string {
+    if (!this.user?.name) return '??';
+    return this.user.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase();
+  }
 }

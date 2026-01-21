@@ -1,42 +1,58 @@
 ﻿<div class="contenedor-acceso">
   <div class="caja-acceso">
     <div class="cabecera-acceso">
-      <div class="logo-acceso"></div>
+      <img src="assets/Logo1.png" alt="Acceso Alumno Logo" class="logo-acceso-img">
       <h1 class="titulo-acceso">Acceso al Examen</h1>
-      <p class="subtitulo-acceso">
+      <h2 class="subtitulo-acceso">
         Introduce el código de acceso proporcionado por tu profesor
-      </p>
+      </h2>
     </div>
-    
-    <form class="formulario-acceso">
+
+    <form [formGroup]="accesoForm" (ngSubmit)="onSubmit()" class="formulario-acceso">
       <div class="grupo-formulario">
         <label for="examCode" class="etiqueta-formulario requerido">Código del examen</label>
-        <input 
-          type="text" 
-          id="examCode" 
-          class="entrada-formulario entrada-codigo-acceso" 
-          placeholder="ABC123"
-          maxlength="6"
-        >
+        <input type="text" id="examCode" formControlName="examCode" class="entrada-formulario entrada-codigo-acceso"
+          placeholder="ABC123" maxlength="6"
+          [class.is-invalid]="accesoForm.get('examCode')?.invalid && accesoForm.get('examCode')?.touched">
+        <div *ngIf="accesoForm.get('examCode')?.invalid && accesoForm.get('examCode')?.touched" class="error-text">
+          <small *ngIf="accesoForm.get('examCode')?.errors?.['required']">El código es obligatorio.</small>
+          <small *ngIf="accesoForm.get('examCode')?.errors?.['minlength']">Mínimo 4 caracteres.</small>
+        </div>
       </div>
-      
+
       <div class="grupo-formulario">
         <label for="studentName" class="etiqueta-formulario requerido">Tu nombre completo</label>
-        <input type="text" id="studentName" class="entrada-formulario" placeholder="Ej: Fernando Collantes">
+        <input type="text" id="studentName" formControlName="studentName" class="entrada-formulario"
+          placeholder="Ej: Fernando Collantes"
+          [class.is-invalid]="accesoForm.get('studentName')?.invalid && accesoForm.get('studentName')?.touched">
+        <div *ngIf="accesoForm.get('studentName')?.invalid && accesoForm.get('studentName')?.touched"
+          class="error-text">
+          <small>El nombre es obligatorio.</small>
+        </div>
       </div>
-      
+
       <div class="grupo-formulario">
         <label for="studentEmail" class="etiqueta-formulario requerido">Tu correo electrónico</label>
-        <input type="email" id="studentEmail" class="entrada-formulario" placeholder="tu@email.com">
+        <input type="email" id="studentEmail" formControlName="studentEmail" class="entrada-formulario"
+          placeholder="tu@email.com"
+          [class.is-invalid]="accesoForm.get('studentEmail')?.invalid && accesoForm.get('studentEmail')?.touched">
+
+        <!-- Validation Messages -->
+        <div *ngIf="accesoForm.get('studentEmail')?.invalid && accesoForm.get('studentEmail')?.touched"
+          class="error-text">
+          <small *ngIf="accesoForm.get('studentEmail')?.errors?.['required']">El correo es obligatorio.</small>
+          <small *ngIf="accesoForm.get('studentEmail')?.errors?.['email']">Introduce un correo válido (ej:
+            usuario@email.com).</small>
+        </div>
       </div>
-      
-      <button [routerLink]="['/alumno/realizar-examen']" class="boton boton-primario">
-  Acceder al Examen
-</button>
-      
+
+      <button type="submit" class="boton boton-primario" [disabled]="accesoForm.invalid">
+        Acceder al Examen
+      </button>
+
       <div class="caja-info">
         <p>
-          <strong>Importante:</strong> Una vez inicies el examen, el tiempo comenzará a correr. 
+          <strong>Importante:</strong> Una vez inicies el examen, el tiempo comenzará a correr.
         </p>
       </div>
     </form>

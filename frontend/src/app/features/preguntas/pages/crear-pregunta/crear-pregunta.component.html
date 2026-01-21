@@ -1,75 +1,102 @@
 <div class="tarjeta">
   <div class="tarjeta-cabecera">
-    <h2 class="tarjeta-titulo">Crear Nueva Pregunta</h2>
+    <h1>Crear Nueva Pregunta</h1>
   </div>
 
-  <form>
+  <form [formGroup]="preguntaForm" (ngSubmit)="onSubmit()">
     <div class="grupo-formulario">
-      <label class="etiqueta-formulario">Asignatura</label>
-      <select class="seleccion-formulario">
-        <option value="" disabled selected>Selecciona una asignatura...</option>
-        <option value="matematicas">Matemáticas</option>
-        <option value="historia">Historia</option>
-        <option value="ciencias">Ciencias</option>
+      <label class="etiqueta-formulario requerido">Asignatura</label>
+      <select class="seleccion-formulario" formControlName="asignatura">
+        <option value="" disabled>Selecciona una asignatura...</option>
+        <option *ngFor="let asig of asignaturas" [value]="asig">{{ asig }}</option>
       </select>
+      <div *ngIf="preguntaForm.get('asignatura')?.invalid && preguntaForm.get('asignatura')?.touched"
+        style="color: #e74c3c; font-size: 0.85rem; margin-top: 5px;">
+        Campo obligatorio
+      </div>
+    </div>
+
+    <!-- Nuevo campo de Criterios de Evaluación -->
+    <div class="grupo-formulario" *ngIf="criteriosDisponibles.length > 0">
+      <label class="etiqueta-formulario requerido">Criterio de Evaluación</label>
+      <div style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">Seleccione los criterios que abarcará la pregunta
+        (Ctrl + Click)
+      </div>
+      <select class="seleccion-formulario" formControlName="criterios" multiple style="min-height: 120px;">
+        <option *ngFor="let crit of criteriosDisponibles" [value]="crit">{{ crit }}</option>
+      </select>
+      <div *ngIf="preguntaForm.get('criterios')?.invalid && preguntaForm.get('criterios')?.touched"
+        style="color: #e74c3c; font-size: 0.85rem; margin-top: 5px;">
+        Campo obligatorio
+      </div>
     </div>
 
     <div class="grupo-formulario">
-      <label class="etiqueta-formulario">Enunciado de la pregunta</label>
-      
+      <label class="etiqueta-formulario requerido">Enunciado de la pregunta</label>
+
       <div class="contenedor-editor">
-        <div class="barra-herramientas-editor">
-          <button type="button" class="boton-herramienta" title="Negrita"><b>B</b></button>
-          <button type="button" class="boton-herramienta" title="Cursiva"><i>I</i></button>
-          <button type="button" class="boton-herramienta" title="Subrayado"><u>U</u></button>
-          
-          <div class="separador-herramientas"></div>
-          
-          <button type="button" class="boton-herramienta" title="Lista con viñetas">•</button>
-          <button type="button" class="boton-herramienta" title="Lista numerada">1.</button>
-        </div>
-        
-        <textarea class="area-texto-editor" placeholder="Escribe tu pregunta aquí..."></textarea>
+
+        <textarea class="area-texto-editor" formControlName="enunciado"
+          placeholder="Escribe tu pregunta aquí..."></textarea>
+      </div>
+      <div *ngIf="preguntaForm.get('enunciado')?.invalid && preguntaForm.get('enunciado')?.touched"
+        style="color: #e74c3c; font-size: 0.85rem; margin-top: 5px;">
+        Campo obligatorio
       </div>
     </div>
 
     <div class="grupo-formulario">
-      <label class="etiqueta-formulario">Opciones de respuesta</label>
-      
+      <label class="etiqueta-formulario requerido">Opciones de respuesta</label>
+      <div style="font-size: 0.9rem; color: #666; margin-bottom: 2px;">Marca la casilla correspondiente a la respuesta
+        correcta.</div>
+
       <div class="contenedor-opciones-respuesta">
-        
+
         <div class="entrada-opcion-respuesta">
-          <input type="radio" name="correctAnswer" value="a" checked>
+          <input type="radio" formControlName="respuestaCorrecta" value="a">
           <label style="font-weight: 600; min-width: 20px;">A)</label>
-          <input type="text" class="entrada-formulario" placeholder="Escribe la opción A">
+          <input type="text" class="entrada-formulario" formControlName="opcionA" placeholder="Escribe la opción A">
         </div>
+        <div *ngIf="preguntaForm.get('opcionA')?.invalid && preguntaForm.get('opcionA')?.touched"
+          style="color: #e74c3c; font-size: 0.85rem; margin-left: 30px;">Campo obligatorio</div>
 
         <div class="entrada-opcion-respuesta">
-          <input type="radio" name="correctAnswer" value="b">
+          <input type="radio" formControlName="respuestaCorrecta" value="b">
           <label style="font-weight: 600; min-width: 20px;">B)</label>
-          <input type="text" class="entrada-formulario" placeholder="Escribe la opción B">
+          <input type="text" class="entrada-formulario" formControlName="opcionB" placeholder="Escribe la opción B">
         </div>
+        <div *ngIf="preguntaForm.get('opcionB')?.invalid && preguntaForm.get('opcionB')?.touched"
+          style="color: #e74c3c; font-size: 0.85rem; margin-left: 30px;">Campo obligatorio</div>
 
         <div class="entrada-opcion-respuesta">
-          <input type="radio" name="correctAnswer" value="c">
+          <input type="radio" formControlName="respuestaCorrecta" value="c">
           <label style="font-weight: 600; min-width: 20px;">C)</label>
-          <input type="text" class="entrada-formulario" placeholder="Escribe la opción C">
+          <input type="text" class="entrada-formulario" formControlName="opcionC" placeholder="Escribe la opción C">
         </div>
+        <div *ngIf="preguntaForm.get('opcionC')?.invalid && preguntaForm.get('opcionC')?.touched"
+          style="color: #e74c3c; font-size: 0.85rem; margin-left: 30px;">Campo obligatorio</div>
 
         <div class="entrada-opcion-respuesta">
-          <input type="radio" name="correctAnswer" value="d">
+          <input type="radio" formControlName="respuestaCorrecta" value="d">
           <label style="font-weight: 600; min-width: 20px;">D)</label>
-          <input type="text" class="entrada-formulario" placeholder="Escribe la opción D">
+          <input type="text" class="entrada-formulario" formControlName="opcionD" placeholder="Escribe la opción D">
+        </div>
+        <div *ngIf="preguntaForm.get('opcionD')?.invalid && preguntaForm.get('opcionD')?.touched"
+          style="color: #e74c3c; font-size: 0.85rem; margin-left: 30px;">Campo obligatorio</div>
+
+        <div *ngIf="preguntaForm.hasError('duplicateOptions') && preguntaForm.touched"
+          style="color: #e74c3c; font-size: 0.85rem; margin-top: 5px; font-weight: bold;">
+          No pueden haber opciones repetidas (verifica que el texto es distinto en cada una).
         </div>
 
       </div>
     </div>
 
     <div class="grupo-formulario">
-      <label class="etiqueta-formulario">Nivel de dificultad</label>
-      <select class="seleccion-formulario">
+      <label class="etiqueta-formulario requerido">Nivel de dificultad</label>
+      <select class="seleccion-formulario" formControlName="dificultad">
         <option value="facil">Fácil</option>
-        <option value="media" selected>Media</option>
+        <option value="media">Media</option>
         <option value="dificil">Difícil</option>
       </select>
     </div>
@@ -78,8 +105,9 @@
       <a [routerLink]="['/preguntas']" class="boton boton-contorno">
         Cancelar
       </a>
-      <button type="submit" class="boton boton-primario">
-        <div class="boton-icono"></div> 
+      <button type="submit" class="boton boton-primario" [disabled]="preguntaForm.invalid"
+        [style.opacity]="preguntaForm.invalid ? '0.5' : '1'">
+        <div class="boton-icono"></div>
         Guardar Pregunta
       </button>
     </div>

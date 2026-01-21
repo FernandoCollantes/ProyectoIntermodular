@@ -1,5 +1,5 @@
 ﻿<div class="contenedor-examen">
-  
+
   <div class="cabecera-examen">
     <div>
       <h1 class="titulo-examen" style="font-size: 1.5rem; margin: 0;">Examen Final Matemáticas - 1º Trimestre</h1>
@@ -7,58 +7,63 @@
         Alumno: Fernando Collantes
       </p>
     </div>
-    <div class="temporizador-examen">
-      <div class="icono-temporizador"></div>
-      <span>45:23</span>
+    <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
+      <img src="assets/Logo2.png" alt="ExamGen" class="logo-examen">
+      <div class="temporizador-examen">
+        <div class="icono-temporizador"></div>
+        <span>45:23</span>
+      </div>
     </div>
   </div>
-  
+
   <div class="caja-pregunta">
-    <div style="font-size: var(--font-size-sm); color: var(--primary); font-weight: 600; margin-bottom: var(--spacing-md);">
+    <div
+      style="font-size: var(--font-size-sm); color: var(--primary); font-weight: 600; margin-bottom: var(--spacing-md);">
       Pregunta 1 de 10
     </div>
-    
-    <div style="display: flex; align-items: center; gap: var(--spacing-xs); color: var(--text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--spacing-lg);">
+
+    <div
+      style="display: flex; align-items: center; gap: var(--spacing-xs); color: var(--text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--spacing-lg);">
       <span>Pregunta de respuesta única</span>
     </div>
-    
+
     <h2 class="enunciado-pregunta">
       ¿Cuál es la solución de 24+2?
     </h2>
-    
+
     <div class="lista-respuestas">
       <label class="opcion-respuesta">
         <input type="radio" name="answer" value="a">
         <span>A) 3</span>
       </label>
-      
+
       <label class="opcion-respuesta seleccionada">
         <input type="radio" name="answer" value="b" checked>
         <span>B) 26</span>
       </label>
-      
+
       <label class="opcion-respuesta">
         <input type="radio" name="answer" value="c">
         <span>C) 5</span>
       </label>
-      
+
       <label class="opcion-respuesta">
         <input type="radio" name="answer" value="d">
         <span>D) 28</span>
       </label>
     </div>
   </div>
-  
+
   <div class="navegacion-examen">
     <button class="boton boton-contorno" disabled>Anterior</button>
-    
+
     <div style="color: var(--text-secondary); font-size: var(--font-size-sm);">
       <strong>Progreso:</strong> 1/10 preguntas respondidas
     </div>
-    
+
     <button class="boton boton-primario">Siguiente</button>
   </div>
-  
+
   <div style="margin-top: var(--spacing-xl); text-align: center;">
     <button class="boton boton-exito boton-grande">
       Finalizar Examen

@@ -1,0 +1,80 @@
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="assets/Logo1.png" alt="ExamGen Logo" class="logo-login">
+        </div>
+
+        <h1>Bienvenido a ExamGen</h1>
+        <h2 class="subtitle">Inicia sesión para acceder al panel</h2>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+            <!-- Cycle Selection -->
+            <div class="form-group">
+                <label class="requerido">Selecciona tu ciclo</label>
+                <div class="cycle-selector">
+                    <label class="cycle-option" [class.selected]="loginForm.get('cycle')?.value === 'DAM'">
+                        <input type="radio" formControlName="cycle" value="DAM">
+                        <span class="cycle-label">DAM</span>
+                    </label>
+                    <label class="cycle-option" [class.selected]="loginForm.get('cycle')?.value === 'DAW'">
+                        <input type="radio" formControlName="cycle" value="DAW">
+                        <span class="cycle-label">DAW</span>
+                    </label>
+                </div>
+                <div *ngIf="loginForm.get('cycle')?.invalid && loginForm.get('cycle')?.touched" class="error-text">
+                    Debes seleccionar un ciclo.
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email" class="requerido">Correo Electrónico</label>
+                <input type="email" id="email" formControlName="email" class="form-control"
+                    placeholder="ejemplo@educa.es">
+                <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']"
+                    class="error-text">
+                    El correo electrónico es obligatorio.
+                </div>
+                <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']"
+                    class="error-text">
+                    Por favor, introduce un correo electrónico válido.
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="requerido">Contraseña</label>
+                <div class="password-wrapper">
+                    <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+                        class="form-control" placeholder="••••••••">
+                    <button type="button" class="btn-toggle-password" (click)="showPassword = !showPassword"
+                        tabindex="-1">
+                        {{ showPassword ? 'ocultar' : 'mostrar' }}
+                    </button>
+                </div>
+                <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                    class="error-text">
+                    La contraseña es obligatoria.
+                </div>
+            </div>
+
+            <div *ngIf="errorMsg" class="alert-error">
+                {{ errorMsg }}
+            </div>
+
+            <button type="submit" class="btn-primary" [disabled]="loginForm.invalid || loading">
+                {{ loading ? 'Iniciando...' : 'Iniciar Sesión' }}
+            </button>
+
+            <!-- Mock Helpers -->
+            <div class="mock-helpers">
+                <small>Datos de prueba:</small>
+                <div class="links">
+                    <a (click)="fillMock('DAM')">Profesor DAM</a> |
+                    <a (click)="fillMock('DAW')">Profesor DAW</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

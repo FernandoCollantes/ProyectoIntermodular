@@ -1,17 +1,13 @@
 <div class="tarjeta">
   <form>
-    <h3 style="margin-bottom: var(--spacing-lg); color: var(--text-primary)">
+    <h1>
       Configuración del Examen
-    </h3>
+    </h1>
 
     <div class="grupo-formulario">
       <label for="examTitle" class="etiqueta-formulario requerido">Título del examen</label>
-      <input
-        type="text"
-        id="examTitle"
-        class="entrada-formulario"
-        placeholder="Ej: Examen Final Matemáticas - 1º Trimestre"
-      />
+      <input type="text" id="examTitle" class="entrada-formulario"
+        placeholder="Ej: Examen Final Matemáticas - 1º Trimestre" />
     </div>
 
     <div class="rejilla-configuracion-examen">
@@ -27,27 +23,23 @@
       </div>
 
       <div class="grupo-formulario">
+        <label for="subject" class="etiqueta-formulario requerido">Criterios de evaluación</label>
+        <select id="subject" class="seleccion-formulario">
+          <option value="" disabled selected>Seleccione Criterios de evaluación contenidos...</option>
+          <option value="">C1</option>
+          <option value="">C2</option>
+          <option value="">C3</option>
+        </select>
+      </div>
+
+      <div class="grupo-formulario">
         <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
-        <input
-          type="number"
-          id="duration"
-          class="entrada-formulario"
-          placeholder="60"
-          min="5"
-          max="180"
-        />
+        <input type="number" id="duration" class="entrada-formulario" placeholder="60" min="5" max="180" />
       </div>
 
       <div class="grupo-formulario">
         <label for="passingGrade" class="etiqueta-formulario requerido">Nota mínima (%)</label>
-        <input
-          type="number"
-          id="passingGrade"
-          class="entrada-formulario"
-          placeholder="50"
-          min="0"
-          max="100"
-        />
+        <input type="number" id="passingGrade" class="entrada-formulario" placeholder="50" min="0" max="100" />
       </div>
 
       <div class="grupo-formulario">
@@ -62,19 +54,10 @@
     </div>
 
     <div class="seleccion-preguntas">
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--spacing-lg);
-        "
-      >
-        <h3 style="margin: 0; color: var(--text-primary)">Seleccionar Preguntas</h3>
+      <div class="cabecera-seleccion">
+        <h2>Seleccionar Preguntas</h2>
         <span class="contador-seleccionado">
-          <div
-            style="width: 16px; height: 16px; background-color: var(--primary); border-radius: 50%"
-          ></div>
+          <div class="indicador-estado"></div>
           3 preguntas seleccionadas
         </span>
       </div>

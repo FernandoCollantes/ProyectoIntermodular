@@ -28,28 +28,26 @@
   margin-bottom: 40px;
 }
 
-.logo-acceso {
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+.logo-acceso-img {
+  max-width: 240px;
+  /* Increased from 180px */
+  height: auto;
   margin: 0 auto 24px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &::before {
-    content: 'E';
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--white);
-  }
+  display: block;
 }
 
 .titulo-acceso {
   font-size: 2rem;
-  font-weight: 400;
+  font-weight: 700;
   margin-bottom: 12px;
-  color: var(--text-primary);
+  /* Color inherited from global H1 */
+}
+
+.subtitulo-acceso {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  /* Color inherited from global H2 */
 }
 
 .entrada-codigo-acceso {
@@ -59,10 +57,23 @@
   letter-spacing: 0.3em;
   text-transform: uppercase;
   padding: 18px;
-  
+
   &:focus {
     letter-spacing: 0.4em;
   }
+}
+
+/* Validation Styles */
+.entrada-formulario.is-invalid {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(196, 50, 77, 0.1);
+}
+
+.error-text {
+  color: var(--error);
+  font-size: 0.85rem;
+  margin-top: 6px;
+  display: block;
 }
 
 .caja-info {
@@ -71,5 +82,10 @@
   padding: 20px;
   border-radius: 8px;
   margin-top: 28px;
-  p { font-size: 0.875rem; color: var(--text-secondary); margin: 0; }
+
+  p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
 }

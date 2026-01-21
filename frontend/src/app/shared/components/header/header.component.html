@@ -1,17 +1,40 @@
 <header class="barra-superior">
-  <h2 class="titulo-pagina">Panel de Control</h2>
+  <div class="info-izquierda">
+    <h2 class="titulo-pagina">{{ titulo }}</h2>
+    <span *ngIf="cycle" class="badge-ciclo" [class.dam]="cycle === 'DAM'" [class.daw]="cycle === 'DAW'">
+      {{ cycle }}
+    </span>
+  </div>
 
   <div class="acciones-header">
-    <button class="boton-icono-header" title="Notificaciones">
-      <div class="icono-campana"></div>
-      <span class="badge-notificacion">3</span>
-    </button>
-    
-    <div class="separador-vertical"></div>
-    
-    <button class="boton-perfil-header">
-      <span class="texto-salir">Cerrar Sesión</span>
-      <div class="icono-salir"></div>
-    </button>
+
+    <!-- User Logged In -->
+    <ng-container *ngIf="user; else notLoggedIn">
+      <div class="user-info">
+        <span class="user-name">{{ user.name }}</span>
+        <button class="btn-switch" (click)="switchCycle.emit()" title="Cambiar de ciclo">
+          🔁
+        </button>
+      </div>
+
+      <div class="separador-vertical"></div>
+
+      <button class="boton-perfil-header" (click)="logout.emit()">
+        <span class="texto-salir">Cerrar Sesión</span>
+        <div class="icono-salir"></div>
+      </button>
+
+      <div class="avatar-circle">
+        {{ iniciales }}
+      </div>
+    </ng-container>
+
+    <!-- User Logged Out -->
+    <ng-template #notLoggedIn>
+      <a routerLink="/auth/login" class="boton-perfil-header" style="text-decoration: none;">
+        <span class="texto-salir" style="margin-right:0;">Acceso Profesor</span>
+      </a>
+    </ng-template>
+
   </div>
 </header>
