@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 
 const AsignaturaSchema = new mongoose.Schema({
-    // SOBRESCRIBIMOS el _id por defecto.
-    // Ahora será el Código del Módulo (ej: "MP0485")
     _id: { 
         type: String, 
         required: true,
-        uppercase: true, // Forzamos mayúsculas
+        uppercase: true,
         trim: true
     },
     nombre: { 
@@ -17,4 +15,5 @@ const AsignaturaSchema = new mongoose.Schema({
     }
 }, { collection: 'Asignaturas' });
 
-module.exports = mongoose.model('Asignatura', AsignaturaSchema);
+// Comprueba si el modelo ya existe antes de compilarlo para evitar errores en re-cargas
+module.exports = mongoose.models.Asignatura || mongoose.model('Asignatura', AsignaturaSchema);

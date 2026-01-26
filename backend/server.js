@@ -13,7 +13,7 @@ app.use(express.json());
 
 // 2. RESTAURADO: Servir la página de presentación y archivos raíz
 // Esto permite acceder a otros archivos HTML o assets que tengas fuera de 'Pagina'
-app.use(express.static(path.join(__dirname, 'presentacion')));
+app.use(express.static(path.join(__dirname, 'Pagina')));
 app.use(express.static(path.join(__dirname, '../'))); // Acceso a la raíz del proyecto (opcional, úsalo con cuidado)
 
 // --- RUTAS MODULARES ---
