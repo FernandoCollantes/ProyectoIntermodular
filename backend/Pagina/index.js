@@ -29,6 +29,10 @@ const examSearchSubject = document.getElementById('examSearchSubject');
 const examSubjectSelect = document.getElementById('examSubjectInput');
 const criterioSubjectSelect = document.getElementById('criterioSubjectSelect'); // Admin
 
+// Selectores de RA (Nuevos)
+const searchRAInput = document.getElementById('searchRAInput');
+const newRASelect = document.getElementById('newRA');
+
 // Resto de referencias
 const searchCriterioSelect = document.getElementById('searchCriterioInput');
 const searchDifficultyInput = document.getElementById('searchDifficultyInput');
@@ -158,9 +162,13 @@ function setupEventListeners() {
     if (examSearchCurso) examSearchCurso.addEventListener('change', (e) => loadSubjects(e.target.value, examSearchSubject));
     if (examGenCurso) examGenCurso.addEventListener('change', (e) => loadSubjects(e.target.value, examSubjectSelect));
 
-    // Al cambiar asignatura, cargamos criterios (si aplica)
-    if (newAsignaturaSelect) newAsignaturaSelect.addEventListener('change', (e) => loadCriteriaCheckboxes(e.target.value, criteriosCheckboxContainer));
-    if (subjectSelect) subjectSelect.addEventListener('change', (e) => handleCriteriaLoad(e.target.value, searchCriterioSelect));
+    // Al cambiar asignatura, cargamos RAs
+    if (newAsignaturaSelect) newAsignaturaSelect.addEventListener('change', (e) => loadResultadosAprendizaje(e.target.value, newRASelect));
+    if (subjectSelect) subjectSelect.addEventListener('change', (e) => loadResultadosAprendizaje(e.target.value, searchRAInput));
+
+    // Al cambiar RA, cargamos criterios
+    if (newRASelect) newRASelect.addEventListener('change', (e) => loadCriteriaCheckboxes(e.target.value, criteriosCheckboxContainer));
+    if (searchRAInput) searchRAInput.addEventListener('change', (e) => handleCriteriaLoad(e.target.value, searchCriterioSelect));
 }
 
 
@@ -222,11 +230,39 @@ async function loadSubjects(cursoId = null, targetSelect = null) {
     } catch (err) { console.error("Error cargando asignaturas", err); }
 }
 
-async function loadCriteria(subjectId, targetSelect) {
+async function loadResultadosAprendizaje(subjectId, targetSelect) {
     try {
+        if (!targetSelect) return;
+        targetSelect.disabled = true;
+        targetSelect.innerHTML = '<option value="">-- Elige Asignatura --</option>';
+        if (!subjectId) return;
+
+        targetSelect.innerHTML = '<option>Cargando...</option>';
+        const res = await fetch(`${URL_ASIGNATURAS}/resultados-aprendizaje?asignatura=${subjectId}`);
+        const response = await res.json();
+        targetSelect.innerHTML = '<option value="">-- Selecciona RA --</option>';
+        if (response.success && response.results.length > 0) {
+            // Filtrar RAs válidos (con nombre no vacío)
+            const validRAs = response.results.filter(ra => ra.nombre && ra.nombre.trim() !== '');
+
+            if (validRAs.length > 0) {
+                validRAs.forEach(ra => targetSelect.appendChild(new Option(ra.nombre, ra._id)));
+                targetSelect.disabled = false;
+            } else {
+                targetSelect.innerHTML = '<option value="">No hay RAs válidos</option>';
+            }
+        } else {
+            targetSelect.innerHTML = '<option value="">No hay RAs</option>';
+        }
+    } catch (err) { console.error(err); targetSelect.innerHTML = '<option>Error</option>'; }
+}
+
+async function loadCriteria(resultadoId, targetSelect) {
+    try {
+        if (!targetSelect) return;
         targetSelect.disabled = true;
         targetSelect.innerHTML = '<option>Cargando...</option>';
-        const res = await fetch(`${URL_ASIGNATURAS}/criterios?asignatura=${subjectId}`);
+        const res = await fetch(`${URL_ASIGNATURAS}/criterios?resultado=${resultadoId}`);
         const response = await res.json();
         targetSelect.innerHTML = '<option value="">-- Selecciona --</option>';
         if (response.success && response.criterios.length > 0) {
@@ -236,22 +272,40 @@ async function loadCriteria(subjectId, targetSelect) {
     } catch (err) { console.error(err); targetSelect.innerHTML = '<option>Error</option>'; }
 }
 
-async function loadCriteriaCheckboxes(subjectId, container) {
+async function loadCriteriaCheckboxes(resultadoId, container) {
     container.innerHTML = '<p class="text-gray-400 p-1">Cargando...</p>';
-    if (!subjectId) { container.innerHTML = '<p class="italic text-gray-400 p-1">Selecciona una asignatura primero...</p>'; return; }
+    if (!resultadoId) { container.innerHTML = '<p class="italic text-gray-400 p-1">Selecciona un RA primero...</p>'; return; }
     try {
-        const res = await fetch(`${URL_ASIGNATURAS}/criterios?asignatura=${subjectId}`);
+        console.log('🔍 Loading criterios for RA ID:', resultadoId);
+        const res = await fetch(`${URL_ASIGNATURAS}/criterios?resultado=${resultadoId}`);
         const response = await res.json();
+        console.log('📦 Response:', response);
+        console.log('📊 Criterios count:', response.criterios ? response.criterios.length : 0);
+
         container.innerHTML = '';
-        if (response.success && response.criterios.length > 0) {
-            response.criterios.forEach(crit => {
-                const div = document.createElement('div');
-                div.className = "flex items-center gap-2 mb-1 p-1 hover:bg-gray-50 rounded";
-                div.innerHTML = `<input type="checkbox" value="${crit._id}" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"><label class="text-gray-700 select-none cursor-pointer flex-grow text-xs">${escapeHTML(crit.nombre)}</label>`;
-                container.appendChild(div);
-            });
-        } else container.innerHTML = '<p class="text-red-400 p-1 text-xs">No hay criterios definidos.</p>';
-    } catch (err) { console.error(err); container.innerHTML = '<p class="text-red-500 text-xs">Error al cargar.</p>'; }
+        if (response.success && response.criterios && response.criterios.length > 0) {
+            // Filtrar criterios válidos (con nombre no vacío)
+            const validCriterios = response.criterios.filter(crit => crit.nombre && crit.nombre.trim() !== '');
+            console.log('✅ Valid criterios:', validCriterios.length);
+
+            if (validCriterios.length > 0) {
+                validCriterios.forEach(crit => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-2 mb-1 p-1 hover:bg-gray-50 rounded";
+                    div.innerHTML = `<input type="checkbox" value="${crit._id}" class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"><label class="text-gray-700 select-none cursor-pointer flex-grow text-xs">${escapeHTML(crit.nombre)}</label>`;
+                    container.appendChild(div);
+                });
+            } else {
+                container.innerHTML = '<p class="text-red-400 p-1 text-xs">No hay criterios válidos.</p>';
+            }
+        } else {
+            console.log('❌ No criterios found or error');
+            container.innerHTML = '<p class="text-red-400 p-1 text-xs">No hay criterios definidos.</p>';
+        }
+    } catch (err) {
+        console.error('💥 Error loading criterios:', err);
+        container.innerHTML = '<p class="text-red-500 text-xs">Error al cargar.</p>';
+    }
 }
 
 
@@ -274,8 +328,8 @@ function showMainSection(targetSection) {
 }
 window.closeModal = () => { reviewModal.classList.add('hidden'); modalContent.innerHTML = ''; };
 window.openModal = () => reviewModal.classList.remove('hidden');
-function handleCriteriaLoad(subjectId, targetSelect) { if (subjectId) loadCriteria(subjectId, targetSelect); else resetSelect(targetSelect); }
-function resetSelect(targetSelect) { targetSelect.innerHTML = '<option value="">-- Elige Asignatura --</option>'; targetSelect.disabled = true; }
+function handleCriteriaLoad(resultadoId, targetSelect) { if (resultadoId) loadCriteria(resultadoId, targetSelect); else resetSelect(targetSelect); }
+function resetSelect(targetSelect) { targetSelect.innerHTML = '<option value="">-- Elige RA --</option>'; targetSelect.disabled = true; }
 
 // --- HISTORIAL ---
 async function loadAttempts() {
@@ -408,17 +462,55 @@ async function submitNewQuestion() {
     const opcionesIncorrectas = [];
     incorrectInputs.forEach(input => { if (input.value.trim()) opcionesIncorrectas.push(input.value.trim()); });
     if (!enunciado || !asignatura || criteriosSelected.length === 0 || !correcta) return alert("Rellena todo.");
-    try { const res = await fetch(URL_PREGUNTAS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ enunciado, asignatura, criterios_evaluacion: criteriosSelected, dificultad, respuesta_correcta: correcta, incorrect_options: opcionesIncorrectas }) }); const data = await res.json(); if (data.success) { alert('Guardado'); document.getElementById('newEnunciado').value = ''; document.getElementById('newCorrecta').value = ''; newAsignaturaSelect.value = ""; criteriosCheckboxContainer.innerHTML = ''; incorrectOptionsContainer.innerHTML = ''; addOptionInput(); } else alert(data.message); } catch (err) { alert('Error.'); }
+    try {
+        const res = await fetch(URL_PREGUNTAS, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                enunciado, asignatura, criterios_evaluacion: criteriosSelected,
+                dificultad, respuesta_correcta: correcta, incorrect_options: opcionesIncorrectas
+            })
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert('Guardado');
+            document.getElementById('newEnunciado').value = '';
+            document.getElementById('newCorrecta').value = '';
+            newAsignaturaSelect.value = "";
+            if (newRASelect) {
+                newRASelect.value = "";
+                newRASelect.disabled = true;
+                newRASelect.innerHTML = '<option value="">-- Elige Asignatura --</option>';
+            }
+            criteriosCheckboxContainer.innerHTML = '<p class="italic text-gray-400 p-1">Elige RA...</p>';
+            incorrectOptionsContainer.innerHTML = '';
+            addOptionInput();
+        } else alert(data.message);
+    } catch (err) { alert('Error.'); }
 }
+
 async function searchQuestions() {
     const subjectName = subjectSelect.selectedIndex > 0 ? subjectSelect.options[subjectSelect.selectedIndex].text : '';
-    const themeName = searchCriterioSelect.selectedIndex > 0 ? searchCriterioSelect.options[searchCriterioSelect.selectedIndex].text : '';
+    const raId = searchRAInput ? searchRAInput.value : '';
+    const criterionId = searchCriterioSelect.value;
     const difficulty = searchDifficultyInput.value;
-    if (!subjectName && !difficulty && !themeName) return alert("Elige filtro.");
+
+    if (!subjectName && !difficulty && !raId && !criterionId) return alert("Elige algún filtro.");
+
     showMainSection(searchQuestionsSection);
     resultsContainer.innerHTML = '<p class="text-center text-blue-500">Cargando...</p>';
-    const params = new URLSearchParams(); if (subjectName) params.append('subject', subjectName); if (themeName) params.append('theme', themeName); if (difficulty) params.append('difficulty', difficulty);
-    try { const res = await fetch(`${URL_PREGUNTAS}/search?${params.toString()}`); const d = await res.json(); displaySearchResults(d.questions); } catch (e) { resultsContainer.innerHTML = 'Error'; }
+
+    const params = new URLSearchParams();
+    if (subjectName) params.append('subject', subjectName);
+    if (raId) params.append('resultadoId', raId);
+    if (criterionId) params.append('criterioId', criterionId);
+    if (difficulty) params.append('difficulty', difficulty);
+
+    try {
+        const res = await fetch(`${URL_PREGUNTAS}/search?${params.toString()}`);
+        const d = await res.json();
+        displaySearchResults(d.questions);
+    } catch (e) { resultsContainer.innerHTML = 'Error'; }
 }
 
 async function submitNewSubject() {

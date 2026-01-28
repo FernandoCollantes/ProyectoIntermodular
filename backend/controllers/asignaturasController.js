@@ -19,7 +19,6 @@ exports.createCurso = async (req, res) => {
 // --- ASIGNATURAS ---
 exports.getAsignaturas = async (req, res) => {
     try {
-        // Leemos el parámetro ?curso=DAM1
         const { curso } = req.query;
         const subjects = await asignaturasService.getAsignaturas(curso);
         res.json({ success: true, subjects });
@@ -40,18 +39,36 @@ exports.createAsignatura = async (req, res) => {
     }
 };
 
-// ... (Criterios igual) ...
-exports.createCriterio = async (req, res) => {
+// --- RESULTADOS DE APRENDIZAJE ---
+exports.getResultadosAprendizaje = async (req, res) => {
+    try {
+        const { asignatura } = req.query;
+        const results = await asignaturasService.getResultadosAprendizaje(asignatura);
+        res.json({ success: true, results });
+    } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+};
+
+exports.createResultadoAprendizaje = async (req, res) => {
     try {
         const { nombre, descripcion, asignaturaId } = req.body;
-        const data = await asignaturasService.createCriterio(nombre, descripcion, asignaturaId);
+        const data = await asignaturasService.createResultadoAprendizaje(nombre, descripcion, asignaturaId);
         res.json({ success: true, data });
     } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };
+
+// --- CRITERIOS ---
+exports.createCriterio = async (req, res) => {
+    try {
+        const { nombre, descripcion, resultadoId } = req.body;
+        const data = await asignaturasService.createCriterio(nombre, descripcion, resultadoId);
+        res.json({ success: true, data });
+    } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+};
+
 exports.getCriterios = async (req, res) => {
     try {
-        const { asignatura } = req.query;
-        const criterios = await asignaturasService.getCriterios(asignatura);
+        const { resultado } = req.query;
+        const criterios = await asignaturasService.getCriterios(resultado);
         res.json({ success: true, criterios });
     } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };

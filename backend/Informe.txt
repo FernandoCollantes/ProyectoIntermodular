@@ -1,0 +1,64 @@
+📊 Informe Histórico de Producción: Gestor de Exámenes
+Período: Diciembre 2025 - Enero 2026 Autor: Andy (Backend Lead)
+1. Estado del Proyecto en Diciembre (Punto de Partida)
+A finales de diciembre, el proyecto era un prototipo funcional básico con una arquitectura monolítica y limitada escalabilidad.
+🏗️ Arquitectura y Código
+Monolito: Toda la lógica de negocio, acceso a datos y controladores estaba mezclada en archivos grandes (preguntasController.js, preguntasService.js).
+Base de Datos No-Relacional (Plana): Se usaba una única colección Preguntas donde campos como "Asignatura" o "Tema" eran simples cadenas de texto (String). Esto provocaba inconsistencias (ej: "Mates", "Matemáticas").
+Conexión Inestable: Se utilizaba el driver nativo de MongoDB, lo que causaba frecuentes errores de buffering timeout al iniciar la aplicación.
+Frontend Acoplado: Gran parte de la lógica (como unir respuestas correctas e incorrectas) residía en el cliente, exponiendo datos sensibles.
+❌ Limitaciones Funcionales
+Solo Preguntas: No existía el concepto de "Examen". Solo se podían buscar preguntas sueltas.
+Filtrado Básico: Solo se podía filtrar por un criterio a la vez.
+Sin PDF: No había generación de documentos.
+Sin IA: Todo el contenido debía introducirse manualmente.
+2. Avances y Transformación en Enero
+Durante las últimas semanas de enero, se ha realizado una reingeniería completa del sistema, transformándolo en una plataforma profesional y modular.
+🚀 Mejoras Arquitectónicas (Backend)
+Migración a Mongoose Relacional:
+Se normalizó la base de datos creando colecciones maestras: Asignaturas, Criterios (antes Temas) y Preguntas.
+Se implementaron relaciones por referencia (ObjectId y Códigos Oficiales), garantizando la integridad de los datos.
+Arquitectura Modular (Service Layer):
+Se dividió el código en dominios claros: Asignaturas, Preguntas, Exámenes e IA.
+Cada dominio tiene su propio Controlador, Servicio y Rutas, siguiendo el Principio de Responsabilidad Única.
+Fat Server: Se movió toda la lógica crítica al servidor (sorteos aleatorios, corrección de exámenes, generación de PDFs), dejando al cliente ligero y seguro.
+✨ Nuevas Funcionalidades
+Gestión de Exámenes Completa:
+Generación aleatoria de exámenes basada en criterios.
+Guardado de exámenes en histórico (ExamenModelo).
+Diferenciación entre exámenes "Oficiales" (Profesor) y "Práctica" (Alumno).
+Sistema de Evaluación (LMS):
+Los alumnos pueden realizar exámenes online.
+Corrección automática en el servidor.
+Historial de intentos (IntentoModelo) con revisión detallada de aciertos y fallos.
+Inteligencia Artificial (IA):
+Integración con OpenAI/Gemini para analizar apuntes en PDF.
+Generación automática de preguntas tipo test a partir del contenido subido.
+Edición en línea de las preguntas generadas antes de guardarlas.
+Generación de Documentos:
+Creación de PDFs profesionales con PDFKit directamente desde el servidor (streaming).
+3. Comparativa Directa
+Característica
+Diciembre 2025
+Enero 2026
+Base de Datos
+Colección única (Strings)
+Relacional (Asignaturas, Criterios, Exámenes)
+Integridad
+Datos duplicados/erróneos
+Datos normalizados y validados
+Exámenes
+Inexistente
+Generación, Guardado, PDF, Historial
+IA
+No
+Análisis de PDF y generación automática
+Corrección
+Manual / Cliente
+Automática en Servidor (Segura)
+Arquitectura
+Monolítica desordenada
+Modular por Dominios (MVC)
+
+4. Conclusión
+El proyecto ha evolucionado de ser una herramienta básica de consulta a una Plataforma de Gestión Educativa (LMS) completa. La infraestructura actual es robusta, escalable y está lista para soportar usuarios reales, con capacidades avanzadas como IA y generación de documentos que aportan un valor diferencial significativo.

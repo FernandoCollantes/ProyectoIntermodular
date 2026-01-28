@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const CriterioSchema = new mongoose.Schema({
     nombre: { type: String, required: true, trim: true },
     descripcion: { type: String, default: '' },
-    
-    // CAMBIO: La referencia ahora es un String (el código de la asignatura)
-    asignatura: { 
-        type: String, // Antes: Schema.Types.ObjectId
-        ref: 'Asignatura',
-        required: true 
+
+    // La referencia ahora es al Resultado de Aprendizaje
+    resultadoAprendizaje: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ResultadoAprendizaje',
+        required: true
     }
 }, { collection: 'Criterios' });
 

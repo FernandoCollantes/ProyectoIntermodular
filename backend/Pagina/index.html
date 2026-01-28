@@ -66,8 +66,20 @@
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Filtrar Curso</label>
                         <select id="newQuestionCurso" class="p-2 border rounded w-full bg-white font-bold text-gray-700"><option value="">-- Todos --</option></select>
                     </div>
-                    <div class="w-full sm:w-1/3"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Asignatura</label><select id="newAsignatura" class="p-2 border rounded w-full bg-white"><option value="">-- Selecciona --</option></select></div>
-                    <div class="w-full sm:w-1/3"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Criterios</label><div id="criteriosCheckboxContainer" class="p-2 border rounded w-full bg-white h-24 overflow-y-auto text-sm text-gray-600"><p class="italic text-gray-400 p-1">Elige asig...</p></div></div>
+                    <div class="w-full sm:w-1/4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Asignatura</label>
+                        <select id="newAsignatura" class="p-2 border rounded w-full bg-white"><option value="">-- Selecciona --</option></select>
+                    </div>
+                    <div class="w-full sm:w-1/4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Res. Aprendizaje</label>
+                        <select id="newRA" class="p-2 border rounded w-full bg-white" disabled><option value="">-- Elige Asignatura --</option></select>
+                    </div>
+                    <div class="w-full sm:w-1/4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Criterios</label>
+                        <div id="criteriosCheckboxContainer" class="p-2 border rounded w-full bg-white h-24 overflow-y-auto text-sm text-gray-600">
+                            <p class="italic text-gray-400 p-1">Elige RA...</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-4"><div class="w-full sm:w-1/3"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Dificultad</label><input type="number" id="newDificultad" placeholder="1" class="p-2 border rounded w-full"></div><div class="w-full sm:w-2/3"><label class="block text-xs font-bold text-green-600 uppercase mb-1">Respuesta Correcta</label><input type="text" id="newCorrecta" class="p-2 border-2 border-green-200 rounded w-full bg-white"></div></div>
                 <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Opciones Incorrectas</label><div id="incorrectOptionsContainer" class="space-y-2 mb-2"></div><button id="addOptionBtn" class="text-sm text-green-700 font-semibold hover:text-green-900 flex items-center gap-1">+ Añadir otra opción</button></div>
@@ -117,8 +129,9 @@
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Curso</label>
                         <select id="searchCursoInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 bg-white font-bold text-gray-700"><option value="">-- Filtra --</option></select>
                     </div>
-                    <div class="w-full sm:w-1/4"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Asignatura</label><select id="subjectInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 bg-white"><option value="">-- Cualquiera --</option></select></div>
-                    <div class="w-full sm:w-1/4"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Criterio</label><select id="searchCriterioInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 bg-white" disabled><option value="">-- Elige Asignatura --</option></select></div>
+                    <div class="w-full sm:w-1/5"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Asignatura</label><select id="subjectInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 bg-white"><option value="">-- Cualquiera --</option></select></div>
+                    <div class="w-full sm:w-1/5"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Res. Aprendizaje</label><select id="searchRAInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 bg-white" disabled><option value="">-- Elige Asignatura --</option></select></div>
+                    <div class="w-full sm:w-1/5"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Criterio</label><select id="searchCriterioInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 bg-white" disabled><option value="">-- Elige RA --</option></select></div>
                     <div class="w-full sm:w-1/4"><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Dificultad</label><div class="flex gap-2"><input type="number" id="searchDifficultyInput" placeholder="Ej: 1" class="w-1/2 p-3 border border-gray-300 rounded-lg focus:ring-blue-500"><button id="searchBtn" class="w-1/2 px-2 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700">Buscar</button></div></div>
                 </div>
             </div>
