@@ -1,1 +1,7 @@
 <router-outlet></router-outlet>
+
+<div *ngIf="notificacion" 
+     class="toast-notificacion" 
+     [ngClass]="notificacion.tipo">
+  {{ notificacion.mensaje }}
+</div>

@@ -28,11 +28,11 @@ export class PreguntaService {
     }
 
     /**
-     * Create a new question.
-     * Backend returns: { success: true, message: '...', question: {...} }
+     * Envía la pregunta al backend de Andy.
+     * El DTO ya sigue la estructura de Mongoose que vimos.
      */
     crearPregunta(dto: CrearPreguntaDto): Observable<Pregunta> {
-        return this.http.post<any>(`${this.apiUrl}/`, dto).pipe(
+        return this.http.post<{success: boolean, question: Pregunta}>(`${this.apiUrl}/`, dto).pipe(
             map(response => response.question)
         );
     }

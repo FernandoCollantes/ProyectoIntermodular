@@ -1,122 +1,140 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
+// Servicios
 import { PreguntaService } from '../../services/pregunta.service';
-import { CrearPreguntaDto } from '@core/models';
+import { JerarquiaService } from '@core/services/jerarquia.service';
+import { NotificacionService } from '@core/services/notificacion.service';
+
+// Modelos
+import { CrearPreguntaDto } from '@core/models/pregunta.model';
+import { 
+  CursoJerarquia, 
+  AsignaturaJerarquia, 
+  ResultadoAprendizaje, 
+  Criterio 
+} from '@core/models/jerarquia.model';
 
 @Component({
   selector: 'app-crear-pregunta',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './crear-pregunta.component.html',
   styleUrls: ['./crear-pregunta.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class CrearPreguntaComponent {
+export class CrearPreguntaComponent implements OnInit {
   preguntaForm: FormGroup;
-  criteriosDisponibles: string[] = [];
-  asignaturas = ['DAM', 'DAW'];
+
+  // Listas para la cascada del XML
+  cursos: CursoJerarquia[] = [];
+  asignaturasDisponibles: AsignaturaJerarquia[] = [];
+  rasDisponibles: ResultadoAprendizaje[] = [];
+  criteriosDisponibles: Criterio[] = [];
 
   constructor(
     private fb: FormBuilder,
     private preguntaService: PreguntaService,
+    private jerarquiaService: JerarquiaService,
+    private notiService: NotificacionService,
     private router: Router
   ) {
-
-
-    // NOTA: Para respetar el HTML existente (que usa inputs manuales para opciones A,B,C,D), 
-    // tendremos que adaptar el FormGroup para que coincida con esos controles o usar ngModel si fuera Template-Driven.
-    // Dado que el usuario pidió TODOS obligatorios y "preparar el formulario", es mejor usar ReactiveForms completo.
-
     this.preguntaForm = this.fb.group({
+      // Ubicación Académica
+      titulo: ['', Validators.required],
       asignatura: ['', Validators.required],
+      ra: ['', Validators.required],
       criterios: [[], Validators.required],
+
+      // Contenido de la pregunta
       enunciado: ['', Validators.required],
       opcionA: ['', Validators.required],
       opcionB: ['', Validators.required],
       opcionC: ['', Validators.required],
       opcionD: ['', Validators.required],
-      respuestaCorrecta: ['a', Validators.required], // Por defecto 'a' o vacío
+      respuestaCorrecta: ['a', Validators.required],
       dificultad: ['media', Validators.required]
-    }, { validators: this.uniqueOptionsValidator });
-
-    // Escuchar cambios en la asignatura
-    this.preguntaForm.get('asignatura')?.valueChanges.subscribe(asignatura => {
-      this.cargarCriterios(asignatura);
     });
   }
 
-  uniqueOptionsValidator(group: AbstractControl): ValidationErrors | null {
-    const values = [
-      group.get('opcionA')?.value,
-      group.get('opcionB')?.value,
-      group.get('opcionC')?.value,
-      group.get('opcionD')?.value,
-    ].filter(val => val && val.trim() !== '');
+  ngOnInit(): void {
+    // Carga inicial de la jerarquía (Mock/XML)
+    this.jerarquiaService.getCursos().subscribe(data => {
+      this.cursos = data;
+    });
 
-    const uniqueValues = new Set(values);
-
-    if (uniqueValues.size !== values.length) {
-      return { duplicateOptions: true };
-    }
-    return null;
+    this.escucharCambiosJerarquia();
   }
 
-  cargarCriterios(asignatura: string) {
-    this.preguntaService.getCriterios(asignatura).subscribe(criterios => {
-      this.criteriosDisponibles = criterios;
-      // Resetear criterios al cambiar asignatura
-      this.preguntaForm.patchValue({ criterios: [] });
+  private escucharCambiosJerarquia(): void {
+    // Escucha cambios en Título -> Carga Asignaturas
+    this.preguntaForm.get('titulo')?.valueChanges.subscribe(tituloId => {
+      const curso = this.cursos.find(c => c._id === tituloId);
+      this.asignaturasDisponibles = curso ? curso.asignaturas : [];
+      this.resetCampos(['asignatura', 'ra', 'criterios']);
+    });
+
+    // Escucha cambios en Asignatura -> Carga RAs
+    this.preguntaForm.get('asignatura')?.valueChanges.subscribe(asigId => {
+      const asig = this.asignaturasDisponibles.find(a => a._id === asigId);
+      this.rasDisponibles = asig?.resultados_aprendizaje || [];
+      this.resetCampos(['ra', 'criterios']);
+    });
+
+    // Escucha cambios en RA -> Carga Criterios
+    this.preguntaForm.get('ra')?.valueChanges.subscribe(raCod => {
+      const ra = this.rasDisponibles.find(r => r.codigo === raCod);
+      this.criteriosDisponibles = ra ? ra.criterios : [];
+      this.preguntaForm.get('criterios')?.setValue([]);
     });
   }
 
-  onSubmit() {
+  private resetCampos(campos: string[]): void {
+    campos.forEach(campo => {
+      const control = this.preguntaForm.get(campo);
+      control?.setValue(campo === 'criterios' ? [] : '', { emitEvent: false });
+    });
+  }
+
+  onSubmit(): void {
     if (this.preguntaForm.valid) {
-      const val = this.preguntaForm.value;
+      const f = this.preguntaForm.value;
+      const raSeleccionado = this.rasDisponibles.find(r => r.codigo === f.ra);
 
-      // Mapear al DTO esperado por el backend
       const dto: CrearPreguntaDto = {
-        asignatura: val.asignatura,
-        criterios: val.criterios,
-        enunciado: val.enunciado,
-        tema: 'General', // No vi campo TEMA en el HTML revertido, asumo valor por defecto o tendré que añadirlo si era obligatorio
-        dificultad: this.mapDificultad(val.dificultad),
-        opciones: [val.opcionA, val.opcionB, val.opcionC, val.opcionD],
-        respuesta_correcta: val.opciones[this.getIndexRespuesta(val.respuestaCorrecta)] // Backend espera el string de la respuesta correcta? o el índice? Modelo dice string.
+        enunciado: f.enunciado,
+        asignatura: f.asignatura, // ID de MongoDB/XML (ej: "0179")
+        tema: raSeleccionado ? `RA${raSeleccionado.codigo}: ${raSeleccionado.nombre}` : f.ra,
+        dificultad: this.mapearDificultad(f.dificultad),
+        respuesta_correcta: this.obtenerTextoCorrecto(f),
+        opciones: [f.opcionA, f.opcionB, f.opcionC, f.opcionD],
+        criterios: f.criterios
       };
 
-      // Ajuste: El modelo dice respuesta_correcta: string. Si es el texto de la opción:
-      let respuestaTexto = '';
-      if (val.respuestaCorrecta === 'a') respuestaTexto = val.opcionA;
-      else if (val.respuestaCorrecta === 'b') respuestaTexto = val.opcionB;
-      else if (val.respuestaCorrecta === 'c') respuestaTexto = val.opcionC;
-      else if (val.respuestaCorrecta === 'd') respuestaTexto = val.opcionD;
-
-      dto.respuesta_correcta = respuestaTexto;
-
-      console.log('Enviando:', dto);
       this.preguntaService.crearPregunta(dto).subscribe({
-        next: () => this.router.navigate(['/preguntas']),
-        error: (e) => console.error(e)
+        next: (resp) => {
+          this.notiService.mostrar('¡Pregunta guardada correctamente!');
+          this.router.navigate(['/preguntas/mis-preguntas']);
+        },
+        error: (err) => {
+          this.notiService.mostrar('Error al guardar la pregunta', 'error');
+          console.error('Error en el backend de Andy:', err);
+        }
       });
     } else {
-      this.preguntaForm.markAllAsTouched();
+      this.notiService.mostrar('Por favor, rellena todos los campos obligatorios', 'error');
     }
   }
 
-  mapDificultad(dif: string): number {
-    if (dif === 'facil') return 3;
-    if (dif === 'media') return 5;
-    if (dif === 'dificil') return 8;
-    return 5;
+  private mapearDificultad(nivel: string): number {
+    const mapa: any = { facil: 3, media: 5, dificil: 8 };
+    return mapa[nivel] || 5;
   }
 
-  getIndexRespuesta(letra: string): number {
-    return ['a', 'b', 'c', 'd'].indexOf(letra);
+  private obtenerTextoCorrecto(f: any): string {
+    const opciones: any = { a: f.opcionA, b: f.opcionB, c: f.opcionC, d: f.opcionD };
+    return opciones[f.respuestaCorrecta];
   }
 }

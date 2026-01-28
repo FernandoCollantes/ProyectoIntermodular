@@ -664,3 +664,56 @@ small,
   flex: 1;
   background-color: var(--white);
 }
+
+
+///////////////////////////NOTIFICACIÓN///////////////////
+/* Estilo sugerido para tu sistema de diseño */
+/* --- SISTEMA DE NOTIFICACIONES (TOASTS) --- */
+
+.toast-notificacion {
+  position: fixed;
+  bottom: 30px; /* Aparece en la esquina inferior derecha */
+  right: 30px;
+  min-width: 300px;
+  max-width: 450px;
+  padding: 1rem 1.5rem;
+  border-radius: var(--border-radius); /* Usamos tu variable de bordes */
+  color: white;
+  font-weight: 500;
+  z-index: 10000; /* Por encima de todo */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  
+  // Animación de entrada y salida
+  animation: slideInRight 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &.exito {
+    background-color: #27ae60; // Un verde que encaje con tu paleta
+    border-left: 6px solid #1e8449;
+  }
+
+  &.error {
+    background-color: #e74c3c; // El rojo de error que ya usas en el HTML
+    border-left: 6px solid #c0392b;
+  }
+}
+
+/* Animaciones */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
