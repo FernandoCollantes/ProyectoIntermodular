@@ -6,18 +6,18 @@ const OpenAI = require('openai');
 // (No importa si está vacía mientras MOCK_MODE sea true)
 // ------------------------------------------------------------------
 const openai = new OpenAI({
-    apiKey: "PEGAR_TU_CLAVE_SK_AQUI" 
+    apiKey: "API_KEY"
 });
 
 // --- CONFIGURACIÓN DE PRUEBAS ---
-const MOCK_MODE = true; // <--- MANTÉN ESTO EN true PARA PROBAR GRATIS
+const MOCK_MODE = false; // <--- MANTÉN ESTO EN true PARA PROBAR GRATIS
 
 exports.generateQuestionsFromText = async (textContext, curso, asignatura, numQuestions = 5) => {
     try {
         // 1. MODO SIMULACIÓN (GRATIS Y SEGURO)
         if (MOCK_MODE) {
             console.log("⚠️ MODO SIMULACIÓN: Generando preguntas de prueba...");
-            
+
             // Simular tiempo de espera de la IA (2 segundos) para ver el loading en el frontend
             await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -25,9 +25,9 @@ exports.generateQuestionsFromText = async (textContext, curso, asignatura, numQu
             return Array.from({ length: numQuestions }, (_, i) => ({
                 enunciado: `(IA Simulada) Pregunta ${i + 1} sobre ${asignatura}: ¿Cuál es un concepto clave de ${curso}?`,
                 opciones: [
-                    "Concepto Correcto Simulado", 
-                    "Concepto Erróneo A", 
-                    "Concepto Erróneo B", 
+                    "Concepto Correcto Simulado",
+                    "Concepto Erróneo A",
+                    "Concepto Erróneo B",
                     "Concepto Erróneo C"
                 ],
                 respuesta_correcta: "Concepto Correcto Simulado",
@@ -66,7 +66,7 @@ exports.generateQuestionsFromText = async (textContext, curso, asignatura, numQu
                 { role: "system", content: "Eres un asistente que solo habla en JSON válido." },
                 { role: "user", content: prompt }
             ],
-            model: "gpt-3.5-turbo",
+            model: "gpt-4.1-mini",
             temperature: 0.5, // Creatividad baja para asegurar formato estricto
         });
 
