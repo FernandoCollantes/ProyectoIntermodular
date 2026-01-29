@@ -1,140 +1,80 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 // Servicios
+import { JerarquiaService } from '../../../../core/services/jerarquia.service';
 import { PreguntaService } from '../../services/pregunta.service';
-import { JerarquiaService } from '@core/services/jerarquia.service';
-import { NotificacionService } from '@core/services/notificacion.service';
+import { NotificacionService } from '../../../../core/services/notificacion.service';
 
 // Modelos
-import { CrearPreguntaDto } from '@core/models/pregunta.model';
-import { 
-  CursoJerarquia, 
-  AsignaturaJerarquia, 
-  ResultadoAprendizaje, 
-  Criterio 
-} from '@core/models/jerarquia.model';
+import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
 
 @Component({
   selector: 'app-crear-pregunta',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './crear-pregunta.component.html',
-  styleUrls: ['./crear-pregunta.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./crear-pregunta.component.scss']
 })
 export class CrearPreguntaComponent implements OnInit {
-  preguntaForm: FormGroup;
+  // 1. RE-DECLARAMOS LAS VARIABLES (Esto quita los errores de 'does not exist')
+  public modulos: ModuloJerarquia[] = [];
+  public rasDisponibles: ResultadoAprendizaje[] = [];
+  protected readonly String = String;
 
-  // Listas para la cascada del XML
-  cursos: CursoJerarquia[] = [];
-  asignaturasDisponibles: AsignaturaJerarquia[] = [];
-  rasDisponibles: ResultadoAprendizaje[] = [];
-  criteriosDisponibles: Criterio[] = [];
+  // 2. OBJETO AJUSTADO (Andy quiere 'criterios' como string[] también)
+  nuevaPregunta = {
+    enunciado: '',
+    asignatura: '', 
+    tema: '',       
+    dificultad: 1, 
+    opciones: ['', '', '', ''],
+    respuesta_correcta: '0', 
+    criterios: [] as string[] // <--- CAMBIO: de number[] a string[]
+  };
 
   constructor(
-    private fb: FormBuilder,
-    private preguntaService: PreguntaService,
     private jerarquiaService: JerarquiaService,
+    private preguntaService: PreguntaService,
     private notiService: NotificacionService,
-    private router: Router
-  ) {
-    this.preguntaForm = this.fb.group({
-      // Ubicación Académica
-      titulo: ['', Validators.required],
-      asignatura: ['', Validators.required],
-      ra: ['', Validators.required],
-      criterios: [[], Validators.required],
-
-      // Contenido de la pregunta
-      enunciado: ['', Validators.required],
-      opcionA: ['', Validators.required],
-      opcionB: ['', Validators.required],
-      opcionC: ['', Validators.required],
-      opcionD: ['', Validators.required],
-      respuestaCorrecta: ['a', Validators.required],
-      dificultad: ['media', Validators.required]
-    });
-  }
+    public router: Router 
+  ) {}
 
   ngOnInit(): void {
-    // Carga inicial de la jerarquía (Mock/XML)
-    this.jerarquiaService.getCursos().subscribe(data => {
-      this.cursos = data;
-    });
-
-    this.escucharCambiosJerarquia();
-  }
-
-  private escucharCambiosJerarquia(): void {
-    // Escucha cambios en Título -> Carga Asignaturas
-    this.preguntaForm.get('titulo')?.valueChanges.subscribe(tituloId => {
-      const curso = this.cursos.find(c => c._id === tituloId);
-      this.asignaturasDisponibles = curso ? curso.asignaturas : [];
-      this.resetCampos(['asignatura', 'ra', 'criterios']);
-    });
-
-    // Escucha cambios en Asignatura -> Carga RAs
-    this.preguntaForm.get('asignatura')?.valueChanges.subscribe(asigId => {
-      const asig = this.asignaturasDisponibles.find(a => a._id === asigId);
-      this.rasDisponibles = asig?.resultados_aprendizaje || [];
-      this.resetCampos(['ra', 'criterios']);
-    });
-
-    // Escucha cambios en RA -> Carga Criterios
-    this.preguntaForm.get('ra')?.valueChanges.subscribe(raCod => {
-      const ra = this.rasDisponibles.find(r => r.codigo === raCod);
-      this.criteriosDisponibles = ra ? ra.criterios : [];
-      this.preguntaForm.get('criterios')?.setValue([]);
+    this.jerarquiaService.getJerarquia().subscribe({
+      next: (data: ModuloJerarquia[]) => { // Tipado (m) para evitar TS7006
+        this.modulos = data;
+      },
+      error: () => this.notiService.mostrar('Error al cargar datos del XML', 'error')
     });
   }
 
-  private resetCampos(campos: string[]): void {
-    campos.forEach(campo => {
-      const control = this.preguntaForm.get(campo);
-      control?.setValue(campo === 'criterios' ? [] : '', { emitEvent: false });
-    });
-  }
-
-  onSubmit(): void {
-    if (this.preguntaForm.valid) {
-      const f = this.preguntaForm.value;
-      const raSeleccionado = this.rasDisponibles.find(r => r.codigo === f.ra);
-
-      const dto: CrearPreguntaDto = {
-        enunciado: f.enunciado,
-        asignatura: f.asignatura, // ID de MongoDB/XML (ej: "0179")
-        tema: raSeleccionado ? `RA${raSeleccionado.codigo}: ${raSeleccionado.nombre}` : f.ra,
-        dificultad: this.mapearDificultad(f.dificultad),
-        respuesta_correcta: this.obtenerTextoCorrecto(f),
-        opciones: [f.opcionA, f.opcionB, f.opcionC, f.opcionD],
-        criterios: f.criterios
-      };
-
-      this.preguntaService.crearPregunta(dto).subscribe({
-        next: (resp) => {
-          this.notiService.mostrar('¡Pregunta guardada correctamente!');
-          this.router.navigate(['/preguntas/mis-preguntas']);
-        },
-        error: (err) => {
-          this.notiService.mostrar('Error al guardar la pregunta', 'error');
-          console.error('Error en el backend de Andy:', err);
-        }
-      });
-    } else {
-      this.notiService.mostrar('Por favor, rellena todos los campos obligatorios', 'error');
+  onModuloChange(): void {
+    // Tipado explícito de 'm' para solucionar el error TS7006
+    const moduloSeleccionado = this.modulos.find((m: ModuloJerarquia) => m.nombre === this.nuevaPregunta.asignatura);
+    if (moduloSeleccionado) {
+      this.rasDisponibles = moduloSeleccionado.ras;
+      this.nuevaPregunta.tema = ''; 
     }
   }
 
-  private mapearDificultad(nivel: string): number {
-    const mapa: any = { facil: 3, media: 5, dificil: 8 };
-    return mapa[nivel] || 5;
-  }
+  guardar(): void {
+    if (!this.nuevaPregunta.enunciado || !this.nuevaPregunta.asignatura || !this.nuevaPregunta.tema) {
+      this.notiService.mostrar('Faltan campos obligatorios', 'error');
+      return;
+    }
 
-  private obtenerTextoCorrecto(f: any): string {
-    const opciones: any = { a: f.opcionA, b: f.opcionB, c: f.opcionC, d: f.opcionD };
-    return opciones[f.respuestaCorrecta];
+    this.preguntaService.crearPregunta(this.nuevaPregunta).subscribe({
+      next: () => {
+        this.notiService.mostrar('¡Pregunta guardada con éxito!');
+        this.router.navigate(['/preguntas/mis-preguntas']);
+      },
+      error: (err: any) => {
+        console.error('Error del servidor:', err);
+        this.notiService.mostrar('El servidor rechazó la pregunta', 'error');
+      }
+    });
   }
 }

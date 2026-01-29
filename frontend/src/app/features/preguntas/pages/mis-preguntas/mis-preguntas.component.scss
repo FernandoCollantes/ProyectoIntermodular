@@ -1,0 +1,101 @@
+.seccion-mis-preguntas {
+  padding: 1.5rem;
+
+  .barra-herramientas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+
+    .entrada-busqueda {
+      width: 350px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #f8fafc;
+      
+      &:focus { outline: none; border-color: #3182ce; background: white; }
+    }
+  }
+
+  .contenedor-chips {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+
+    .chip {
+      padding: 0.5rem 1.2rem;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+      white-space: nowrap;
+      transition: all 0.2s;
+
+      &.activo {
+        background: #3182ce;
+        color: white;
+        border-color: #3182ce;
+      }
+      &:hover:not(.activo) { background: #f1f5f9; }
+    }
+  }
+}
+
+.rejilla-pregunta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.tarjeta-pregunta {
+  background: white;
+  border-radius: 15px;
+  border: 1px solid #edf2f7;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+
+  .pregunta-cabecera {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    
+    .insignias { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  }
+
+  .pregunta-texto {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #2d3748;
+    margin: 1rem 0;
+    flex-grow: 1;
+  }
+
+  .pregunta-metadata {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f7fafc;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #a0aec0;
+  }
+}
+
+.aviso-estado, .sin-resultados {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  color: #64748b;
+  border: 2px dashed #e2e8f0;
+}

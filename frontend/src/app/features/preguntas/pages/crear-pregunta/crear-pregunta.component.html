@@ -1,88 +1,62 @@
-<div class="tarjeta">
-  <div class="tarjeta-cabecera">
-    <h1>Crear Nueva Pregunta</h1>
-  </div>
+<div class="contenedor-crear">
+  <h2>Crear Nueva Pregunta</h2>
 
-  <form [formGroup]="preguntaForm" (ngSubmit)="onSubmit()">
+  <form (ngSubmit)="guardar()" #preguntaForm="ngForm">
     
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Título / Ciclo Formativo</label>
-      <select class="seleccion-formulario" formControlName="titulo">
-        <option value="" disabled>Selecciona el ciclo...</option>
-        <option *ngFor="let curso of cursos" [value]="curso._id">{{ curso.nombre }}</option>
+    <div class="campo">
+      <label>Módulo:</label>
+      <select name="asignatura" [(ngModel)]="nuevaPregunta.asignatura" (change)="onModuloChange()" required>
+        <option value="" disabled selected>Selecciona un módulo...</option>
+        <option *ngFor="let m of modulos" [value]="m.nombre">{{ m.nombre }}</option>
       </select>
     </div>
 
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Asignatura (Módulo)</label>
-      <select class="seleccion-formulario" formControlName="asignatura">
-        <option value="" disabled>Selecciona una asignatura...</option>
-        <option *ngFor="let asig of asignaturasDisponibles" [value]="asig._id">{{ asig.nombre }}</option>
-      </select>
-      <div *ngIf="preguntaForm.get('asignatura')?.invalid && preguntaForm.get('asignatura')?.touched"
-        style="color: #e74c3c; font-size: 0.85rem; margin-top: 5px;">Campo obligatorio</div>
-    </div>
-
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Resultado de Aprendizaje (RA)</label>
-      <select class="seleccion-formulario" formControlName="ra">
-        <option value="" disabled>Selecciona el RA...</option>
+    <div class="campo">
+      <label>Resultado de Aprendizaje (RA):</label>
+      <select name="tema" [(ngModel)]="nuevaPregunta.tema" [disabled]="!rasDisponibles.length" required>
+        <option value="" disabled selected>Selecciona un RA...</option>
         <option *ngFor="let ra of rasDisponibles" [value]="ra.codigo">
-          RA{{ ra.codigo }}: {{ ra.nombre }}
+          {{ ra.codigo }}: {{ ra.texto | slice:0:80 }}...
         </option>
       </select>
     </div>
 
-    <div class="grupo-formulario" *ngIf="criteriosDisponibles.length > 0">
-      <label class="etiqueta-formulario requerido">Criterio de Evaluación</label>
-      <div style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">
-        Seleccione los criterios que abarcará la pregunta (Ctrl + Click)
-      </div>
-      <select class="seleccion-formulario" formControlName="criterios" multiple style="min-height: 120px;">
-        <option *ngFor="let crit of criteriosDisponibles" [value]="crit.codigo">
-          ({{ crit.codigo }}) {{ crit.nombre }}
-        </option>
-      </select>
+    <div class="campo">
+      <label>Enunciado de la pregunta:</label>
+      <textarea name="enunciado" [(ngModel)]="nuevaPregunta.enunciado" required placeholder="Escribe aquí la pregunta..."></textarea>
     </div>
 
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Enunciado de la pregunta</label>
-      <textarea class="entrada-formulario" formControlName="enunciado" rows="4"
-        placeholder="Escribe el enunciado completo de la pregunta..."></textarea>
-      <div *ngIf="preguntaForm.get('enunciado')?.invalid && preguntaForm.get('enunciado')?.touched"
-        style="color: #e74c3c; font-size: 0.85rem; margin-top: 5px;">Campo obligatorio</div>
-    </div>
-
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Opciones de respuesta</label>
-      <div class="contenedor-opciones-respuesta">
-        
-        <div class="entrada-opcion-respuesta" *ngFor="let letra of ['A', 'B', 'C', 'D']">
-          <input type="radio" formControlName="respuestaCorrecta" [value]="letra.toLowerCase()">
-          <label style="font-weight: 600; min-width: 20px;">{{ letra }})</label>
-          <input type="text" class="entrada-formulario" [formControlName]="'opcion' + letra" 
-            [placeholder]="'Escribe la opción ' + letra">
-        </div>
-
-        <div *ngIf="preguntaForm.hasError('duplicateOptions') && preguntaForm.touched"
-          style="color: #e74c3c; font-size: 0.85rem; margin-top: 5px; font-weight: bold;">
-          No pueden haber opciones repetidas (verifica que el texto es distinto en cada una).
-        </div>
+    <div class="campo">
+      <label>Dificultad:</label>
+      <div class="grupo-radio">
+        <label><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad" [value]="0"> Fácil</label>
+        <label><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad" [value]="1"> Media</label>
+        <label><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad" [value]="2"> Difícil</label>
       </div>
     </div>
 
-    <div class="grupo-formulario">
-      <label class="etiqueta-formulario requerido">Nivel de dificultad</label>
-      <select class="seleccion-formulario" formControlName="dificultad">
-        <option value="facil">Fácil</option>
-        <option value="media">Media</option>
-        <option value="dificil">Difícil</option>
-      </select>
+    <div class="seccion-opciones">
+  <div class="campo-opcion" *ngFor="let opt of nuevaPregunta.opciones; let i = index">
+    <label>Opción {{ i + 1 }}:</label>
+    <div class="entrada-opcion">
+      <input type="text" [name]="'opt' + i" [(ngModel)]="nuevaPregunta.opciones[i]" required>
+      
+      <label class="radio-correcta">
+        <input type="radio" 
+               name="correcta" 
+               [value]="String(i)" 
+               [(ngModel)]="nuevaPregunta.respuesta_correcta">
+        Es la correcta
+      </label>
     </div>
+  </div>
+</div>
 
-    <div class="acciones-formulario">
-      <a [routerLink]="['/preguntas']" class="boton boton-contorno">Cancelar</a>
-      <button type="submit" class="boton boton-primario" [disabled]="preguntaForm.invalid">
+    <div class="acciones">
+      <button type="button" (click)="router.navigate(['/preguntas/mis-preguntas'])" class="boton-secundario">
+        Cancelar
+      </button>
+      <button type="submit" class="boton-primario" [disabled]="!preguntaForm.valid">
         Guardar Pregunta
       </button>
     </div>

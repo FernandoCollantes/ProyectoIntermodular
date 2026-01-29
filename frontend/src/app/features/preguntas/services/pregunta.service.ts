@@ -37,6 +37,10 @@ export class PreguntaService {
         );
     }
 
+    eliminarPregunta(id: string): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${id}`);
+}
+
     /**
      * Get evaluation criteria based on subject.
      * MOCKED for now.

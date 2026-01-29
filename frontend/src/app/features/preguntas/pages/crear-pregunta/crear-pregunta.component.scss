@@ -1,32 +1,65 @@
-/* Estilos específicos del formulario de creación extraídos del prototipo */
+.tarjeta {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  max-width: 800px;
+  margin: 2rem auto;
+
+  .tarjeta-cabecera {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #f7fafc;
+    padding-bottom: 1rem;
+    h1 { color: #2d3748; font-size: 1.8rem; }
+  }
+}
+
+.grupo-formulario {
+  margin-bottom: 1.5rem;
+  
+  .etiqueta-formulario {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #4a5568;
+    &.requerido::after { content: ' *'; color: #e53e3e; }
+  }
+
+  .entrada-formulario, .seleccion-formulario {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    &:focus { outline: none; border-color: #3182ce; box-shadow: 0 0 0 3px rgba(49,130,206,0.1); }
+  }
+
+  .area-texto { min-height: 100px; resize: vertical; }
+}
+
 .contenedor-opciones-respuesta {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-}
+  gap: 0.8rem;
 
-.entrada-opcion-respuesta {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  background-color: var(--bg-secondary);
-  border-radius: var(--border-radius);
-  
-  input[type="text"] {
-    flex: 1;
-  }
-  
-  input[type="radio"] {
-    flex-shrink: 0;
+  .entrada-opcion-respuesta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f8fafc;
+    padding: 0.8rem;
+    border-radius: 8px;
+    
+    input[type="radio"] { width: 1.2rem; height: 1.2rem; cursor: pointer; }
+    input[type="text"] { flex: 1; border: none; background: transparent; }
   }
 }
 
 .acciones-formulario {
   display: flex;
-  gap: var(--spacing-md);
   justify-content: flex-end;
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--border-color);
-  margin-top: var(--spacing-lg);
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #edf2f7;
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JerarquiaService } from '@core/services/jerarquia.service';
-import { CursoJerarquia, AsignaturaJerarquia } from '@core/models/jerarquia.model';
+import { JerarquiaService } from '../../../../core/services/jerarquia.service';
+// Importamos el nuevo modelo que sí existe
+import { ModuloJerarquia } from '../../../../core/models/jerarquia.model';
 
 @Component({
   selector: 'app-asignaturas',
@@ -11,9 +12,9 @@ import { CursoJerarquia, AsignaturaJerarquia } from '@core/models/jerarquia.mode
   styleUrls: ['./asignaturas.component.scss']
 })
 export class AsignaturasComponent implements OnInit {
-  modulos: AsignaturaJerarquia[] = [];
+  // Cambiamos la lista de cursos antiguos por la lista de módulos del XML
+  modulos: ModuloJerarquia[] = [];
   cargando: boolean = true;
-  moduloAbiertoId: string | null = null;
 
   constructor(private jerarquiaService: JerarquiaService) {}
 
@@ -21,31 +22,18 @@ export class AsignaturasComponent implements OnInit {
     this.cargarDatos();
   }
 
-  private cargarDatos(): void {
-    this.jerarquiaService.getCursos().subscribe({
-      next: (cursos: CursoJerarquia[]) => {
-        // Unificamos los módulos de DAW y DAM (1er curso compartido)
-        const mapaModulos = new Map<string, AsignaturaJerarquia>();
-        
-        cursos.forEach(curso => {
-          curso.asignaturas.forEach(asig => {
-            if (!mapaModulos.has(asig._id)) {
-              mapaModulos.set(asig._id, asig);
-            }
-          });
-        });
-        
-        this.modulos = Array.from(mapaModulos.values());
+  cargarDatos(): void {
+    this.cargando = true;
+    // Usamos el nuevo método del servicio que lee el XML DAMyDAW.xml
+    this.jerarquiaService.getJerarquia().subscribe({
+      next: (data: ModuloJerarquia[]) => {
+        this.modulos = data;
         this.cargando = false;
       },
-      error: (err) => {
-        console.error('Error cargando módulos:', err);
+      error: (err: any) => { // Añadimos el tipo :any para evitar el error TS7006
+        console.error('Error al cargar módulos:', err);
         this.cargando = false;
       }
     });
-  }
-
-  toggleModulo(id: string): void {
-    this.moduloAbiertoId = this.moduloAbiertoId === id ? null : id;
   }
 }

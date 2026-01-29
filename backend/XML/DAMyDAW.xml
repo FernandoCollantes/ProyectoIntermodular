@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Centro_FP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="EQUIPO2.xsd">
+  <Modulo nombre="Entornos de desarrollo">
+    <RA codigo="RA1">Reconoce los elementos y herramientas que intervienen en el desarrollo de un programa informático, analizando sus características y las fases en las que actúan hasta llegar a su puesta en funcionamiento.</RA>
+    <RA codigo="RA2">Evalúa entornos integrados de desarrollo analizando sus características para editar código fuente y generar ejecutables.</RA>
+    <RA codigo="RA3">Verifica el funcionamiento de programas diseñando y realizando pruebas.</RA>
+    <RA codigo="RA4">Optimiza el código empleando las herramientas disponibles en el entorno de desarrollo.</RA>
+    <RA codigo="RA5">Realiza diagramas de clases explorando las herramientas disponibles en el entorno.</RA>
+    <RA codigo="RA6">Genera diagramas de comportamiento valorando su importancia en el desarrollo de aplicaciones y empleando las herramientas disponibles en el entorno.</RA>
+  </Modulo>
+
+  <Modulo nombre="Lenguajes de marcas y sistemas de gestión de información">
+    <RA codigo="RA1">Interpreta lenguajes de marcas reconociendo sus principales características e identificando sus elementos.</RA>
+    <RA codigo="RA2">Utiliza lenguajes de marcas para la transmisión de información a través de la web analizando la estructura de los documentos e identificando sus elementos.</RA>
+    <RA codigo="RA3">Genera documentos XML verificando su integridad mediante el uso de esquemas y herramientas de edición.</RA>
+    <RA codigo="RA4">Gestiona información en formato XML analizando y aplicando lenguajes de consulta y transformación.</RA>
+    <RA codigo="RA5">Manipula documentos XML utilizando herramientas y lenguajes de programación específicos.</RA>
+    <RA codigo="RA6">Almacena información en bases de datos relacionales y nativas XML analizando y utilizando tecnologías de almacenamiento.</RA>
+    <RA codigo="RA7">Opera sistemas empresariales de gestión de información realizando tareas de importación, integración, aseguramiento y extracción de la información.</RA>
+  </Modulo>
+
+  <Modulo nombre="Programación">
+    <RA codigo="RA1">Reconoce la estructura de un programa informático, identificando y relacionando los elementos propios del lenguaje de programación utilizado.</RA>
+    <RA codigo="RA2">Escribe y prueba programas sencillos, reconociendo y aplicando los fundamentos de la programación orientada a objetos.</RA>
+    <RA codigo="RA3">Escribe y depura código, analizando y utilizando las estructuras de control del lenguaje.</RA>
+    <RA codigo="RA4">Desarrolla programas organizados en clases analizando y aplicando los principios de la programación orientada a objetos.</RA>
+    <RA codigo="RA5">Realiza operaciones de entrada y salida de información utilizando procedimientos específicos del lenguaje y librerías de clases.</RA>
+    <RA codigo="RA6">Escribe programas que manipulen información seleccionando y utilizando tipos de datos avanzados.</RA>
+    <RA codigo="RA7">Desarrolla programas aplicando características avanzadas de los lenguajes orientados a objetos y del entorno de programación.</RA>
+    <RA codigo="RA8">Utiliza bases de datos orientadas a objetos, analizando sus características y aplicando técnicas de persistencia.</RA>
+    <RA codigo="RA9">Gestiona información almacenada en bases de datos relacionales manteniendo la integridad y consistencia de los datos.</RA>
+  </Modulo>
+
+  <Modulo nombre="Bases de Datos">
+    <RA codigo="RA1">Reconoce los elementos de las bases de datos analizando sus funciones y valorando la utilidad de los sistemas gestores.</RA>
+    <RA codigo="RA2">Crea bases de datos definiendo su estructura y las características de sus elementos según el modelo relacional.</RA>
+    <RA codigo="RA3">Realiza consultas analizando las estructuras de los datos y utilizando el lenguaje de manipulación de datos.</RA>
+    <RA codigo="RA4">Modifica la información almacenada en la base de datos utilizando el lenguaje de manipulación de datos y asegurando la integridad de la misma.</RA>
+    <RA codigo="RA5">Desarrolla procedimientos almacenados evaluando y utilizando las sentencias del lenguaje de programación del sistema gestor.</RA>
+    <RA codigo="RA6">Diseña modelos relacionales normalizados interpretando diagramas entidad/relación.</RA>
+    <RA codigo="RA7">Gestiona la información almacenada en bases de datos objeto-relacionales, evaluando y utilizando las posibilidades que proporciona el sistema gestor.</RA>
+  </Modulo>
+
+  <Modulo nombre="Sistemas informáticos">
+    <RA codigo="RA1">Evalúa sistemas informáticos identificando sus componentes y características.</RA>
+    <RA codigo="RA2">Instala sistemas operativos planificando el proceso e interpretando documentación técnica.</RA>
+    <RA codigo="RA3">Gestiona la información del sistema realizando tareas de mantenimiento y utilizando las herramientas del sistema operativo.</RA>
+    <RA codigo="RA4">Gestiona sistemas operativos instalando y configurando software de aplicación y evaluando su funcionamiento.</RA>
+    <RA codigo="RA5">Interconecta sistemas en red configurando dispositivos y protocolos.</RA>
+    <RA codigo="RA6">Opera sistemas en red gestionando sus recursos e identificando las restricciones de seguridad existentes.</RA>
+    <RA codigo="RA7">Elabora documentación valorando y utilizando aplicaciones informáticas de propósito general.</RA>
+  </Modulo>
+</Curriculo>

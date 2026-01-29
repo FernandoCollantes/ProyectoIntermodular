@@ -1,63 +1,69 @@
-<div class="barra-herramientas">
-  <div class="barra-busqueda">
-    <div class="icono-busqueda"></div>
-    <input type="text" class="entrada-busqueda" placeholder="Buscar preguntas...">
+<div class="seccion-mis-preguntas">
+  <div class="barra-herramientas">
+    <div class="barra-busqueda">
+      <input 
+        type="text" 
+        class="entrada-busqueda" 
+        placeholder="Buscar por enunciado..." 
+        [(ngModel)]="terminoBusqueda" 
+        (input)="aplicarFiltros()">
+    </div>
+    <a [routerLink]="['/preguntas/crear']" class="boton boton-primario">
+      + Nueva Pregunta
+    </a>
   </div>
-  <a [routerLink]="['/preguntas/crear']" class="boton boton-primario">
-    <div class="boton-icono"></div>
-    Nueva Pregunta
-  </a>
-</div>
 
-<div class="contenedor-chips">
-  <div class="chip activo">TODAS</div>
-  <div class="chip">INGLÉS</div>
-  <div class="chip">LENGUAJE DE MARCAS</div>
-  <div class="chip">PROGRAMACIÓN</div>
-  <div class="chip">IPE</div>
-</div>
-
-<div class="rejilla-pregunta">
-  
-  <div class="tarjeta-pregunta">
-    <div class="pregunta-cabecera">
-      <div class="insignias">
-        <span class="insignia insignia-primaria">MAT</span>
-        <span class="insignia">ÁLGEBRA</span>
-      </div>
-      <div class="pregunta-acciones">
-        <button class="boton-accion" title="Editar">✏️</button>
-        <button class="boton-accion" title="Eliminar" style="color: var(--danger);">🗑️</button>
-      </div>
+  <div class="contenedor-chips">
+    <div class="chip" [class.activo]="filtroModulo === ''" (click)="seleccionarModulo('')">
+      TODAS
     </div>
-    <div class="pregunta-contenido">
-      <p class="pregunta-texto">¿Cuál es la solución de la ecuación 2x + 5 = 13?</p>
-    </div>
-    <div class="pregunta-metadata">
-      <span>Creada: 15 Nov 2025</span>
-      <span>Usada en: 3 exámenes</span>
-      <span>Dificultad: <span class="insignia insignia-advertencia">Media</span></span>
+    <div class="chip" 
+         *ngFor="let m of listaModulosXML" 
+         [class.activo]="filtroModulo === m.nombre" 
+         (click)="seleccionarModulo(m.nombre)">
+      {{ m.nombre | uppercase }}
     </div>
   </div>
 
-  <div class="tarjeta-pregunta">
-    <div class="pregunta-cabecera">
-      <div class="insignias">
-        <span class="insignia insignia-exito">IPE</span> <span class="insignia">EMPRESA</span>
+  <div class="rejilla-pregunta" *ngIf="!cargando">
+    
+    <div class="tarjeta-pregunta" *ngFor="let p of preguntas">
+      <div class="pregunta-cabecera">
+        <div class="insignias">
+          <span class="insignia insignia-primaria">{{ p.asignatura }}</span>
+          <span class="insignia">{{ p.tema }}</span>
+        </div>
+        <div class="pregunta-acciones">
+          <button class="boton-accion" (click)="editarPregunta(p._id)" title="Editar">✏️</button>
+          <button class="boton-accion" (click)="borrarPregunta(p._id)" title="Eliminar" style="color: #e53e3e;">🗑️</button>
+        </div>
       </div>
-      <div class="pregunta-acciones">
-        <button class="boton-accion" title="Editar">✏️</button>
-        <button class="boton-accion" title="Eliminar" style="color: var(--danger);">🗑️</button>
+      
+      <div class="pregunta-contenido">
+        <p class="pregunta-texto">{{ p.enunciado }}</p>
+      </div>
+
+      <div class="pregunta-metadata">
+        <span>ID: {{ p._id ? p._id.substring(0,8) : 'Nuevo' }}</span>
+        <span>
+          Dificultad: 
+          <span class="insignia" [ngClass]="getClaseDificultad(p.dificultad)">
+            {{ p.dificultad || 'Media' }}
+          </span>
+        </span>
       </div>
     </div>
-    <div class="pregunta-contenido">
-      <p class="pregunta-texto">¿Qué es un currículum vitae?</p>
-    </div>
-    <div class="pregunta-metadata">
-      <span>Creada: 10 Nov 2025</span>
-      <span>Usada en: 5 exámenes</span>
-      <span>Dificultad: <span class="insignia insignia-exito">Fácil</span></span>
+
+    <div class="sin-resultados" *ngIf="preguntas.length === 0">
+      <div class="icono-vacio">📂</div>
+      <p>No hay preguntas disponibles.</p>
+      <small *ngIf="filtroModulo || terminoBusqueda">Prueba a cambiar los filtros de búsqueda.</small>
+      <small *ngIf="!filtroModulo && !terminoBusqueda">Las preguntas que crees aparecerán aquí.</small>
     </div>
   </div>
 
+  <div *ngIf="cargando" class="aviso-estado">
+    <div class="spinner"></div>
+    <p>Conectando con el servidor...</p>
+  </div>
 </div>

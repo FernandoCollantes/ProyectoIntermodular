@@ -1,35 +1,29 @@
 <div class="contenedor-asignaturas">
-  <div class="cabecera-pagina">
-    <h1>Mis Asignaturas</h1>
-    <p>Consulta los módulos profesionales y sus Resultados de Aprendizaje (1er Curso DAW/DAM).</p>
+  <header class="cabecera-seccion">
+    <h2>Módulos y Resultados de Aprendizaje</h2>
+    <p>Información extraída del archivo oficial DAMyDAW.xml</p>
+  </header>
+
+  <div *ngIf="cargando" class="cargando">
+    <p>Cargando datos del currículo...</p>
   </div>
 
-  <div *ngIf="cargando" class="loader">
-    <div class="spinner"></div>
-    <p>Cargando mapa académico...</p>
-  </div>
-
-  <div class="grid-asignaturas" *ngIf="!cargando">
-    <div class="card-modulo" *ngFor="let modulo of modulos" [class.active]="moduloAbiertoId === modulo._id">
-      
-      <div class="card-header" (click)="toggleModulo(modulo._id)">
-        <div class="header-content">
-          <span class="id-tag">{{ modulo._id }}</span>
-          <h2 class="titulo-modulo">{{ modulo.nombre }}</h2>
-        </div>
-        <span class="chevron" [class.rotated]="moduloAbiertoId === modulo._id">▼</span>
+  <div class="rejilla-modulos" *ngIf="!cargando">
+    <div class="tarjeta-modulo" *ngFor="let modulo of modulos">
+      <div class="modulo-info">
+        <h3>{{ modulo.nombre }}</h3>
+        <span class="conteo-ra">{{ modulo.ras.length }} RAs disponibles</span>
       </div>
 
-      <div class="card-body" *ngIf="moduloAbiertoId === modulo._id">
-        <div class="ra-seccion">
-          <h3>Resultados de Aprendizaje</h3>
-          <div class="ra-item" *ngFor="let ra of modulo.resultados_aprendizaje">
-            <div class="ra-badge">RA {{ ra.codigo }}</div>
-            <div class="ra-texto">{{ ra.nombre }}</div>
-          </div>
-        </div>
-      </div>
-
+      <ul class="lista-ras">
+        <li *ngFor="let ra of modulo.ras">
+          <strong>{{ ra.codigo }}:</strong> {{ ra.texto }}
+        </li>
+      </ul>
     </div>
+  </div>
+
+  <div *ngIf="!cargando && modulos.length === 0" class="sin-datos">
+    <p>No se han encontrado módulos en el archivo XML.</p>
   </div>
 </div>
