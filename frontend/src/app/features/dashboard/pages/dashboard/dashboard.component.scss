@@ -1,0 +1,49 @@
+/* ============================================================================
+   DASHBOARD COMPONENT STYLES
+   ============================================================================ */
+
+/* --- Rejilla de Estadísticas --- */
+.rejilla-estadisticas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* --- Tarjetas de Estadísticas (Clickeables) --- */
+.tarjeta-estadistica {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-2);
+    border-left: 4px solid var(--primary);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    /* Estilos para enlaces */
+    text-decoration: none;
+    cursor: pointer;
+    display: block;
+    color: inherit; // Prevenir color de enlace por defecto
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-3);
+    }
+
+    &:visited {
+        color: inherit; // Mantener colores después de visitar
+    }
+}
+
+.valor-estadistica {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--primary) !important;
+}
+
+.etiqueta-estadistica {
+    font-size: 14px;
+    color: var(--text-secondary) !important;
+    text-transform: uppercase;
+    font-weight: 500;
+}

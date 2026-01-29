@@ -1,99 +1,73 @@
 const OpenAI = require('openai');
 
-// ------------------------------------------------------------------
-// CONFIGURACIÓN OPENAI
-// Pega tu clave que empieza por 'sk-...' aquí abajo.
-// (No importa si está vacía mientras MOCK_MODE sea true)
-// ------------------------------------------------------------------
 const openai = new OpenAI({
-    apiKey: "API_KEY"
+    apiKey: process.env.OPENAI_API_KEY || "TU_CLAVE_AQUÍ"
 });
 
-// --- CONFIGURACIÓN DE PRUEBAS ---
-const MOCK_MODE = false; // <--- MANTÉN ESTO EN true PARA PROBAR GRATIS
+// Mantén MOCK_MODE en true para probar sin gastar créditos
+const MOCK_MODE = false;
 
-exports.generateQuestionsFromText = async (textContext, curso, asignatura, numQuestions = 5) => {
+exports.generateQuestionsFromText = async (textContext, asignatura, numQuestions = 5) => {
     try {
-        // 1. MODO SIMULACIÓN (GRATIS Y SEGURO)
         if (MOCK_MODE) {
             console.log("⚠️ MODO SIMULACIÓN: Generando preguntas de prueba...");
-
-            // Simular tiempo de espera de la IA (2 segundos) para ver el loading en el frontend
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Generar preguntas falsas pero realistas basadas en tus inputs
+            await new Promise(resolve => setTimeout(resolve, 1500));
             return Array.from({ length: numQuestions }, (_, i) => ({
-                enunciado: `(IA Simulada) Pregunta ${i + 1} sobre ${asignatura}: ¿Cuál es un concepto clave de ${curso}?`,
-                opciones: [
-                    "Concepto Correcto Simulado",
-                    "Concepto Erróneo A",
-                    "Concepto Erróneo B",
-                    "Concepto Erróneo C"
-                ],
-                respuesta_correcta: "Concepto Correcto Simulado",
-                dificultad: (i % 3) + 1 // Alterna dificultad 1, 2, 3
+                enunciado: `(Simulado) ¿Cuál es un concepto clave de ${asignatura}?`,
+                opciones: ["Opción A (Correcta)", "Opción B", "Opción C", "Opción D"],
+                respuesta_correcta: 0,
+                tema: "RA1",
+                dificultad: 1
             }));
         }
 
-        // 2. MODO REAL (OPENAI) - Solo se ejecuta si MOCK_MODE = false
-        console.log("🤖 Conectando con OpenAI (ChatGPT)...");
-
-        // Construcción del Prompt
         const prompt = `
-            Actúa como un profesor experto en ${curso} para la asignatura de ${asignatura}.
-            Basándote EXCLUSIVAMENTE en el siguiente texto de unos apuntes:
+            Actúa como un profesor experto en el módulo de "${asignatura}".
+            Basándote exclusivamente en el siguiente contenido técnico: "${textContext.substring(0, 10000)}"
             
-            "${textContext.substring(0, 15000)}" 
+            Genera exactamente ${numQuestions} preguntas de opción múltiple.
             
-            Genera ${numQuestions} preguntas tipo test.
-            
-            FORMATO DE RESPUESTA OBLIGATORIO (JSON PURO):
-            Devuelve SOLAMENTE un Array de objetos JSON. No uses bloques de código markdown (\`\`\`json).
-            Estructura:
+            REGLAS CRÍTICAS:
+            1. El campo "tema" debe ser un código de Resultado de Aprendizaje presente en el módulo (ej: "RA1", "RA2").
+            2. El campo "respuesta_correcta" debe ser el ÍNDICE (0, 1, 2 o 3) del array de opciones.
+            3. "dificultad" debe ser un número: 0 (fácil), 1 (medio) o 2 (difícil).
+            4. Responde ÚNICAMENTE con un array JSON válido.
+
+            FORMATO DE SALIDA:
             [
                 {
-                    "enunciado": "Pregunta...",
+                    "enunciado": "La pregunta...",
                     "opciones": ["A", "B", "C", "D"],
-                    "respuesta_correcta": "La opción correcta literal",
+                    "respuesta_correcta": 0,
+                    "tema": "RA1",
                     "dificultad": 1
                 }
             ]
         `;
 
-        // Petición a la API
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: "system", content: "Eres un asistente que solo habla en JSON válido." },
+                { role: "system", content: "Eres un generador de exámenes que solo responde en JSON técnico y estructurado." },
                 { role: "user", content: prompt }
             ],
-            model: "gpt-4.1-mini",
-            temperature: 0.5, // Creatividad baja para asegurar formato estricto
+            model: "gpt-4o-mini", // O el modelo que prefieras
+            temperature: 0.3,
         });
 
         let textResponse = completion.choices[0].message.content;
-        console.log("📩 Respuesta recibida de OpenAI");
-
-        // Limpieza de seguridad (por si GPT se pone creativo con el formato)
         textResponse = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
 
-        // Parseo
         const questions = JSON.parse(textResponse);
-        return questions;
+
+        // Añadimos el creador y la asignatura a cada pregunta antes de devolverlas
+        return questions.map(q => ({
+            ...q,
+            asignatura: asignatura,
+            creador: "IA_Generator"
+        }));
 
     } catch (error) {
-        console.error("❌ Error OpenAI:", error);
-
-        // Gestión específica de errores de OpenAI para que sepas qué pasa
-        if (error.status === 401) {
-            throw new Error("Error de Autenticación: La API Key es incorrecta.");
-        }
-        if (error.status === 429) {
-            throw new Error("Error de Cuota: No tienes créditos suficientes en OpenAI o has excedido el límite.");
-        }
-        if (error.status === 500 || error.status === 503) {
-            throw new Error("Error del Servidor de OpenAI: Están caídos momentáneamente.");
-        }
-
-        throw new Error("Fallo al generar preguntas: " + error.message);
+        console.error("❌ Error en aiService:", error);
+        throw new Error("No se pudieron generar preguntas: " + error.message);
     }
 };

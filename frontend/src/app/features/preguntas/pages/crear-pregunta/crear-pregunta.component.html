@@ -1,62 +1,74 @@
-<div class="contenedor-crear">
-  <h2>Crear Nueva Pregunta</h2>
+<div class="tarjeta">
+  <div class="tarjeta-cabecera">
+    <h1>Crear Nueva Pregunta</h1>
+  </div>
 
   <form (ngSubmit)="guardar()" #preguntaForm="ngForm">
-    
-    <div class="campo">
-      <label>Módulo:</label>
-      <select name="asignatura" [(ngModel)]="nuevaPregunta.asignatura" (change)="onModuloChange()" required>
+
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario requerido">Asignatura:</label>
+      <select name="asignatura" [(ngModel)]="nuevaPregunta.asignatura" (change)="onModuloChange()"
+        class="seleccion-formulario" required>
         <option value="" disabled selected>Selecciona un módulo...</option>
         <option *ngFor="let m of modulos" [value]="m.nombre">{{ m.nombre }}</option>
       </select>
     </div>
 
-    <div class="campo">
-      <label>Resultado de Aprendizaje (RA):</label>
-      <select name="tema" [(ngModel)]="nuevaPregunta.tema" [disabled]="!rasDisponibles.length" required>
-        <option value="" disabled selected>Selecciona un RA...</option>
-        <option *ngFor="let ra of rasDisponibles" [value]="ra.codigo">
-          {{ ra.codigo }}: {{ ra.texto | slice:0:80 }}...
-        </option>
-      </select>
-    </div>
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario requerido">Resultados de Aprendizaje incluidos(RA):</label>
+      <div class="contenedor-ras-checkboxes">
+        <p *ngIf="!rasDisponibles.length" class="aviso-sin-ras">Selecciona un módulo primero para ver los RAs
+          disponibles.</p>
 
-    <div class="campo">
-      <label>Enunciado de la pregunta:</label>
-      <textarea name="enunciado" [(ngModel)]="nuevaPregunta.enunciado" required placeholder="Escribe aquí la pregunta..."></textarea>
-    </div>
-
-    <div class="campo">
-      <label>Dificultad:</label>
-      <div class="grupo-radio">
-        <label><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad" [value]="0"> Fácil</label>
-        <label><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad" [value]="1"> Media</label>
-        <label><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad" [value]="2"> Difícil</label>
+        <div *ngFor="let ra of rasDisponibles" class="item-ra-checkbox">
+          <label class="etiqueta-ra">
+            <input type="radio" name="ra_selection" [value]="ra.codigo" [(ngModel)]="nuevaPregunta.tema" required>
+            <span class="ra-info">
+              <strong>{{ ra.codigo }}:</strong> {{ ra.texto }}
+            </span>
+          </label>
+        </div>
       </div>
     </div>
 
-    <div class="seccion-opciones">
-  <div class="campo-opcion" *ngFor="let opt of nuevaPregunta.opciones; let i = index">
-    <label>Opción {{ i + 1 }}:</label>
-    <div class="entrada-opcion">
-      <input type="text" [name]="'opt' + i" [(ngModel)]="nuevaPregunta.opciones[i]" required>
-      
-      <label class="radio-correcta">
-        <input type="radio" 
-               name="correcta" 
-               [value]="String(i)" 
-               [(ngModel)]="nuevaPregunta.respuesta_correcta">
-        Es la correcta
-      </label>
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario requerido">Enunciado de la pregunta:</label>
+      <textarea name="enunciado" [(ngModel)]="nuevaPregunta.enunciado" required class="entrada-formulario area-texto"
+        placeholder="Escribe aquí la pregunta..."></textarea>
     </div>
-  </div>
-</div>
 
-    <div class="acciones">
-      <button type="button" (click)="router.navigate(['/preguntas/mis-preguntas'])" class="boton-secundario">
+    <div class="grupo-formulario">
+      <label class="etiqueta-formulario">Dificultad:</label>
+      <div class="grupo-radio" style="display: flex; gap: 20px; align-items: center; padding: 10px 0;">
+        <label style="cursor:pointer"><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad"
+            [value]="0"> Fácil</label>
+        <label style="cursor:pointer"><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad"
+            [value]="1"> Media</label>
+        <label style="cursor:pointer"><input type="radio" name="difi" [(ngModel)]="nuevaPregunta.dificultad"
+            [value]="2"> Difícil</label>
+      </div>
+    </div>
+
+    <div class="contenedor-opciones-respuesta">
+      <label class="etiqueta-formulario">Opciones de respuesta:</label>
+      <div class="entrada-opcion-respuesta"
+        *ngFor="let opt of nuevaPregunta.opciones; let i = index; trackBy: trackByIndex">
+        <label class="label-numero-opcion">Opción {{ i + 1 }}:</label>
+        <input type="text" [name]="'opt' + i" [(ngModel)]="nuevaPregunta.opciones[i]" required
+          class="input-opcion-texto" placeholder="Escribe la opción aquí...">
+
+        <label class="radio-correcta">
+          <input type="radio" name="correcta" [value]="String(i)" [(ngModel)]="nuevaPregunta.respuesta_correcta">
+          <span>Correcta</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="acciones-formulario">
+      <button type="button" (click)="router.navigate(['/preguntas/mis-preguntas'])" class="boton boton-secundario">
         Cancelar
       </button>
-      <button type="submit" class="boton-primario" [disabled]="!preguntaForm.valid">
+      <button type="submit" class="boton boton-primario" [disabled]="!preguntaForm.valid">
         Guardar Pregunta
       </button>
     </div>

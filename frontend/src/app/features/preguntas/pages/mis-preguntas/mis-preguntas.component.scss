@@ -14,8 +14,12 @@
       border: 1px solid #e2e8f0;
       border-radius: 10px;
       background: #f8fafc;
-      
-      &:focus { outline: none; border-color: #3182ce; background: white; }
+
+      &:focus {
+        outline: none;
+        border-color: #3182ce;
+        background: white;
+      }
     }
   }
 
@@ -43,7 +47,10 @@
         color: white;
         border-color: #3182ce;
       }
-      &:hover:not(.activo) { background: #f1f5f9; }
+
+      &:hover:not(.activo) {
+        background: #f1f5f9;
+      }
     }
   }
 }
@@ -59,38 +66,175 @@
   border-radius: 15px;
   border: 1px solid #edf2f7;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
 
   .pregunta-cabecera {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 1rem;
-    
-    .insignias { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .info-superior {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+
+      .etiqueta-asignatura {
+        background-color: #ebf8ff;
+        color: #2b6cb0;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .insignia-dificultad {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+
+        &.insignia-exito {
+          background-color: #c6f6d5;
+          color: #22543d;
+        }
+
+        // Fácil
+        &.insignia-advertencia {
+          background-color: #feebc8;
+          color: #744210;
+        }
+
+        // Media
+        &.insignia-peligro {
+          background-color: #fed7d7;
+          color: #822727;
+        }
+
+        // Difícil
+      }
+    }
+
+    .pregunta-acciones {
+      display: flex;
+      gap: 0.5rem;
+
+      .boton-accion {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+        padding: 0.25rem;
+
+        &:hover {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+      }
+    }
   }
 
-  .pregunta-texto {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: #2d3748;
-    margin: 1rem 0;
+  .pregunta-cuerpo {
     flex-grow: 1;
-  }
-
-  .pregunta-metadata {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #f7fafc;
     display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: #a0aec0;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .info-tema {
+      font-size: 0.8rem;
+      color: #718096;
+      background: #f7fafc;
+      padding: 0.4rem;
+      border-radius: 6px;
+    }
+
+    .pregunta-enunciado {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0.8rem 0;
+      line-height: 1.5;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .contenedor-opciones {
+      margin-top: 0.5rem;
+
+      .titulo-opciones {
+        font-size: 0.75rem;
+        color: #718096;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+        display: block;
+        letter-spacing: 0.05em;
+      }
+
+      .lista-opciones {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+
+        .item-opcion {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          font-size: 0.95rem;
+          color: #4a5568;
+          padding: 0.6rem 1rem;
+          background-color: #f7fafc;
+          border: 1px solid #edf2f7;
+          border-radius: 8px;
+          transition: all 0.2s;
+
+          .indicador {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+            color: #cbd5e0;
+          }
+
+          &.es-correcta {
+            background-color: #d1fae5 !important;
+            /* Green 100 */
+            border-color: #10b981 !important;
+            /* Emerald 500 */
+            color: #064e3b !important;
+            /* Emerald 900 */
+            font-weight: 700 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            .indicador {
+              color: #059669 !important;
+              /* Emerald 600 */
+              font-weight: 900;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
-.aviso-estado, .sin-resultados {
+.aviso-estado,
+.sin-resultados {
   grid-column: 1 / -1;
   text-align: center;
   padding: 3rem;
@@ -98,4 +242,92 @@
   border-radius: 12px;
   color: #64748b;
   border: 2px dashed #e2e8f0;
+}
+
+/* ESTILOS DEL MODAL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal-contenido {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: modalPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  .icono-alerta {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    margin: 0 0 0.5rem 0;
+    color: #1a202c;
+  }
+
+  p {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .modal-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+
+    .boton {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+
+      &.boton-secundario {
+        background: #e2e8f0;
+        color: #4a5568;
+
+        &:hover {
+          background: #cbd5e0;
+        }
+      }
+
+      &.boton-peligro {
+        background: #fc8181;
+        color: #742a2a;
+
+        &:hover {
+          background: #e53e3e;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

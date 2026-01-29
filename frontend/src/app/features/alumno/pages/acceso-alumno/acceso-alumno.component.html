@@ -27,7 +27,10 @@
           [class.is-invalid]="accesoForm.get('studentName')?.invalid && accesoForm.get('studentName')?.touched">
         <div *ngIf="accesoForm.get('studentName')?.invalid && accesoForm.get('studentName')?.touched"
           class="error-text">
-          <small>El nombre es obligatorio.</small>
+          <small *ngIf="accesoForm.get('studentName')?.errors?.['required']">El nombre es obligatorio.</small>
+          <small *ngIf="accesoForm.get('studentName')?.errors?.['pattern']">
+            Solo se permiten letras y un único espacio entre palabras.
+          </small>
         </div>
       </div>
 
@@ -46,7 +49,11 @@
         </div>
       </div>
 
-      <button type="submit" class="boton boton-primario" [disabled]="accesoForm.invalid">
+      <div *ngIf="generalError" class="mensaje-error-global">
+        {{ generalError }}
+      </div>
+
+      <button type="submit" class="boton boton-primario">
         Acceder al Examen
       </button>
 

@@ -16,11 +16,13 @@ export class PreguntaService {
      * Search questions with filters.
      * Backend returns: { success: true, total_found: n, questions: [...] }
      */
-    buscarPreguntas(filters: { subject?: string; difficulty?: string; theme?: string }): Observable<Pregunta[]> {
+    buscarPreguntas(filters: { subject?: string; difficulty?: string; theme?: string; creatorId?: string }): Observable<Pregunta[]> {
         let params = new HttpParams();
-        if (filters.subject) params = params.set('subject', filters.subject);
+        // Backend key is 'asignatura', not 'subject'
+        if (filters.subject) params = params.set('asignatura', filters.subject);
         if (filters.difficulty) params = params.set('difficulty', filters.difficulty);
-        if (filters.theme) params = params.set('theme', filters.theme);
+        if (filters.theme) params = params.set('tema', filters.theme); // Also fix 'theme' -> 'tema' just in case backend expects 'tema' (it does)
+        if (filters.creatorId) params = params.set('creador', filters.creatorId);
 
         return this.http.get<ApiResponse<Pregunta[]>>(`${this.apiUrl}/search`, { params }).pipe(
             map(response => response.questions || [])
@@ -29,17 +31,54 @@ export class PreguntaService {
 
     /**
      * Envía la pregunta al backend de Andy.
-     * El DTO ya sigue la estructura de Mongoose que vimos.
+     * Transforma el DTO del frontend al formato esperado por el backend.
      */
-    crearPregunta(dto: CrearPreguntaDto): Observable<Pregunta> {
-        return this.http.post<{success: boolean, question: Pregunta}>(`${this.apiUrl}/`, dto).pipe(
+    crearPregunta(dto: CrearPreguntaDto, creatorId: string): Observable<Pregunta> {
+        // Backend changes:
+        // 1. 'tema' expects a single RA code (e.g. "RA1"). We take the first one from criterios.
+        // 2. 'respuesta_correcta' expects the INDEX (number).
+        // 3. 'opciones' expects the full array of strings.
+
+        const payload = {
+            enunciado: dto.enunciado,
+            asignatura: dto.asignatura,
+            tema: dto.criterios[0] || 'RA1', // Fallback or take first
+            dificultad: Number(dto.dificultad),
+            opciones: dto.opciones,
+            respuesta_correcta: parseInt(dto.respuesta_correcta, 10),
+            creador: creatorId
+        };
+
+        // El endpoint ahora es /api/preguntas/add
+        return this.http.post<{ success: boolean, question: Pregunta }>(`${this.apiUrl}/add`, payload).pipe(
             map(response => response.question)
         );
     }
 
     eliminarPregunta(id: string): Observable<any> {
-  return this.http.delete(`${this.apiUrl}/${id}`);
-}
+        return this.http.delete(`${this.apiUrl}/${id}`);
+    }
+
+    obtenerPregunta(id: string): Observable<Pregunta> {
+        return this.http.get<{ success: boolean, question: Pregunta }>(`${this.apiUrl}/${id}`).pipe(
+            map(response => response.question)
+        );
+    }
+
+    actualizarPregunta(id: string, dto: CrearPreguntaDto, creatorId: string): Observable<Pregunta> {
+        const payload = {
+            enunciado: dto.enunciado,
+            asignatura: dto.asignatura,
+            tema: dto.criterios[0] || 'RA1',
+            dificultad: Number(dto.dificultad),
+            opciones: dto.opciones,
+            respuesta_correcta: parseInt(dto.respuesta_correcta, 10),
+            creador: creatorId
+        };
+        return this.http.put<{ success: boolean, question: Pregunta }>(`${this.apiUrl}/${id}`, payload).pipe(
+            map(response => response.question)
+        );
+    }
 
     /**
      * Get evaluation criteria based on subject.

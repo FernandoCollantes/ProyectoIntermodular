@@ -12,10 +12,10 @@ import { User } from '../../../core/models/user.model';
 export class HeaderComponent {
   @Input() titulo: string = 'ExamGen';
   @Input() user: User | null = null;
-  @Input() cycle: 'DAM' | 'DAW' | null = null;
+  // cycle input removed
 
   @Output() logout = new EventEmitter<void>();
-  @Output() switchCycle = new EventEmitter<void>();
+  // switchCycle output removed
 
   get iniciales(): string {
     if (!this.user?.name) return '??';

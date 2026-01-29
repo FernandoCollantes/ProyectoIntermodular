@@ -6,7 +6,8 @@ import { RouterModule } from '@angular/router'; // <--- 1. Importa esto
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './dashboard.component.html'
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
   // Datos de ejemplo para las tarjetas

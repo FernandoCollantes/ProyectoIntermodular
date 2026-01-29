@@ -1,9 +1,7 @@
 <header class="barra-superior">
   <div class="info-izquierda">
     <h2 class="titulo-pagina">{{ titulo }}</h2>
-    <span *ngIf="cycle" class="badge-ciclo" [class.dam]="cycle === 'DAM'" [class.daw]="cycle === 'DAW'">
-      {{ cycle }}
-    </span>
+    <!-- Cycle Badge Removed -->
   </div>
 
   <div class="acciones-header">
@@ -12,9 +10,7 @@
     <ng-container *ngIf="user; else notLoggedIn">
       <div class="user-info">
         <span class="user-name">{{ user.name }}</span>
-        <button class="btn-switch" (click)="switchCycle.emit()" title="Cambiar de ciclo">
-          🔁
-        </button>
+        <!-- Switch Button Removed -->
       </div>
 
       <div class="separador-vertical"></div>

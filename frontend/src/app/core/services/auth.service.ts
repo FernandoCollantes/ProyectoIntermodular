@@ -47,7 +47,7 @@ export class AuthService {
         }
     }
 
-    login(email: string, password: string, cycle: 'DAM' | 'DAW'): Observable<boolean> {
+    login(email: string, password: string): Observable<boolean> {
         // Mock check
         const user = this.MOCK_USERS[email as keyof typeof this.MOCK_USERS];
 
@@ -56,12 +56,13 @@ export class AuthService {
 
             // Update state
             this.currentUserSubject.next(user);
-            this.currentCycleSubject.next(cycle);
+            // Defaulting to DAM for internal compatibility, but removing user choice
+            this.currentCycleSubject.next('DAM');
             this.isAuthenticatedSubject.next(true);
 
             // Persist mock session
             localStorage.setItem('currentUser', JSON.stringify(user));
-            localStorage.setItem('currentCycle', cycle);
+            localStorage.setItem('currentCycle', 'DAM');
 
             return of(true);
         }
@@ -80,15 +81,9 @@ export class AuthService {
         this.router.navigate(['/auth/login']);
     }
 
-    switchCycle() {
-        const current = this.currentCycleSubject.value;
-        if (current === 'DAM') {
-            this.setCycle('DAW');
-        } else {
-            this.setCycle('DAM');
-        }
-    }
+    // Removed switchCycle as requested
 
+    // Internal helper if needed, or can be removed if not used elsewhere
     private setCycle(cycle: 'DAM' | 'DAW') {
         this.currentCycleSubject.next(cycle);
         localStorage.setItem('currentCycle', cycle);

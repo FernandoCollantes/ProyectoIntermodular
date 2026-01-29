@@ -1,28 +1,140 @@
 const preguntasService = require('../services/preguntasService');
 
+/**
+ * Busca preguntas basadas en criterios de filtrado
+ */
 exports.searchQuestions = async (req, res) => {
     try {
-        const { subject, difficulty, theme, criterioId, resultadoId } = req.query;
+        // Adaptamos los filtros al nuevo esquema (asignatura y tema/RA)
+        const { asignatura, dificultad, tema, creador } = req.query;
+
         const questionsList = await preguntasService.getQuestionsByCriteria({
-            subject, difficulty, theme, criterioId, resultadoId
+            asignatura,
+            dificultad,
+            tema,
+            creador
         });
-        res.status(200).json({ success: true, total_found: questionsList.length, questions: questionsList });
-    } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+
+        res.status(200).json({
+            success: true,
+            total_found: questionsList.length,
+            questions: questionsList
+        });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
 };
 
+/**
+ * Añade una nueva pregunta al sistema
+ */
 exports.addQuestion = async (req, res) => {
     try {
-        const { enunciado, asignatura, criterios_evaluacion, dificultad, respuesta_correcta, incorrect_options } = req.body;
-        if (!enunciado || !asignatura || !criterios_evaluacion || !respuesta_correcta) return res.status(400).json({ success: false, message: 'Faltan campos.' });
+        const {
+            enunciado,
+            asignatura,         // Nombre del módulo (ej: "Sistemas Informáticos")
+            tema,               // Código del RA (ej: "RA1")
+            dificultad,         // Número (0, 1, 2)
+            opciones,           // Array de strings [opt1, opt2, opt3, opt4]
+            respuesta_correcta, // Índice numérico (0-3)
+            creador
+        } = req.body;
 
-        const criteriosArray = Array.isArray(criterios_evaluacion) ? criterios_evaluacion : [criterios_evaluacion];
+        // 1. Validación de campos obligatorios
+        if (!enunciado || !asignatura || !tema || !opciones || respuesta_correcta === undefined || !creador) {
+            return res.status(400).json({
+                success: false,
+                message: 'Faltan campos obligatorios para crear la pregunta.'
+            });
+        }
+
+        // 2. Validación de consistencia de opciones
+        if (!Array.isArray(opciones) || opciones.length < 2) {
+            return res.status(400).json({
+                success: false,
+                message: 'La pregunta debe tener al menos dos opciones.'
+            });
+        }
+
+        // 3. Llamada al servicio para persistencia
+        // Pasamos el objeto limpio directamente al servicio
         const newQuestion = await preguntasService.createQuestion({
-            enunciado, asignatura, criterios_evaluacion: criteriosArray,
-            dificultad: parseInt(dificultad) || 1,
-            respuesta_correcta, incorrect_options
+            enunciado,
+            asignatura,
+            tema,
+            opciones,
+            dificultad: Number(dificultad),
+            respuesta_correcta: Number(respuesta_correcta),
+            creador
         });
-        res.status(201).json({ success: true, message: 'Pregunta creada', question: newQuestion });
+
+        res.status(201).json({
+            success: true,
+            message: '¡Pregunta creada con éxito!',
+            question: newQuestion
+        });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error("Error en el controlador al crear pregunta:", error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor: ' + error.message
+        });
+    }
+}
+
+
+/**
+ * Elimina una pregunta (requiere ID)
+ */
+exports.deleteQuestion = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await preguntasService.deleteQuestion(id);
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: 'Pregunta no encontrada' });
+        }
+        res.status(200).json({ success: true, message: 'Pregunta eliminada' });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+};
+
+/**
+ * Actualiza una pregunta (requiere ID)
+ */
+exports.updateQuestion = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+
+        // Ensure respuesta_correcta is integer if present
+        if (data.respuesta_correcta !== undefined) {
+            data.respuesta_correcta = Number(data.respuesta_correcta);
+        }
+
+        const updated = await preguntasService.updateQuestion(id, data);
+        if (!updated) {
+            return res.status(404).json({ success: false, message: 'Pregunta no encontrada' });
+        }
+        res.status(200).json({ success: true, message: 'Pregunta actualizada', question: updated });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+};
+
+/**
+ * Obtiene una pregunta por ID
+ */
+exports.getQuestionById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const question = await preguntasService.getQuestionById(id);
+        if (!question) {
+            return res.status(404).json({ success: false, message: 'Pregunta no encontrada' });
+        }
+        res.status(200).json({ success: true, question });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
     }
 };

@@ -4,8 +4,7 @@
 
   <main class="contenido-principal" [class.sidebar-collapsed]="sidebarCollapsed">
 
-    <app-header [titulo]="getPageTitle()" [user]="user$ | async" [cycle]="cycle$ | async" (logout)="onLogout()"
-      (switchCycle)="onSwitchCycle()">
+    <app-header [titulo]="getPageTitle()" [user]="user$ | async" (logout)="onLogout()">
     </app-header>
 
     <div class="contenido-interno">

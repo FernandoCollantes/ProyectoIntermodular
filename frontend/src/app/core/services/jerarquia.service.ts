@@ -8,16 +8,16 @@ import { ModuloJerarquia } from '../models/jerarquia.model';
 })
 export class JerarquiaService {
   // Ruta exacta indicada: backend/XML/DAMyDAW.xml
-  private xmlUrl = 'backend/XML/DAMyDAW.xml'; 
+  private xmlUrl = 'assets/XML/DAMyDAW.xml';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getJerarquia(): Observable<ModuloJerarquia[]> {
     return this.http.get(this.xmlUrl, { responseType: 'text' }).pipe(
       map(xmlString => {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
-        
+
         // Buscamos los nodos <Modulo>
         const modulosNodes = xmlDoc.getElementsByTagName('Modulo');
         const resultado: ModuloJerarquia[] = [];
@@ -25,7 +25,7 @@ export class JerarquiaService {
         for (let i = 0; i < modulosNodes.length; i++) {
           const moduloNode = modulosNodes[i];
           const nombre = moduloNode.getAttribute('nombre') || '';
-          
+
           // Buscamos los <RA> dentro de este módulo
           const rasNodes = moduloNode.getElementsByTagName('RA');
           const ras = [];

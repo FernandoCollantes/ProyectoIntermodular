@@ -29,7 +29,6 @@ export class MainLayoutComponent {
 
     // Exposed to template via async pipe or direct access if preferred
     user$: Observable<User | null>;
-    cycle$: Observable<'DAM' | 'DAW' | null>;
 
     sidebarCollapsed = false;
 
@@ -37,7 +36,6 @@ export class MainLayoutComponent {
         private authService: AuthService
     ) {
         this.user$ = this.authService.currentUser$;
-        this.cycle$ = this.authService.currentCycle$;
     }
 
     onToggleSidebar() {
@@ -58,7 +56,5 @@ export class MainLayoutComponent {
         this.authService.logout();
     }
 
-    onSwitchCycle() {
-        this.authService.switchCycle();
-    }
+    // onSwitchCycle removed
 }

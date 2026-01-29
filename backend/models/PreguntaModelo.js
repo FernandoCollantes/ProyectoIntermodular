@@ -3,23 +3,30 @@ const Schema = mongoose.Schema;
 
 const PreguntaSchema = new Schema({
     enunciado: { type: String, required: true },
-    opciones: [String],
-    respuesta_correcta: { type: String, required: true },
-    
-    asignatura: { 
-        type: String, 
-        ref: 'Asignatura', 
-        required: true 
-    },
-    
-    // CAMBIO: Ahora es un ARRAY de referencias
-    criterios_evaluacion: [{ 
-        type: Schema.Types.ObjectId, 
-        ref: 'Criterio',
-        required: true 
-    }],
-    
-    dificultad: { type: Number, min: 1, max: 10 } 
-}, { collection: 'Preguntas' });
+    opciones: [{ type: String, required: true }],
+    respuesta_correcta: { type: Number, required: true }, // ¡Ahora es NUMBER! (0,1,2,3)
+
+    asignatura: {
+        type: String,
+        required: true
+    }, // Guardaremos el nombre del Módulo (ej: "Sistemas Informáticos")
+
+    tema: {
+        type: String,
+        required: true
+    }, // Aquí guardaremos el código del RA (ej: "RA1")
+
+    dificultad: {
+        type: Number,
+        min: 0,
+        max: 2,
+        default: 1
+    }, // 0:Fácil, 1:Media, 2:Difícil
+
+    creador: { type: String, default: 'Sistema' }
+}, {
+    collection: 'Preguntas',
+    timestamps: true // Esto nos dará 'createdAt' y 'updatedAt' automáticamente
+});
 
 module.exports = mongoose.model('Pregunta', PreguntaSchema);

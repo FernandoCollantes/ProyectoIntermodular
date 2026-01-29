@@ -1,68 +1,53 @@
-const AsignaturaModel = require('../models/Asignatura');
-const CriterioModel = require('../models/Criterio');
-const CursoModel = require('../models/Curso');
 const ResultadoAprendizajeModel = require('../models/ResultadoAprendizaje');
 
-// --- CURSOS ---
+// --- CURSOS (OBSOLETO) ---
 exports.getCursos = async () => {
-    return await CursoModel.find().sort({ _id: 1 });
+    // Ya no usamos la colección Cursos. Devolvemos un array vacío o un mensaje.
+    return [];
 };
 
-exports.createCurso = async (id, nombre, asignaturasIds) => {
-    const nuevo = new CursoModel({
-        _id: id,
-        nombre,
-        asignaturas: asignaturasIds || []
-    });
-    return await nuevo.save();
-};
-
-// --- RESULTADOS DE APRENDIZAJE ---
-exports.createResultadoAprendizaje = async (nombre, descripcion, asignaturaId) => {
-    const nuevo = new ResultadoAprendizajeModel({ nombre, descripcion, asignatura: asignaturaId });
-    return await nuevo.save();
-};
-
-exports.getResultadosAprendizaje = async (asignaturaId) => {
-    const query = asignaturaId ? { asignatura: asignaturaId } : {};
-
-    // Filtrar solo RAs con nombre válido (no vacío, no null, no undefined)
-    query.nombre = { $exists: true, $ne: null, $ne: "" };
-
-    return await ResultadoAprendizajeModel.find(query)
-        .where('nombre').ne(null)  // Doble verificación
-        .sort({ nombre: 1 });
-};
-
-// --- ASIGNATURAS ---
-exports.createAsignatura = async (codigo, nombre) => {
-    const nueva = new AsignaturaModel({ _id: codigo, nombre });
-    return await nueva.save();
-};
-
-exports.getAsignaturas = async (cursoId) => {
-    if (cursoId) {
-        const curso = await CursoModel.findById(cursoId).populate('asignaturas');
-        return curso ? curso.asignaturas : [];
-    } else {
-        return await AsignaturaModel.find().sort({ nombre: 1 });
+// --- ASIGNATURAS / MÓDULOS ---
+/**
+ * Obtiene la lista única de nombres de asignaturas (Módulos) 
+ * que existen en la colección de Resultados de Aprendizaje.
+ */
+exports.getAsignaturas = async () => {
+    try {
+        // .distinct extrae los nombres únicos del campo 'asignatura'
+        const asignaturasUnicas = await ResultadoAprendizajeModel.distinct('asignatura');
+        return asignaturasUnicas.sort(); // Ordenadas alfabéticamente
+    } catch (error) {
+        throw new Error('Error al obtener asignaturas: ' + error.message);
     }
 };
 
-// --- CRITERIOS ---
-exports.createCriterio = async (nombre, descripcion, resultadoId) => {
-    const nuevo = new CriterioModel({ nombre, descripcion, resultadoAprendizaje: resultadoId });
-    return await nuevo.save();
+// --- RESULTADOS DE APRENDIZAJE ---
+/**
+ * Obtiene los RAs vinculados a un nombre de asignatura específico.
+ */
+exports.getResultadosAprendizaje = async (nombreAsignatura) => {
+    try {
+        const query = nombreAsignatura ? { asignatura: nombreAsignatura } : {};
+
+        return await ResultadoAprendizajeModel.find(query)
+            .sort({ codigo: 1 }); // Ordenados por RA1, RA2, etc.
+    } catch (error) {
+        throw new Error('Error al obtener RAs: ' + error.message);
+    }
 };
 
-exports.getCriterios = async (resultadoId) => {
-    const query = resultadoId ? { resultadoAprendizaje: resultadoId } : {};
+// --- CRITERIOS (OBSOLETO) ---
+exports.getCriterios = async () => {
+    // Ya no existen criterios individuales en el nuevo esquema
+    return [];
+};
 
-    // Filtrar solo Criterios con nombre válido
-    query.nombre = { $exists: true, $ne: null, $ne: "" };
-
-    return await CriterioModel.find(query)
-        .populate('resultadoAprendizaje', 'nombre')
-        .where('nombre').ne(null)  // Doble verificación
-        .sort({ nombre: 1 });
+// --- MÉTODOS DE CREACIÓN (Para el script de carga o mantenimiento) ---
+exports.createResultadoAprendizaje = async (codigo, texto, asignatura) => {
+    const nuevo = new ResultadoAprendizajeModel({
+        codigo: codigo,
+        texto: texto,
+        asignatura: asignatura
+    });
+    return await nuevo.save();
 };

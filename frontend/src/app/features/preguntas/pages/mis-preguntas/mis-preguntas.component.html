@@ -1,11 +1,7 @@
 <div class="seccion-mis-preguntas">
   <div class="barra-herramientas">
     <div class="barra-busqueda">
-      <input 
-        type="text" 
-        class="entrada-busqueda" 
-        placeholder="Buscar por enunciado..." 
-        [(ngModel)]="terminoBusqueda" 
+      <input type="text" class="entrada-busqueda" placeholder="Buscar por enunciado..." [(ngModel)]="terminoBusqueda"
         (input)="aplicarFiltros()">
     </div>
     <a [routerLink]="['/preguntas/crear']" class="boton boton-primario">
@@ -17,40 +13,47 @@
     <div class="chip" [class.activo]="filtroModulo === ''" (click)="seleccionarModulo('')">
       TODAS
     </div>
-    <div class="chip" 
-         *ngFor="let m of listaModulosXML" 
-         [class.activo]="filtroModulo === m.nombre" 
-         (click)="seleccionarModulo(m.nombre)">
+    <div class="chip" *ngFor="let m of listaModulosXML" [class.activo]="filtroModulo === m.nombre"
+      (click)="seleccionarModulo(m.nombre)">
       {{ m.nombre | uppercase }}
     </div>
   </div>
 
   <div class="rejilla-pregunta" *ngIf="!cargando">
-    
+
     <div class="tarjeta-pregunta" *ngFor="let p of preguntas">
       <div class="pregunta-cabecera">
-        <div class="insignias">
-          <span class="insignia insignia-primaria">{{ p.asignatura }}</span>
-          <span class="insignia">{{ p.tema }}</span>
+        <div class="info-superior">
+          <span class="etiqueta-asignatura">{{ p.asignatura }}</span>
+          <span class="insignia-dificultad" [ngClass]="getClaseDificultad(p.dificultad)">
+            {{ p.dificultad === 1 ? 'Fácil' : p.dificultad === 2 ? 'Media' : 'Difícil' }}
+          </span>
         </div>
         <div class="pregunta-acciones">
           <button class="boton-accion" (click)="editarPregunta(p._id)" title="Editar">✏️</button>
-          <button class="boton-accion" (click)="borrarPregunta(p._id)" title="Eliminar" style="color: #e53e3e;">🗑️</button>
+          <button class="boton-accion" (click)="borrarPregunta(p._id)" title="Eliminar"
+            style="color: #e53e3e;">🗑️</button>
         </div>
       </div>
-      
-      <div class="pregunta-contenido">
-        <p class="pregunta-texto">{{ p.enunciado }}</p>
-      </div>
 
-      <div class="pregunta-metadata">
-        <span>ID: {{ p._id ? p._id.substring(0,8) : 'Nuevo' }}</span>
-        <span>
-          Dificultad: 
-          <span class="insignia" [ngClass]="getClaseDificultad(p.dificultad)">
-            {{ p.dificultad || 'Media' }}
-          </span>
-        </span>
+      <div class="pregunta-cuerpo">
+        <div class="info-tema" *ngIf="p.tema">
+          <strong>RAs:</strong> {{ p.tema }}
+        </div>
+
+        <p class="pregunta-enunciado">{{ p.enunciado }}</p>
+
+        <div class="contenedor-opciones">
+          <span class="titulo-opciones">Opciones:</span>
+          <ul class="lista-opciones">
+            <li *ngFor="let op of p.opciones; let i = index" class="item-opcion"
+              [class.es-correcta]="i === p.respuesta_correcta">
+              <span class="indicador">{{ i === p.respuesta_correcta ? '✔' : '•' }}</span>
+              <span class="texto-opcion">{{ op }}</span>
+            </li>
+          </ul>
+        </div>
+
       </div>
     </div>
 
@@ -65,5 +68,18 @@
   <div *ngIf="cargando" class="aviso-estado">
     <div class="spinner"></div>
     <p>Conectando con el servidor...</p>
+  </div>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="modal-overlay" *ngIf="modalEliminarVisible" (click)="cerrarModal()">
+  <div class="modal-contenido" (click)="$event.stopPropagation()">
+    <div class="icono-alerta">⚠️</div>
+    <h3>¿Eliminar pregunta?</h3>
+    <p>Esta acción no se puede deshacer. ¿Seguro que quieres borrarla para siempre?</p>
+    <div class="modal-acciones">
+      <button class="boton boton-secundario" (click)="cerrarModal()">Cancelar</button>
+      <button class="boton boton-peligro" (click)="confirmarEliminacion()">Sí, Eliminar</button>
+    </div>
   </div>
 </div>

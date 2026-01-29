@@ -15,8 +15,9 @@ export class AsignaturasComponent implements OnInit {
   // Cambiamos la lista de cursos antiguos por la lista de módulos del XML
   modulos: ModuloJerarquia[] = [];
   cargando: boolean = true;
+  activeModuleIndex: number | null = null;
 
-  constructor(private jerarquiaService: JerarquiaService) {}
+  constructor(private jerarquiaService: JerarquiaService) { }
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -35,5 +36,13 @@ export class AsignaturasComponent implements OnInit {
         this.cargando = false;
       }
     });
+  }
+
+  toggle(index: number): void {
+    if (this.activeModuleIndex === index) {
+      this.activeModuleIndex = null;
+    } else {
+      this.activeModuleIndex = index;
+    }
   }
 }

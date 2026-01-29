@@ -1,30 +1,25 @@
 <div class="rejilla-estadisticas">
-  <div class="tarjeta-estadistica">
+  <a [routerLink]="['/preguntas']" class="tarjeta-estadistica">
     <div class="valor-estadistica">124</div>
     <div class="etiqueta-estadistica">Total Preguntas</div>
-  </div>
-  
-  <div class="tarjeta-estadistica">
+  </a>
+
+  <a [routerLink]="['/examenes']" class="tarjeta-estadistica">
     <div class="valor-estadistica">18</div>
     <div class="etiqueta-estadistica">Exámenes Creados</div>
-  </div>
-  
-  <div class="tarjeta-estadistica">
-    <div class="valor-estadistica">342</div>
-    <div class="etiqueta-estadistica">Alumnos Participantes</div>
-  </div>
-  
-  <div class="tarjeta-estadistica">
+  </a>
+
+  <a [routerLink]="['/asignaturas']" class="tarjeta-estadistica">
     <div class="valor-estadistica">5</div>
     <div class="etiqueta-estadistica">Asignaturas</div>
-  </div>
+  </a>
 </div>
 
 <div class="tarjeta">
   <div class="tarjeta-cabecera">
     <h3 class="tarjeta-titulo">Acciones Rápidas</h3>
   </div>
-  <div class="barra-herramientas" style="margin-bottom: 0;">
+  <div class="barra-herramientas" style="margin-bottom: 0; justify-content: center;">
     <a [routerLink]="['/preguntas/crear']" class="boton boton-primario">
       <div class="boton-icono"></div>
       Nueva Pregunta
@@ -32,10 +27,6 @@
     <a [routerLink]="['/examenes/crear']" class="boton boton-secundario">
       <div class="boton-icono"></div>
       Crear Examen
-    </a>
-    <a href="#" class="boton boton-contorno">
-      <div class="boton-icono"></div>
-      Ver Resultados
     </a>
   </div>
 </div>

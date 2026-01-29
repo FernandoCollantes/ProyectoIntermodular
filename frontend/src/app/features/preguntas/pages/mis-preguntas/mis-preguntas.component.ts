@@ -12,6 +12,8 @@ import { NotificacionService } from '../../../../core/services/notificacion.serv
 import { Pregunta } from '../../../../core/models/pregunta.model';
 import { ModuloJerarquia } from '../../../../core/models/jerarquia.model';
 
+import { AuthService } from '../../../../core/services/auth.service';
+
 @Component({
   selector: 'app-mis-preguntas',
   standalone: true,
@@ -21,22 +23,27 @@ import { ModuloJerarquia } from '../../../../core/models/jerarquia.model';
   encapsulation: ViewEncapsulation.None
 })
 export class MisPreguntasComponent implements OnInit {
-  String = String; 
+  String = String;
   preguntas: Pregunta[] = [];
-  
+
   // Ahora guardamos los objetos completos del XML para tener acceso a todo
-  listaModulosXML: ModuloJerarquia[] = []; 
-  
+  listaModulosXML: ModuloJerarquia[] = [];
+
   cargando: boolean = true;
   filtroModulo: string = '';
   terminoBusqueda: string = '';
+
+  // Modal states
+  modalEliminarVisible: boolean = false;
+  idPreguntaAEliminar: string | null = null;
 
   constructor(
     private preguntaService: PreguntaService,
     private jerarquiaService: JerarquiaService,
     private notiService: NotificacionService,
+    private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cargarDatosIniciales();
@@ -44,7 +51,7 @@ export class MisPreguntasComponent implements OnInit {
 
   private cargarDatosIniciales(): void {
     this.cargando = true;
-    
+
     // 1. Cargamos la jerarquía desde el DAMyDAW.xml
     this.jerarquiaService.getJerarquia().subscribe({
       next: (modulos) => {
@@ -64,13 +71,19 @@ export class MisPreguntasComponent implements OnInit {
 
   aplicarFiltros(): void {
     this.cargando = true;
-    this.preguntas = []; 
+    this.preguntas = [];
+
+    const currentUser = this.authService.getCurrentUser();
 
     // Enviamos el nombre del módulo como filtro al backend
-    this.preguntaService.buscarPreguntas({ subject: this.filtroModulo || undefined }).subscribe({
+    this.preguntaService.buscarPreguntas({
+      subject: this.filtroModulo || undefined,
+      creatorId: currentUser?.id
+    }).subscribe({
       next: (data: Pregunta[]) => {
+        console.log('Datos recibidos del backend:', data); // DEBUG
         if (this.terminoBusqueda) {
-          this.preguntas = data.filter(p => 
+          this.preguntas = data.filter(p =>
             p.enunciado.toLowerCase().includes(this.terminoBusqueda.toLowerCase())
           );
         } else {
@@ -86,22 +99,50 @@ export class MisPreguntasComponent implements OnInit {
   }
 
   borrarPregunta(id: string | undefined): void {
-    if (!id || !confirm('¿Estás seguro de que deseas eliminar esta pregunta?')) return;
-    
-    this.preguntaService.eliminarPregunta(id).subscribe({
+    if (!id) return;
+    this.idPreguntaAEliminar = id;
+    this.modalEliminarVisible = true;
+  }
+
+  cerrarModal(): void {
+    this.modalEliminarVisible = false;
+    this.idPreguntaAEliminar = null;
+  }
+
+  confirmarEliminacion(): void {
+    if (!this.idPreguntaAEliminar) return;
+
+    this.preguntaService.eliminarPregunta(this.idPreguntaAEliminar).subscribe({
       next: () => {
         this.notiService.mostrar('Pregunta eliminada con éxito');
         this.aplicarFiltros();
+        this.cerrarModal();
       },
-      error: () => this.notiService.mostrar('No se pudo eliminar la pregunta', 'error')
+      error: () => {
+        this.notiService.mostrar('No se pudo eliminar la pregunta', 'error');
+        this.cerrarModal();
+      }
     });
   }
 
   editarPregunta(id: string | undefined): void {
-    if (id) this.router.navigate(['/preguntas/editar', id]);
+    console.log('Intentando editar pregunta con ID:', id); // DEBUG
+    if (id) {
+      this.router.navigate(['/preguntas/editar', id]);
+    } else {
+      console.error('ID indefinido, no se puede editar');
+    }
   }
 
+
+
   getClaseDificultad(dificultad: any): string {
+    const nivel = parseInt(dificultad, 10);
+    if (nivel === 1) return 'insignia-exito';
+    if (nivel === 2) return 'insignia-advertencia';
+    if (nivel >= 3) return 'insignia-peligro';
+
+    // Fallback para strings antiguos por si acaso
     const d = String(dificultad || '').toLowerCase();
     if (d.includes('facil') || d.includes('fácil')) return 'insignia-exito';
     if (d.includes('media')) return 'insignia-advertencia';

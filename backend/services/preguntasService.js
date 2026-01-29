@@ -1,47 +1,37 @@
 const PreguntaModel = require('../models/PreguntaModelo');
-const AsignaturaModel = require('../models/Asignatura');
-const CriterioModel = require('../models/Criterio');
 const PreguntaClass = require('../classes/Pregunta');
 
+/**
+ * Recupera preguntas filtradas por el nuevo esquema de Módulos y RAs
+ */
 exports.getQuestionsByCriteria = async (filters) => {
     try {
-        const { subject, difficulty, theme, criterioId, resultadoId } = filters;
+        const { asignatura, dificultad, tema, creador } = filters;
         const matchCriteria = {};
 
-        if (subject) {
-            const asigDoc = await AsignaturaModel.findOne({ nombre: { $regex: new RegExp(subject, 'i') } });
-            if (asigDoc) matchCriteria.asignatura = asigDoc._id;
-            else return [];
+        // Filtros directos por String (más eficientes)
+        if (asignatura) {
+            matchCriteria.asignatura = { $regex: new RegExp(asignatura, 'i') };
         }
 
-        if (criterioId) {
-            matchCriteria.criterios_evaluacion = criterioId;
-        } else if (resultadoId) {
-            // Si filtramos por RA, buscamos todos sus criterios
-            const criterios = await CriterioModel.find({ resultadoAprendizaje: resultadoId });
-            const idsCriterios = criterios.map(c => c._id);
-            matchCriteria.criterios_evaluacion = { $in: idsCriterios };
-        } else if (theme) {
-            const critDoc = await CriterioModel.findOne({ nombre: { $regex: new RegExp(theme, 'i') } });
-            if (critDoc) matchCriteria.criterios_evaluacion = critDoc._id;
-            else return [];
+        if (tema) {
+            matchCriteria.tema = { $regex: new RegExp(tema, 'i') };
         }
 
-        if (difficulty) matchCriteria.dificultad = parseInt(difficulty, 10);
+        if (dificultad !== undefined && dificultad !== '') {
+            matchCriteria.dificultad = parseInt(difficulty, 10);
+        }
 
-        const rawQuestions = await PreguntaModel.find(matchCriteria)
-            .populate('asignatura', 'nombre')
-            .populate('criterios_evaluacion', 'nombre')
-            .lean();
+        if (creador) {
+            matchCriteria.creador = creador;
+        }
 
+        const rawQuestions = await PreguntaModel.find(matchCriteria).lean();
+
+        // Adaptamos los resultados al formato que espera el Frontend
         return rawQuestions.map(q => {
-            const criteriosStr = q.criterios_evaluacion ? q.criterios_evaluacion.map(c => c.nombre).join(', ') : 'General';
-            const adaptedQ = {
-                ...q,
-                asignatura: q.asignatura ? q.asignatura.nombre : 'Sin Asignatura',
-                tema: criteriosStr
-            };
-            const preguntaInstance = new PreguntaClass(adaptedQ);
+            // Usamos la clase Pregunta para formatear si es necesario
+            const preguntaInstance = new PreguntaClass(q);
             return preguntaInstance.getClientData();
         });
     } catch (error) {
@@ -49,18 +39,39 @@ exports.getQuestionsByCriteria = async (filters) => {
     }
 };
 
+/**
+ * Guarda la pregunta directamente como viene del controlador
+ */
 exports.createQuestion = async (data) => {
     try {
-        const { incorrect_options, respuesta_correcta, ...rest } = data;
-        const allOptions = [respuesta_correcta, ...incorrect_options];
-        const questionToSave = {
-            ...rest,
-            respuesta_correcta,
-            opciones: allOptions
-        };
-        const newQuestion = new PreguntaModel(questionToSave);
+        // 'data' ya contiene: enunciado, opciones, respuesta_correcta (index), 
+        // asignatura, tema, dificultad y creador.
+        const newQuestion = new PreguntaModel(data);
         return await newQuestion.save();
     } catch (error) {
-        throw new Error('Error al guardar la pregunta: ' + error.message);
+        // Si hay un error de validación en el Modelo, saltará aquí
+        throw new Error('Error en la base de datos al guardar: ' + error.message);
     }
+}
+
+
+/**
+ * Elimina una pregunta por ID
+ */
+exports.deleteQuestion = async (id) => {
+    return await PreguntaModel.findByIdAndDelete(id);
+};
+
+/**
+ * Actualiza una pregunta por ID
+ */
+exports.updateQuestion = async (id, data) => {
+    return await PreguntaModel.findByIdAndUpdate(id, data, { new: true });
+};
+
+/**
+ * Obtiene una pregunta por ID
+ */
+exports.getQuestionById = async (id) => {
+    return await PreguntaModel.findById(id).lean();
 };

@@ -28,7 +28,7 @@ export class LoginComponent {
         private router: Router
     ) {
         this.loginForm = this.fb.group({
-            cycle: ['', Validators.required], // DAM or DAW
+            // cycle removed
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required]
         });
@@ -45,9 +45,9 @@ export class LoginComponent {
         if (this.loginForm.valid) {
             this.loading = true;
             this.errorMsg = '';
-            const { email, password, cycle } = this.loginForm.value;
+            const { email, password } = this.loginForm.value;
 
-            this.authService.login(email, password, cycle).subscribe({
+            this.authService.login(email, password).subscribe({
                 next: (success) => {
                     this.loading = false;
                     if (success) {
@@ -66,20 +66,12 @@ export class LoginComponent {
         }
     }
 
-    // Helper to fill mock data quickly
+    // Helper removed or simplified for dev testing if needed (but removed from template)
     fillMock(type: 'DAM' | 'DAW') {
-        if (type === 'DAM') {
-            this.loginForm.patchValue({
-                cycle: 'DAM',
-                email: 'profesor.dam@example.com',
-                password: 'pass123'
-            });
-        } else {
-            this.loginForm.patchValue({
-                cycle: 'DAW',
-                email: 'profesor.daw@example.com',
-                password: 'pass123'
-            });
-        }
+        const email = type === 'DAM' ? 'profesor.dam@example.com' : 'profesor.daw@example.com';
+        this.loginForm.patchValue({
+            email: email,
+            password: 'pass123'
+        });
     }
 }

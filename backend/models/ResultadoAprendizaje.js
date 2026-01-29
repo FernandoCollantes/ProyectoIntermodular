@@ -1,21 +1,19 @@
 const mongoose = require('mongoose');
 
 const ResultadoAprendizajeSchema = new mongoose.Schema({
-    nombre: {
+    codigo: { // Ejemplo: "RA1"
         type: String,
         required: true,
         trim: true
     },
-    descripcion: {
+    texto: { // El enunciado largo del RA
         type: String,
-        default: ''
+        required: true
     },
-    asignatura: {
+    asignatura: { // Nombre del módulo al que pertenece
         type: String,
-        ref: 'Asignatura',
         required: true
     }
 }, { collection: 'ResultadosAprendizaje' });
 
-// Evitar errores si se vuelve a compilar el modelo
 module.exports = mongoose.models.ResultadoAprendizaje || mongoose.model('ResultadoAprendizaje', ResultadoAprendizajeSchema);

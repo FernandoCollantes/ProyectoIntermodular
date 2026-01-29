@@ -7,9 +7,13 @@
     </div>
 
     <!-- Collapse Toggle Button -->
-    <button class="btn-toggle-sidebar" (click)="toggle.emit()">
-      <span *ngIf="collapsed">➜</span> <!-- Simple Icon placeholder -->
-      <span *ngIf="!collapsed">⬅</span>
+    <button class="btn-toggle-sidebar" (click)="toggle.emit()" [title]="collapsed ? 'Expandir' : 'Colapsar'">
+      <svg *ngIf="collapsed" viewBox="0 0 24 24" class="icon-toggle">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor" />
+      </svg>
+      <svg *ngIf="!collapsed" viewBox="0 0 24 24" class="icon-toggle">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor" />
+      </svg>
     </button>
   </div>
 
@@ -43,9 +47,7 @@
     <nav class="barra-lateral-navegacion">
 
       <a routerLink="/dashboard" routerLinkActive="activo" class="item-navegacion" title="Dashboard">
-        <div class="icono-custom tipo-imagen">
-          <img src="assets/Logo2.png" alt="D">
-        </div>
+        <div class="icono-custom tipo-texto">D</div>
         <span class="nav-text" *ngIf="!collapsed">Dashboard</span>
       </a>
 
@@ -62,8 +64,8 @@
       </a>
 
       <a routerLink="/asignaturas" routerLinkActive="active-link" class="item-navegacion" title="Asignaturas">
-      <div class="icono-custom tipo-texto">A</div>
-      <span class="nav-text" *ngIf="!collapsed">Asignaturas</span>
+        <div class="icono-custom tipo-texto">A</div>
+        <span class="nav-text" *ngIf="!collapsed">Asignaturas</span>
       </a>
 
       <div class="separator"></div>
@@ -89,4 +91,5 @@
 
     </nav>
   </div>
+
 </aside>

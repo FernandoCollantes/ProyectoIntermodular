@@ -9,23 +9,7 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-            <!-- Cycle Selection -->
-            <div class="form-group">
-                <label class="requerido">Selecciona tu ciclo</label>
-                <div class="cycle-selector">
-                    <label class="cycle-option" [class.selected]="loginForm.get('cycle')?.value === 'DAM'">
-                        <input type="radio" formControlName="cycle" value="DAM">
-                        <span class="cycle-label">DAM</span>
-                    </label>
-                    <label class="cycle-option" [class.selected]="loginForm.get('cycle')?.value === 'DAW'">
-                        <input type="radio" formControlName="cycle" value="DAW">
-                        <span class="cycle-label">DAW</span>
-                    </label>
-                </div>
-                <div *ngIf="loginForm.get('cycle')?.invalid && loginForm.get('cycle')?.touched" class="error-text">
-                    Debes seleccionar un ciclo.
-                </div>
-            </div>
+            <!-- Cycle Selection Removed -->
 
             <!-- Email -->
             <div class="form-group">
@@ -67,14 +51,7 @@
                 {{ loading ? 'Iniciando...' : 'Iniciar Sesión' }}
             </button>
 
-            <!-- Mock Helpers -->
-            <div class="mock-helpers">
-                <small>Datos de prueba:</small>
-                <div class="links">
-                    <a (click)="fillMock('DAM')">Profesor DAM</a> |
-                    <a (click)="fillMock('DAW')">Profesor DAW</a>
-                </div>
-            </div>
+            <!-- Mock Helpers Removed -->
         </form>
     </div>
 </div>

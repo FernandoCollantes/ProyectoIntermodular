@@ -3,11 +3,11 @@ export interface Pregunta {
     _id: string; // Obligatorio aquí porque ya existe en BD
     enunciado: string;
     opciones: string[];
-    respuesta_correcta: string;
-    asignatura: string; 
+    respuesta_correcta: number; // Index of the correct answer (0-3)
+    asignatura: string;
     tema: string;
     dificultad: number;
-    criterios: string[];
+    // criterios: string[]; // Might be deprecated or unused now
 }
 
 // Para CREAR preguntas (Envío al endpoint de Andy)

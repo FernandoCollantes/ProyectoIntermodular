@@ -1,25 +1,38 @@
 <div class="contenedor-asignaturas">
-  <header class="cabecera-seccion">
-    <h2>Módulos y Resultados de Aprendizaje</h2>
-    <p>Información extraída del archivo oficial DAMyDAW.xml</p>
+  <header class="cabecera-pagina">
+    <h1>Módulos y Resultados de Aprendizaje del Curso de 1ºDAM/DAW</h1>
+    <p>Información oficial del currículo académico actualizado</p>
   </header>
 
   <div *ngIf="cargando" class="cargando">
+    <div class="spinner"></div>
     <p>Cargando datos del currículo...</p>
   </div>
 
-  <div class="rejilla-modulos" *ngIf="!cargando">
-    <div class="tarjeta-modulo" *ngFor="let modulo of modulos">
-      <div class="modulo-info">
-        <h3>{{ modulo.nombre }}</h3>
-        <span class="conteo-ra">{{ modulo.ras.length }} RAs disponibles</span>
+  <div class="grid-asignaturas" *ngIf="!cargando">
+    <div class="card-modulo" *ngFor="let modulo of modulos; let i = index" [class.active]="activeModuleIndex === i">
+
+      <div class="card-header" (click)="toggle(i)">
+        <div>
+
+          <h2 class="titulo-modulo">{{ modulo.nombre }}</h2>
+        </div>
+        <span class="chevron" [class.rotated]="activeModuleIndex === i">▼</span>
       </div>
 
-      <ul class="lista-ras">
-        <li *ngFor="let ra of modulo.ras">
-          <strong>{{ ra.codigo }}:</strong> {{ ra.texto }}
-        </li>
-      </ul>
+      <div class="card-body" *ngIf="activeModuleIndex === i">
+        <h3>Resultados de Aprendizaje ({{ modulo.ras.length }})</h3>
+
+        <div class="ra-item" *ngFor="let ra of modulo.ras">
+          <span class="ra-badge">{{ ra.codigo }}</span>
+          <p class="ra-texto">{{ ra.texto }}</p>
+        </div>
+
+        <div *ngIf="modulo.ras.length === 0" class="sin-ras">
+          <p>No hay RAs definidos para este módulo.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 
