@@ -4,10 +4,10 @@ const ExamenModel = require('../models/ExamenModelo'); // Necesario si hacemos l
 
 exports.previewExam = async (req, res) => {
     try {
-        const { subjectId, amount } = req.body; 
+        const { subjectId, amount } = req.body;
         const examPreview = await examenesService.generateExamPreview(subjectId, parseInt(amount));
         res.status(200).json({ success: true, exam: examPreview });
-    } catch (e) { res.status(500).json({success:false, message: e.message}); }
+    } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };
 
 
@@ -24,16 +24,16 @@ exports.saveExam = async (req, res) => {
         }
 
         console.log("DEBUG: Llamando a examenesService.saveExamToDb..."); // LOG 4
-        const savedExam = await examenesService.saveExamToDb({ 
-            nombre, asignaturaId, preguntasIds, autor, tipo 
+        const savedExam = await examenesService.saveExamToDb({
+            nombre, asignaturaId, preguntasIds, autor, tipo
         });
-        
+
         console.log("DEBUG: Examen guardado con éxito. ID:", savedExam._id); // LOG 5
         console.log("DEBUG: Examen guardado con éxito. ID:", savedExam.tipo); // LOG 6
         res.status(201).json({ success: true, message: 'Guardado', examId: savedExam._id });
-    } catch (e) { 
+    } catch (e) {
         console.error("DEBUG ERROR:", e); // LOG DE ERROR
-        res.status(500).json({success:false, message: e.message}); 
+        res.status(500).json({ success: false, message: e.message });
     }
 };
 
@@ -43,7 +43,7 @@ exports.searchExams = async (req, res) => {
         const { subjectId, autor, tipo } = req.query; // Añadido tipo
         const exams = await examenesService.searchExams(subjectId, autor, tipo);
         res.json({ success: true, exams });
-    } catch (e) { res.status(500).json({success:false, message: e.message}); }
+    } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };
 
 exports.downloadPdfDirect = async (req, res) => {
@@ -72,21 +72,21 @@ exports.getExamForStudent = async (req, res) => {
     try {
         // Recuperamos el examen
         const examDoc = await ExamenModel.findById(req.params.id).populate('preguntas').lean();
-        
+
         if (!examDoc) return res.status(404).json({ success: false, message: "Examen no encontrado" });
 
         // Limpiamos las respuestas correctas antes de enviarlo
         // Usamos la clase Pregunta para formatear cada item
         const preguntasLimpias = examDoc.preguntas.map(q => new PreguntaClass(q).getClientData());
-        
+
         // Devolvemos estructura similar a la vista previa
-        res.json({ 
-            success: true, 
-            exam: { 
+        res.json({
+            success: true,
+            exam: {
                 nombre: examDoc.nombre,
                 autor: examDoc.autor,
-                preguntas: preguntasLimpias 
-            } 
+                preguntas: preguntasLimpias
+            }
         });
     } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };
@@ -97,13 +97,13 @@ exports.submitExam = async (req, res) => {
         const { id } = req.params; // ID del examen
         const { answers } = req.body; // Array [{ preguntaId, valor }]
 
-        if (!answers) return res.status(400).json({success: false, message: "No se enviaron respuestas"});
+        if (!answers) return res.status(400).json({ success: false, message: "No se enviaron respuestas" });
 
         const result = await examenesService.submitExamAttempt(id, answers);
         res.json({ success: true, result });
-    } catch (e) { 
+    } catch (e) {
         console.error(e);
-        res.status(500).json({ success: false, message: e.message }); 
+        res.status(500).json({ success: false, message: e.message });
     }
 };
 
@@ -129,6 +129,120 @@ exports.exportExamAsJson = async (req, res) => {
         // Enviamos el JSON formateado (pretty print con 2 espacios)
         res.send(JSON.stringify(jsonData, null, 2));
 
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ============================================================================
+// NEW EXAM MANAGEMENT ENDPOINTS (Draft/Published System)
+// ============================================================================
+
+/**
+ * POST /api/examenes - Create new exam
+ */
+exports.addExam = async (req, res) => {
+    try {
+        const examData = req.body;
+        const savedExam = await examenesService.createExam(examData);
+        res.status(201).json({ success: true, exam: savedExam });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * GET /api/examenes/mis-examenes - Get published exams for user
+ */
+exports.getMisExamenes = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ success: false, message: 'userId is required' });
+        }
+        const examenes = await examenesService.getExamsByUser(userId, 'publicado');
+        res.json({ success: true, examenes });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * GET /api/examenes/borradores - Get draft exams for user
+ */
+exports.getBorradores = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ success: false, message: 'userId is required' });
+        }
+        const borradores = await examenesService.getExamsByUser(userId, 'borrador');
+        res.json({ success: true, borradores });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * GET /api/examenes/:id - Get exam by ID
+ */
+exports.getExamById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const exam = await examenesService.getExamById(id);
+        if (!exam) {
+            return res.status(404).json({ success: false, message: 'Exam not found' });
+        }
+        res.json({ success: true, exam });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * PUT /api/examenes/:id - Update exam
+ */
+exports.updateExam = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const examData = req.body;
+        const updatedExam = await examenesService.updateExam(id, examData);
+        if (!updatedExam) {
+            return res.status(404).json({ success: false, message: 'Exam not found' });
+        }
+        res.json({ success: true, exam: updatedExam });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * DELETE /api/examenes/:id - Delete exam
+ */
+exports.deleteExam = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedExam = await examenesService.deleteExam(id);
+        if (!deletedExam) {
+            return res.status(404).json({ success: false, message: 'Exam not found' });
+        }
+        res.json({ success: true, message: 'Exam deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * PATCH /api/examenes/:id/publicar - Publish draft exam
+ */
+exports.publishExamById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const publishedExam = await examenesService.publishExam(id);
+        if (!publishedExam) {
+            return res.status(404).json({ success: false, message: 'Exam not found' });
+        }
+        res.json({ success: true, exam: publishedExam });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

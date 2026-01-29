@@ -3,6 +3,11 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
+
+  // Make RA chips field span full width
+  .grupo-formulario:has(.contenedor-chips) {
+    grid-column: 1 / -1;
+  }
 }
 
 .seleccion-preguntas {
@@ -32,7 +37,7 @@
 }
 
 .lista-preguntas {
-  max-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -41,12 +46,21 @@
 
   /* Estilizar la barra de desplazamiento */
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-200);
+    border-radius: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
     background: var(--gray-400);
     border-radius: 10px;
+
+    &:hover {
+      background: var(--gray-500);
+    }
   }
 }
 
@@ -106,4 +120,68 @@
   padding-top: var(--spacing-lg);
   border-top: 1px solid var(--border-color);
   margin-top: var(--spacing-lg);
+}
+
+/* Filter Controls */
+.controles-filtro {
+  margin-bottom: var(--spacing-md);
+
+  .grupo-formulario {
+    margin-bottom: 0;
+  }
+}
+
+/* Selected Question State */
+.item-seleccion-pregunta.seleccionada {
+  background-color: rgba(0, 154, 205, 0.05);
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 4px rgba(0, 154, 205, 0.1);
+}
+
+/* Empty States */
+.sin-resultados,
+.cargando {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.sin-resultados {
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  border: 2px dashed var(--border-color);
+
+  p {
+    margin: 0;
+  }
+}
+
+/* Blocked Section - When initial form is incomplete */
+.seccion-bloqueada {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  border: 2px dashed #cbd5e0;
+
+  .icono-info {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    margin: 0 0 0.5rem 0;
+    color: #2d3748;
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin: 0;
+    color: #4a5568;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+  }
 }

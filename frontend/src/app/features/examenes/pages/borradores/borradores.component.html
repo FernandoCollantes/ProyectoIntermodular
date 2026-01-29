@@ -1,0 +1,84 @@
+<div class="seccion-mis-examenes">
+    <div class="barra-herramientas">
+        <div class="barra-busqueda">
+            <input type="text" class="entrada-busqueda" placeholder="Buscar borrador por título..."
+                [(ngModel)]="terminoBusqueda" (input)="aplicarFiltros()">
+        </div>
+
+        <a [routerLink]="['/examenes/crear']" class="boton boton-primario">
+            + Nuevo Examen
+        </a>
+    </div>
+
+    <div class="rejilla-pregunta" *ngIf="!cargando">
+        <div class="tarjeta-pregunta" *ngFor="let borrador of borradores">
+            <div class="pregunta-cabecera">
+                <div class="insignias">
+                    <span class="insignia insignia-primaria">{{ borrador.asignatura }}</span>
+                    <span class="insignia">{{ getCantidadPreguntas(borrador) }} preguntas</span>
+                </div>
+                <div class="pregunta-acciones">
+                    <button class="boton-accion" (click)="publicarBorrador(borrador._id)" title="Publicar"
+                        style="color: #48bb78;">📤</button>
+                    <button class="boton-accion" (click)="editarBorrador(borrador._id)" title="Editar">✏️</button>
+                    <button class="boton-accion" (click)="eliminarBorrador(borrador._id)" title="Eliminar"
+                        style="color: var(--danger);">🗑️</button>
+                </div>
+            </div>
+
+            <div class="pregunta-contenido">
+                <h3 style="margin: 0 0 10px 0; color: var(--gray-900);">{{ borrador.titulo }}</h3>
+                <p class="pregunta-texto" style="color: var(--gray-600);">
+                    Duración: {{ borrador.duracion }} min | Intentos: {{ borrador.intentos === 999 ? 'Ilimitados' :
+                    borrador.intentos }}
+                </p>
+                <div *ngIf="borrador.ras && borrador.ras.length > 0" style="margin-top: 8px;">
+                    <span class="insignia" *ngFor="let ra of borrador.ras" style="margin-right: 4px;">{{ ra }}</span>
+                </div>
+            </div>
+
+            <div class="pregunta-metadata">
+                <span>📅 {{ formatearFecha(borrador.createdAt) }}</span>
+                <span><span class="insignia insignia-advertencia">Borrador</span></span>
+            </div>
+        </div>
+
+        <div class="sin-resultados" *ngIf="borradores.length === 0">
+            <div class="icono-vacio">📂</div>
+            <p>No hay borradores guardados.</p>
+            <small *ngIf="terminoBusqueda">Prueba a cambiar los filtros de búsqueda.</small>
+            <small *ngIf="!terminoBusqueda">Los borradores que guardes aparecerán aquí.</small>
+        </div>
+    </div>
+
+    <div *ngIf="cargando" class="aviso-estado">
+        <div class="spinner"></div>
+        <p>Cargando borradores...</p>
+    </div>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
+<div class="modal-overlay" *ngIf="modalEliminarVisible" (click)="cerrarModal()">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+        <div class="icono-alerta">⚠️</div>
+        <h3>¿Eliminar borrador?</h3>
+        <p>Esta acción no se puede deshacer. ¿Seguro que quieres borrar este borrador para siempre?</p>
+        <div class="modal-acciones">
+            <button class="boton boton-secundario" (click)="cerrarModal()">Cancelar</button>
+            <button class="boton boton-peligro" (click)="confirmarEliminacion()">Sí, Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN DE PUBLICACIÓN -->
+<div class="modal-overlay" *ngIf="modalPublicarVisible" (click)="cerrarModal()">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+        <div class="icono-alerta">✅</div>
+        <h3>¿Publicar examen?</h3>
+        <p>El examen estará disponible para los alumnos. ¿Deseas publicarlo ahora?</p>
+        <div class="modal-acciones">
+            <button class="boton boton-secundario" (click)="cerrarModal()">Cancelar</button>
+            <button class="boton boton-primario" (click)="confirmarPublicacion()">Sí, Publicar</button>
+        </div>
+    </div>
+</div>

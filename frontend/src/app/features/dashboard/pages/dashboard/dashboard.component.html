@@ -35,7 +35,33 @@
   <div class="tarjeta-cabecera">
     <h3 class="tarjeta-titulo">Actividad Reciente</h3>
   </div>
-  <div style="color: var(--gray-600); padding: 20px; text-align: center;">
+
+  <div *ngIf="cargando" style="padding: 20px; text-align: center;">
+    <div class="spinner"></div>
+    <p style="color: var(--gray-600); margin-top: 10px;">Cargando actividad...</p>
+  </div>
+
+  <div *ngIf="!cargando && actividadReciente.length === 0"
+    style="color: var(--gray-600); padding: 20px; text-align: center;">
     No hay actividad reciente para mostrar.
+  </div>
+
+  <div class="lista-actividad" *ngIf="!cargando && actividadReciente.length > 0">
+    <div class="item-actividad" *ngFor="let item of actividadReciente" [class.item-destacado]="item.esUltimo">
+      <div class="icono-actividad">{{ getTipoIcono(item.tipo) }}</div>
+      <div class="contenido-actividad">
+        <div class="titulo-actividad">
+          {{ item.titulo }}
+          <span class="badge-nuevo" *ngIf="item.esUltimo">✨ Más reciente</span>
+        </div>
+        <div class="meta-actividad">
+          <span class="tipo-badge" [class.tipo-examen]="item.tipo === 'examen'"
+            [class.tipo-pregunta]="item.tipo === 'pregunta'">
+            {{ getTipoTexto(item.tipo) }}
+          </span>
+          <span class="fecha-actividad">{{ formatearFecha(item.fecha) }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

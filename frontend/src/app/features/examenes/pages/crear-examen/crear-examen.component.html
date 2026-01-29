@@ -1,136 +1,146 @@
 <div class="tarjeta">
-  <form>
+  <form [formGroup]="examenForm">
     <h1>
-      Configuración del Examen
+      {{ modoEdicion ? 'Editar Examen' : 'Configuración del Examen' }}
     </h1>
 
     <div class="grupo-formulario">
       <label for="examTitle" class="etiqueta-formulario requerido">Título del examen</label>
-      <input type="text" id="examTitle" class="entrada-formulario"
+      <input type="text" id="examTitle" class="entrada-formulario" formControlName="titulo"
         placeholder="Ej: Examen Final Matemáticas - 1º Trimestre" />
     </div>
 
     <div class="rejilla-configuracion-examen">
       <div class="grupo-formulario">
         <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
-        <select id="subject" class="seleccion-formulario">
+        <select id="subject" class="seleccion-formulario" formControlName="asignatura" [(ngModel)]="filtroModulo"
+          (change)="onModuloChange()">
           <option value="">Seleccionar...</option>
-          <option value="IPE">IPE</option>
-          <option value="LENGUAJE DE MARCAS">LENGUAJE DE MARCAS</option>
-          <option value="PROGRAMACIÓN">PROGRAMACIÓN</option>
-          <option value="INGLÉS">INGLÉS</option>
+          <option *ngFor="let m of modulos" [value]="m.nombre">{{ m.nombre }}</option>
         </select>
       </div>
 
-      <div class="grupo-formulario">
-        <label for="learningOutcomes" class="etiqueta-formulario requerido">Resultados de Aprendizaje</label>
-        <select id="learningOutcomes" class="seleccion-formulario">
-          <option value="" disabled selected>Seleccione Resultados de Aprendizaje...</option>
-          <option value="RA1">RA1 (Cargado desde XML)</option>
-          <option value="RA2">RA2 (Cargado desde XML)</option>
-          <option value="RA3">RA3 (Cargado desde XML)</option>
-        </select>
+      <div class="grupo-formulario" *ngIf="rasDisponibles.length > 0">
+        <label class="etiqueta-formulario">Resultado de Aprendizaje (RA)</label>
+        <div class="contenedor-chips">
+          <div class="chip" *ngFor="let ra of rasDisponibles" [class.activo]="filtroRA === ra.codigo"
+            (click)="filtroRA = filtroRA === ra.codigo ? '' : ra.codigo; aplicarFiltros()">
+            {{ ra.codigo }}
+          </div>
+        </div>
       </div>
 
       <div class="grupo-formulario">
         <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
-        <input type="number" id="duration" class="entrada-formulario" placeholder="60" min="5" max="60" />
-      </div>
-
-      <div class="grupo-formulario">
-        <label for="passingGrade" class="etiqueta-formulario requerido">Nota mínima (%)</label>
-        <input type="number" id="passingGrade" class="entrada-formulario" placeholder="50" min="0" max="100" />
+        <input type="number" id="duration" class="entrada-formulario" formControlName="duracion" placeholder="60"
+          min="5" max="180" />
       </div>
 
       <div class="grupo-formulario">
         <label for="attempts" class="etiqueta-formulario">Intentos permitidos</label>
-        <select id="attempts" class="seleccion-formulario">
-          <option value="1" selected>1 intento</option>
+        <select id="attempts" class="seleccion-formulario" formControlName="intentos">
+          <option value="1">1 intento</option>
           <option value="2">2 intentos</option>
           <option value="3">3 intentos</option>
-          <option value="unlimited">Ilimitados</option>
+          <option value="999">Ilimitados</option>
         </select>
       </div>
     </div>
 
-    <div class="seleccion-preguntas">
+    <!-- Mensaje informativo cuando el formulario no está completo -->
+    <div class="seccion-bloqueada" *ngIf="!formularioInicialCompleto()">
+      <div class="icono-info">ℹ️</div>
+      <h3>Completa la configuración básica</h3>
+      <p>Por favor, completa los campos requeridos (Título, Asignatura y Duración) para poder seleccionar preguntas.</p>
+    </div>
+
+    <!-- Sección de selección de preguntas (solo visible cuando el formulario inicial está completo) -->
+    <div class="seleccion-preguntas" *ngIf="formularioInicialCompleto()">
       <div class="cabecera-seleccion">
         <h2>Seleccionar Preguntas</h2>
         <span class="contador-seleccionado">
           <div class="indicador-estado"></div>
-          3 preguntas seleccionadas
+          {{ preguntasSeleccionadas.size }} preguntas seleccionadas
         </span>
       </div>
 
-      <div class="barra-busqueda" style="margin-bottom: var(--spacing-md)">
-        <div class="icono-busqueda"></div>
-        <input type="text" class="entrada-busqueda" placeholder="Buscar preguntas..." />
+      <!-- Filters are now controlled by the form above -->
+
+      <!-- Questions List -->
+      <div class="lista-preguntas" *ngIf="!cargando">
+        <label class="item-seleccion-pregunta" *ngFor="let p of preguntasFiltradas"
+          [class.seleccionada]="estaSeleccionada(p._id)">
+          <input type="checkbox" [checked]="estaSeleccionada(p._id)" (change)="togglePregunta(p._id)" />
+          <div class="contenido-seleccion-pregunta">
+            <div class="texto-seleccion-pregunta">{{ p.enunciado }}</div>
+            <div class="meta-seleccion-pregunta">
+              <span class="insignia insignia-primaria">{{ p.asignatura }}</span>
+              <span class="insignia">{{ p.tema }}</span>
+              <span class="insignia" [ngClass]="getClaseDificultad(p.dificultad)">
+                {{ getDificultadTexto(p.dificultad) }}
+              </span>
+            </div>
+          </div>
+        </label>
+
+        <div *ngIf="preguntasFiltradas.length === 0" class="sin-resultados">
+          <p>No se encontraron preguntas con los filtros aplicados.</p>
+        </div>
       </div>
 
-      <div class="lista-preguntas">
-        <label class="item-seleccion-pregunta">
-          <input type="checkbox" checked />
-          <div class="contenido-seleccion-pregunta">
-            <div class="texto-seleccion-pregunta">
-              ¿Cuál es la solución de la ecuación 2x + 5 = 13?
-            </div>
-            <div class="meta-seleccion-pregunta">
-              <span class="insignia insignia-primaria">MAT</span>
-              <span class="insignia">ÁLGEBRA</span>
-              <span class="insignia">MEDIA</span>
-            </div>
-          </div>
-        </label>
-
-        <label class="item-seleccion-pregunta">
-          <input type="checkbox" checked />
-          <div class="contenido-seleccion-pregunta">
-            <div class="texto-seleccion-pregunta">
-              ¿Cuál es el área de un círculo con radio de 5 cm?
-            </div>
-            <div class="meta-seleccion-pregunta">
-              <span class="insignia insignia-primaria">MAT</span>
-              <span class="insignia">GEOMETRÍA</span>
-              <span class="insignia">FÁCIL</span>
-            </div>
-          </div>
-        </label>
+      <div *ngIf="cargando" class="cargando">
+        <p>Cargando preguntas...</p>
       </div>
     </div>
 
-    <div class="grupo-formulario">
+    <div class="grupo-formulario" formGroupName="opciones">
       <label class="etiqueta-formulario">Opciones de configuración</label>
 
       <div class="contenedor-opciones-adicionales">
         <label class="item-opcion">
-          <input type="checkbox" name="aleatorio" />
+          <input type="checkbox" formControlName="aleatorio" />
           <span>Mezclar preguntas aleatoriamente</span>
         </label>
 
         <label class="item-opcion">
-          <input type="checkbox" name="respuestas_inmediatas" />
+          <input type="checkbox" formControlName="respuestas_inmediatas" />
           <span>Mostrar respuestas al finalizar</span>
         </label>
 
         <label class="item-opcion">
-          <input type="checkbox" name="limite_tiempo" checked />
+          <input type="checkbox" formControlName="limite_tiempo" />
           <span>Habilitar límite de tiempo</span>
         </label>
 
         <label class="item-opcion">
-          <input type="checkbox" name="navegacion_libre" />
+          <input type="checkbox" formControlName="navegacion_libre" />
           <span>Permitir volver atrás</span>
         </label>
       </div>
     </div>
 
     <div class="acciones-formulario">
-      <a [routerLink]="['/dashboard']" class="boton boton-contorno">Cancelar</a>
-      <button type="button" class="boton boton-secundario">Guardar como borrador</button>
-      <button type="submit" class="boton boton-primario">
+      <button type="button" (click)="mostrarModalCancelar()" class="boton boton-contorno">Cancelar</button>
+      <button type="button" (click)="guardarBorrador()" class="boton boton-secundario" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar como borrador' }}
+      </button>
+      <button type="button" (click)="crearYPublicar()" class="boton boton-primario" [disabled]="guardando">
         <div class="boton-icono"></div>
-        Crear y Publicar Examen
+        {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar y Publicar' : 'Crear y Publicar Examen') }}
       </button>
     </div>
   </form>
+</div>
+
+<!-- MODAL DE CONFIRMACIÓN DE CANCELACIÓN -->
+<div class="modal-overlay" *ngIf="modalCancelarVisible" (click)="cerrarModalCancelar()">
+  <div class="modal-contenido" (click)="$event.stopPropagation()">
+    <div class="icono-alerta">⚠️</div>
+    <h3>¿Cancelar creación del examen?</h3>
+    <p>Los cambios no guardados se perderán. ¿Estás seguro de que quieres salir?</p>
+    <div class="modal-acciones">
+      <button class="boton boton-secundario" (click)="cerrarModalCancelar()">No, Continuar Editando</button>
+      <button class="boton boton-peligro" (click)="confirmarCancelacion()">Sí, Cancelar</button>
+    </div>
+  </div>
 </div>

@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const PreguntaModel = require('../models/PreguntaModelo');
 const ExamenModel = require('../models/ExamenModelo');
 const IntentoModel = require('../models/Intento');
-const ExamenClass = require('../classes/Examen'); 
-const PreguntaClass = require('../classes/Pregunta'); 
+const ExamenClass = require('../classes/Examen');
+const PreguntaClass = require('../classes/Pregunta');
 const PDFDocument = require('pdfkit');
 
 exports.generateExamPreview = async (subjectId, amount) => {
@@ -17,20 +17,20 @@ exports.generateExamPreview = async (subjectId, amount) => {
         if (randomQuestions.length === 0) throw new Error(`No hay preguntas suficientes.`);
 
         const preguntasConNombres = await PreguntaModel.populate(randomQuestions, [
-            { path: 'asignatura' }, 
+            { path: 'asignatura' },
             { path: 'criterios_evaluacion' }
         ]);
 
         const preguntasAdaptadas = preguntasConNombres.map(q => ({
             ...q,
             asignatura: q.asignatura?.nombre || '',
-            tema: q.criterios_evaluacion ? q.criterios_evaluacion.map(c => c.nombre).join(', ') : '' 
+            tema: q.criterios_evaluacion ? q.criterios_evaluacion.map(c => c.nombre).join(', ') : ''
         }));
 
         const nombreSugerido = `Examen_${Date.now()}`;
         const examenVista = new ExamenClass(nombreSugerido, preguntasAdaptadas);
         const data = examenVista.getClientData();
-        data.asignaturaId = subjectId; 
+        data.asignaturaId = subjectId;
         return data;
     } catch (error) {
         throw new Error('Error generando preview: ' + error.message);
@@ -59,9 +59,9 @@ exports.saveExamToDb = async (examData) => {
             autor: autor || 'admin',
             tipo: tipoFinal // Asignación directa
         });
-        
+
         console.log("DEBUG MONGOOSE OBJECT:", nuevoExamenDB); // Ver qué creó Mongoose
-        
+
         return await nuevoExamenDB.save();
     } catch (error) {
         throw new Error('Error guardando examen: ' + error.message);
@@ -93,20 +93,20 @@ exports.generateExamPreview = async (subjectId, amount) => {
         if (randomQuestions.length === 0) throw new Error(`No hay preguntas suficientes.`);
 
         const preguntasConNombres = await PreguntaModel.populate(randomQuestions, [
-            { path: 'asignatura' }, 
+            { path: 'asignatura' },
             { path: 'criterios_evaluacion' }
         ]);
 
         const preguntasAdaptadas = preguntasConNombres.map(q => ({
             ...q,
             asignatura: q.asignatura?.nombre || '',
-            tema: q.criterios_evaluacion ? q.criterios_evaluacion.map(c => c.nombre).join(', ') : '' 
+            tema: q.criterios_evaluacion ? q.criterios_evaluacion.map(c => c.nombre).join(', ') : ''
         }));
 
         const nombreSugerido = `Examen_${Date.now()}`;
         const examenVista = new ExamenClass(nombreSugerido, preguntasAdaptadas);
         const data = examenVista.getClientData();
-        data.asignaturaId = subjectId; 
+        data.asignaturaId = subjectId;
         return data;
     } catch (error) {
         throw new Error('Error generando preview: ' + error.message);
@@ -137,9 +137,9 @@ exports.submitExamAttempt = async (examId, userAnswers) => {
         examen.preguntas.forEach(preguntaOriginal => {
             // Buscamos qué respondió el usuario a esta pregunta
             const respuestaUsuario = userAnswers.find(a => a.preguntaId === preguntaOriginal._id.toString());
-            
-            const esCorrecta = respuestaUsuario && 
-                               respuestaUsuario.valor === preguntaOriginal.respuesta_correcta;
+
+            const esCorrecta = respuestaUsuario &&
+                respuestaUsuario.valor === preguntaOriginal.respuesta_correcta;
 
             if (esCorrecta) aciertos++;
 
@@ -148,7 +148,7 @@ exports.submitExamAttempt = async (examId, userAnswers) => {
                 respuesta_marcada: respuestaUsuario ? respuestaUsuario.valor : null,
                 es_correcta: esCorrecta,
                 // Opcional: Devolver cuál era la correcta para feedback inmediato
-                correcta_real: preguntaOriginal.respuesta_correcta 
+                correcta_real: preguntaOriginal.respuesta_correcta
             });
         });
 
@@ -215,9 +215,9 @@ exports.generatePdfFromExamId = async (examId) => {
 
     const preguntasAdaptadas = examDoc.preguntas.map(q => ({
         enunciado: q.enunciado,
-        opciones: q.opciones, 
-        ...new PreguntaClass(q).getClientData(), 
-        asignatura: examDoc.asignatura.nombre 
+        opciones: q.opciones,
+        ...new PreguntaClass(q).getClientData(),
+        asignatura: examDoc.asignatura.nombre
     }));
 
     return this.generateExamPdf({ nombre: examDoc.nombre, autor: examDoc.autor, preguntas: preguntasAdaptadas });
@@ -271,7 +271,7 @@ exports.getExamForExport = async (examId) => {
                 opciones: p.opciones,
                 // IMPORTANTE: Incluimos la respuesta correcta porque es para IMPORTAR en otra app (Kahoot),
                 // el profesor de la otra app necesita saber cuál es la correcta.
-                respuesta_correcta: p.respuesta_correcta, 
+                respuesta_correcta: p.respuesta_correcta,
                 temas: p.criterios_evaluacion.map(c => c.nombre), // Array de nombres
                 dificultad: p.dificultad
             }))
@@ -281,5 +281,90 @@ exports.getExamForExport = async (examId) => {
 
     } catch (error) {
         throw new Error("Error exportando examen: " + error.message);
+    }
+};
+
+// ============================================================================
+// NEW EXAM MANAGEMENT METHODS (Draft/Published System)
+// ============================================================================
+
+/**
+ * Create a new exam (draft or published)
+ */
+exports.createExam = async (examData) => {
+    try {
+        const nuevoExamen = new ExamenModel(examData);
+        return await nuevoExamen.save();
+    } catch (error) {
+        throw new Error(`Error creating exam: ${error.message}`);
+    }
+};
+
+/**
+ * Get exams by user, optionally filtered by estado
+ */
+exports.getExamsByUser = async (userId, estado = null) => {
+    try {
+        const query = { creador: userId };
+        if (estado) {
+            query.estado = estado;
+        }
+        return await ExamenModel.find(query)
+            .populate('preguntas')
+            .sort({ createdAt: -1 });
+    } catch (error) {
+        throw new Error(`Error fetching exams: ${error.message}`);
+    }
+};
+
+/**
+ * Get exam by ID
+ */
+exports.getExamById = async (id) => {
+    try {
+        return await ExamenModel.findById(id).populate('preguntas');
+    } catch (error) {
+        throw new Error(`Error fetching exam: ${error.message}`);
+    }
+};
+
+/**
+ * Update exam
+ */
+exports.updateExam = async (id, examData) => {
+    try {
+        return await ExamenModel.findByIdAndUpdate(
+            id,
+            examData,
+            { new: true, runValidators: true }
+        );
+    } catch (error) {
+        throw new Error(`Error updating exam: ${error.message}`);
+    }
+};
+
+/**
+ * Delete exam
+ */
+exports.deleteExam = async (id) => {
+    try {
+        return await ExamenModel.findByIdAndDelete(id);
+    } catch (error) {
+        throw new Error(`Error deleting exam: ${error.message}`);
+    }
+};
+
+/**
+ * Publish a draft exam (change estado to 'publicado')
+ */
+exports.publishExam = async (id) => {
+    try {
+        return await ExamenModel.findByIdAndUpdate(
+            id,
+            { estado: 'publicado' },
+            { new: true }
+        );
+    } catch (error) {
+        throw new Error(`Error publishing exam: ${error.message}`);
     }
 };

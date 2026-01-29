@@ -14,4 +14,15 @@ router.get('/student/attempts', controller.getAttempts); // Obtener historial de
 
 router.get('/:id/export-json', controller.exportExamAsJson); // Obtener examen como JSON
 
+// ============================================================================
+// NEW EXAM MANAGEMENT ROUTES (Draft/Published System)
+// ============================================================================
+router.post('/', controller.addExam);                    // Create exam
+router.get('/mis-examenes', controller.getMisExamenes);  // Get published exams
+router.get('/borradores', controller.getBorradores);     // Get draft exams
+router.get('/:id', controller.getExamById);              // Get exam by ID
+router.put('/:id', controller.updateExam);               // Update exam
+router.delete('/:id', controller.deleteExam);            // Delete exam
+router.patch('/:id/publicar', controller.publishExamById); // Publish draft
+
 module.exports = router;

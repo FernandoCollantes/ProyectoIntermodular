@@ -141,7 +141,7 @@ export class CrearPreguntaComponent implements OnInit {
       this.preguntaService.crearPregunta(nuevaPreguntaDto as any, currentUser.id).subscribe({
         next: () => {
           this.notiService.mostrar('¡Pregunta guardada con éxito!');
-          this.router.navigate(['/preguntas/mis-preguntas']);
+          this.resetearFormulario();
         },
         error: (err: any) => {
           console.error('Error del servidor:', err);
@@ -150,5 +150,17 @@ export class CrearPreguntaComponent implements OnInit {
         }
       });
     }
+  }
+
+  private resetearFormulario(): void {
+    this.nuevaPregunta = {
+      enunciado: '',
+      asignatura: '',
+      tema: '',
+      opciones: ['', '', '', ''],
+      respuesta_correcta: '0',
+      dificultad: 1
+    } as any; // Type assertion to avoid criterios requirement
+    this.rasDisponibles = [];
   }
 }

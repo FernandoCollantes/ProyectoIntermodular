@@ -1,17 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-// Ajusta estas rutas de importación si tus carpetas se llaman diferente
 import { MisExamenesComponent } from './pages/mis-examenes/mis-examenes.component';
 import { CrearExamenComponent } from './pages/crear-examen/crear-examen.component';
+import { BorradoresComponent } from './pages/borradores/borradores.component';
 
 const routes: Routes = [
   {
-    path: '', 
+    path: '',
     component: MisExamenesComponent // Carga la lista al entrar a /examenes
   },
   {
     path: 'crear',
     component: CrearExamenComponent // Carga el formulario en /examenes/crear
+  },
+  {
+    path: 'editar/:id',
+    component: CrearExamenComponent // Reutiliza el formulario para editar
+  },
+  {
+    path: 'borradores',
+    component: BorradoresComponent // Carga los borradores en /examenes/borradores
   }
 ];
 
