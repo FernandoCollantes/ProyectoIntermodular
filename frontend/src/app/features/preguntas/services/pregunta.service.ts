@@ -13,11 +13,13 @@ export class PreguntaService {
     constructor(private http: HttpClient) { }
 
     /**
-     * Search questions with filters.
-     * Backend returns: { success: true, total_found: n, questions: [...] }
+     * Busca preguntas con filtros (Módulo, Dificultad, RA).
+     * El backend devuelve: { success: true, total_found: n, questions: [...] }
      */
     buscarPreguntas(filters: { subject?: string; difficulty?: string; theme?: string }): Observable<Pregunta[]> {
         let params = new HttpParams();
+        
+        // Mapeamos los filtros a los parámetros que espera el backend de Andy
         if (filters.subject) params = params.set('subject', filters.subject);
         if (filters.difficulty) params = params.set('difficulty', filters.difficulty);
         if (filters.theme) params = params.set('theme', filters.theme);
@@ -28,46 +30,18 @@ export class PreguntaService {
     }
 
     /**
-     * Create a new question.
-     * Backend returns: { success: true, message: '...', question: {...} }
+     * Crea una nueva pregunta vinculada a un Módulo y un RA (enviado como theme).
+     * El backend devuelve: { success: true, message: '...', question: {...} }
      */
     crearPregunta(dto: CrearPreguntaDto): Observable<Pregunta> {
+        // Enviamos el DTO simplificado (sin el campo criterios)
         return this.http.post<any>(`${this.apiUrl}/`, dto).pipe(
             map(response => response.question)
         );
     }
 
     /**
-     * Get evaluation criteria based on subject.
-     * MOCKED for now.
+     * NOTA: El método getCriterios ha sido eliminado siguiendo la decisión 
+     * de omitir esta funcionalidad en el flujo académico.
      */
-    getCriterios(asignatura: string): Observable<string[]> {
-        // Mock data
-        const criteriosDAM = [
-            'CE1. Interpreta el diseño de la base de datos',
-            'CE2. Implementa consultas SQL complejas',
-            'CE3. Desarrolla componentes de interfaz de usuario',
-            'CE4. Realiza pruebas unitarias'
-        ];
-
-        const criteriosDAW = [
-            'CE1. Diseña interfaces web responsive',
-            'CE2. Implementa lógica de cliente con JavaScript',
-            'CE3. Gestiona el despliegue de aplicaciones web',
-            'CE4. Integra servicios RESTful'
-        ];
-
-        let criterios: string[] = [];
-        if (asignatura === 'DAM') {
-            criterios = criteriosDAM;
-        } else if (asignatura === 'DAW') {
-            criterios = criteriosDAW;
-        }
-
-        // Return as observable
-        return new Observable(observer => {
-            observer.next(criterios);
-            observer.complete();
-        });
-    }
 }
