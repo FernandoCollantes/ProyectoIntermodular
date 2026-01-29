@@ -8,24 +8,35 @@ export const routes: Routes = [
   {
     path: '',
     // Carga el Layout que acabamos de editar (con Sidebar y Header)
-    loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    loadComponent: () =>
+      import('./layouts/main-layout/main-layout.component').then((m) => m.MainLayoutComponent),
     canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./features/dashboard/dashboard-module').then(m => m.DashboardModule)
+        loadChildren: () =>
+          import('./features/dashboard/dashboard-module').then((m) => m.DashboardModule),
       },
       {
         path: 'preguntas',
-        loadChildren: () => import('./features/preguntas/preguntas-module').then(m => m.PreguntasModule)
+        loadChildren: () =>
+          import('./features/preguntas/preguntas-module').then((m) => m.PreguntasModule),
       },
       {
         path: 'examenes',
-        loadChildren: () => import('./features/examenes/examenes-module').then(m => m.ExamenesModule)
+        loadChildren: () =>
+          import('./features/examenes/examenes-module').then((m) => m.ExamenesModule),
+      },
+      {
+        path: 'asignaturas',
+        loadComponent: () =>
+          import('./features/asignaturas/pages/asignaturas/asignaturas.component').then(
+            (m) => m.AsignaturasComponent,
+          ),
       },
       // Redirección por defecto: Si entran a la raíz, van al dashboard
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
   },
 
   // -----------------------------------------------------------------------
@@ -36,13 +47,19 @@ export const routes: Routes = [
     children: [
       {
         path: 'acceso',
-        loadComponent: () => import('./features/alumno/pages/acceso-alumno/acceso-alumno.component').then(m => m.AccesoAlumnoComponent)
+        loadComponent: () =>
+          import('./features/alumno/pages/acceso-alumno/acceso-alumno.component').then(
+            (m) => m.AccesoAlumnoComponent,
+          ),
       },
       {
         path: 'realizar-examen',
-        loadComponent: () => import('./features/alumno/pages/realizar-examen/realizar-examen.component').then(m => m.RealizarExamenComponent)
-      }
-    ]
+        loadComponent: () =>
+          import('./features/alumno/pages/realizar-examen/realizar-examen.component').then(
+            (m) => m.RealizarExamenComponent,
+          ),
+      },
+    ],
   },
 
   // -----------------------------------------------------------------------
@@ -50,11 +67,12 @@ export const routes: Routes = [
   // -----------------------------------------------------------------------
   {
     path: 'auth',
-    loadChildren: () => import('./features/auth/auth-routing-module').then(m => m.AuthRoutingModule)
+    loadChildren: () =>
+      import('./features/auth/auth-routing-module').then((m) => m.AuthRoutingModule),
   },
 
   // -----------------------------------------------------------------------
   // 3. RUTAS NO ENCONTRADAS
   // -----------------------------------------------------------------------
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: 'dashboard' },
 ];

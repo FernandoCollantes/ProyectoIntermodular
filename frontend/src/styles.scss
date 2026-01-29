@@ -3,11 +3,12 @@
    ============================================================================ */
 
 /* 1. IMPORTS */
+/* Variables Corporativas */
+@use 'styles/variables';
 /* Fuente Corporativa: Open Sans (400, 600, 700) */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
-/* Variables Corporativas */
-@import 'styles/variables';
+
 
 /* 2. RESET & BASE */
 * {
