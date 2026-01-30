@@ -1,4 +1,31 @@
 const preguntasService = require('../services/preguntasService');
+const pdfService = require('../services/pdfService');
+
+/**
+ * Genera y descarga un PDF del examen
+ */
+exports.downloadPdf = async (req, res) => {
+    try {
+        const examData = req.body; // Expects DownloadExamDto structure
+
+        if (!examData || !examData.preguntas) {
+            return res.status(400).json({ success: false, message: 'Datos del examen inválidos' });
+        }
+
+        const doc = pdfService.generateExamPdf(examData);
+
+        // Set response headers regarding the PDF file
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${examData.nombre || 'examen'}.pdf"`);
+
+        // Pipe the document to the response
+        doc.pipe(res);
+
+    } catch (e) {
+        console.error("Error generating PDF:", e);
+        res.status(500).json({ success: false, message: e.message });
+    }
+};
 
 /**
  * Busca preguntas basadas en criterios de filtrado

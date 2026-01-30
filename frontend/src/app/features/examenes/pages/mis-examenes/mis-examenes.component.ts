@@ -2,14 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 // Services
 import { ExamenService } from '../../services/examen.service';
+import { PreguntaService } from '../../../preguntas/services/pregunta.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
 
 // Models
-import { Examen } from '../../../../core/models/examen.model';
+import { Examen, DownloadExamDto } from '../../../../core/models';
 
 @Component({
   selector: 'app-mis-examenes',
@@ -24,12 +26,16 @@ export class MisExamenesComponent implements OnInit {
   cargando: boolean = true;
   terminoBusqueda: string = '';
 
+  // States
+  descargandoIds: Set<string> = new Set();
+
   // Modal states
   modalEliminarVisible: boolean = false;
   idExamenAEliminar: string | null = null;
 
   constructor(
     private examenService: ExamenService,
+    private preguntaService: PreguntaService,
     private authService: AuthService,
     private notificacionService: NotificacionService,
     private router: Router
@@ -131,6 +137,61 @@ export class MisExamenesComponent implements OnInit {
     }).catch(err => {
       console.error('Error al copiar enlace:', err);
       this.notificacionService.mostrar('Error al copiar el enlace', 'error');
+    });
+  }
+
+  isDescargando(examen: Examen): boolean {
+    return !!examen._id && this.descargandoIds.has(examen._id);
+  }
+
+  descargarPDF(examen: Examen): void {
+    if (!examen._id || this.descargandoIds.has(examen._id)) return;
+    if (!examen.preguntas || examen.preguntas.length === 0) {
+      this.notificacionService.mostrar('El examen no tiene preguntas para exportar', 'error');
+      return;
+    }
+
+    this.descargandoIds.add(examen._id);
+    this.notificacionService.mostrar('Generando PDF...', 'exito');
+
+    // 1. Fetch all questions details
+    // Ensure we handle both string IDs and populated objects safely
+    const questionIds = (examen.preguntas as unknown as any[]).map(q =>
+      typeof q === 'string' ? q : q._id
+    ).filter(id => !!id);
+
+    const requests = questionIds.map(qId =>
+      this.preguntaService.obtenerPregunta(qId)
+    );
+
+    forkJoin(requests).subscribe({
+      next: (preguntas) => {
+        // 2. Prepare DTO
+        const dto: DownloadExamDto = {
+          nombre: examen.titulo,
+          fecha_creacion: new Date(),
+          preguntas: preguntas
+        };
+
+        // 3. Call download service
+        this.examenService.descargarPdf(dto).subscribe({
+          next: (blob) => {
+            this.examenService.guardarArchivo(blob, `${examen.titulo.replace(/\s+/g, '_')}.pdf`);
+            this.descargandoIds.delete(examen._id!);
+            this.notificacionService.mostrar('PDF descargado correctamente');
+          },
+          error: (err) => {
+            console.error('Error generating PDF:', err);
+            this.notificacionService.mostrar('Error al generar el PDF', 'error');
+            this.descargandoIds.delete(examen._id!);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error loading questions for PDF:', err);
+        this.notificacionService.mostrar('Error al obtener datos del examen', 'error');
+        this.descargandoIds.delete(examen._id!);
+      }
     });
   }
 }

@@ -7,5 +7,6 @@ router.get('/:id', controller.getQuestionById);
 router.post('/add', controller.addQuestion);
 router.delete('/:id', controller.deleteQuestion);
 router.put('/:id', controller.updateQuestion);
+router.post('/download-pdf', controller.downloadPdf);
 
 module.exports = router;
