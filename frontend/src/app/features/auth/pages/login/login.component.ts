@@ -74,4 +74,9 @@ export class LoginComponent {
             password: 'pass123'
         });
     }
+
+    loginAsDemo() {
+        this.fillMock('DAM');
+        this.onSubmit();
+    }
 }

@@ -1,6 +1,6 @@
 /* Header Styles */
 .barra-superior {
-  height: 70px;
+  min-height: 70px;
   background-color: white;
   border-bottom: 1px solid #eee;
   display: flex;
@@ -14,6 +14,8 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .info-izquierda {
@@ -49,6 +51,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .user-info {
@@ -130,4 +133,40 @@
   justify-content: center;
   font-weight: bold;
   font-size: 1rem;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .barra-superior {
+    padding: 0 15px;
+    min-height: auto;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .titulo-pagina {
+    font-size: 1.2rem;
+  }
+
+  .acciones-header {
+    gap: 10px;
+  }
+
+  .user-info {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .barra-superior {
+    padding: 0 10px;
+  }
+
+  .titulo-pagina {
+    font-size: 1.1rem;
+  }
+
+  .texto-salir {
+    display: none;
+  }
 }

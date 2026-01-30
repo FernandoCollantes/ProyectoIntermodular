@@ -127,10 +127,6 @@ export class DashboardComponent implements OnInit {
     return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
   }
 
-  getTipoIcono(tipo: 'examen' | 'pregunta'): string {
-    return tipo === 'examen' ? '📝' : '❓';
-  }
-
   getTipoTexto(tipo: 'examen' | 'pregunta'): string {
     return tipo === 'examen' ? 'Examen' : 'Pregunta';
   }

@@ -30,9 +30,19 @@
           </span>
         </div>
         <div class="pregunta-acciones">
-          <button class="boton-accion" (click)="editarPregunta(p._id)" title="Editar">✏️</button>
-          <button class="boton-accion" (click)="borrarPregunta(p._id)" title="Eliminar"
-            style="color: #e53e3e;">🗑️</button>
+          <button class="boton-accion" (click)="editarPregunta(p._id)" title="Editar">
+            <svg class="icon-edit" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Editar">
+              <title>Editar</title>
+              <path
+                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+            </svg>
+          </button>
+          <button class="boton-accion" (click)="borrarPregunta(p._id)" title="Eliminar" style="color: #e53e3e;">
+            <svg class="icon-delete" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Eliminar">
+              <title>Eliminar</title>
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -48,7 +58,14 @@
           <ul class="lista-opciones">
             <li *ngFor="let op of p.opciones; let i = index" class="item-opcion"
               [class.es-correcta]="i === p.respuesta_correcta">
-              <span class="indicador">{{ i === p.respuesta_correcta ? '✔' : '•' }}</span>
+              <span class="indicador">
+                <svg *ngIf="i === p.respuesta_correcta" class="icon-check" viewBox="0 0 24 24" fill="currentColor"
+                  role="img" aria-label="Correcto">
+                  <title>Correcto</title>
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                </svg>
+                <span *ngIf="i !== p.respuesta_correcta">•</span>
+              </span>
               <span class="texto-opcion">{{ op }}</span>
             </li>
           </ul>
@@ -58,7 +75,12 @@
     </div>
 
     <div class="sin-resultados" *ngIf="preguntas.length === 0">
-      <div class="icono-vacio">📂</div>
+      <div class="icono-vacio">
+        <svg class="icon-empty-folder" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Sin resultados">
+          <title>Sin resultados</title>
+          <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
+        </svg>
+      </div>
       <p>No hay preguntas disponibles.</p>
       <small *ngIf="filtroModulo || terminoBusqueda">Prueba a cambiar los filtros de búsqueda.</small>
       <small *ngIf="!filtroModulo && !terminoBusqueda">Las preguntas que crees aparecerán aquí.</small>
@@ -74,7 +96,12 @@
 <!-- MODAL DE CONFIRMACIÓN -->
 <div class="modal-overlay" *ngIf="modalEliminarVisible" (click)="cerrarModal()">
   <div class="modal-contenido" (click)="$event.stopPropagation()">
-    <div class="icono-alerta">⚠️</div>
+    <div class="icono-alerta">
+      <svg class="icon-warning" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Advertencia">
+        <title>Advertencia</title>
+        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+      </svg>
+    </div>
     <h3>¿Eliminar pregunta?</h3>
     <p>Esta acción no se puede deshacer. ¿Seguro que quieres borrarla para siempre?</p>
     <div class="modal-acciones">

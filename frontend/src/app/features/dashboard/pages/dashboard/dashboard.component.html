@@ -48,11 +48,30 @@
 
   <div class="lista-actividad" *ngIf="!cargando && actividadReciente.length > 0">
     <div class="item-actividad" *ngFor="let item of actividadReciente" [class.item-destacado]="item.esUltimo">
-      <div class="icono-actividad">{{ getTipoIcono(item.tipo) }}</div>
+      <div class="icono-actividad">
+        <svg *ngIf="item.tipo === 'examen'" class="icon-exam-activity" viewBox="0 0 24 24" fill="currentColor"
+          role="img" aria-label="Examen">
+          <title>Examen</title>
+          <path
+            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+        </svg>
+        <svg *ngIf="item.tipo === 'pregunta'" class="icon-question-activity" viewBox="0 0 24 24" fill="currentColor"
+          role="img" aria-label="Pregunta">
+          <title>Pregunta</title>
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
+        </svg>
+      </div>
       <div class="contenido-actividad">
         <div class="titulo-actividad">
           {{ item.titulo }}
-          <span class="badge-nuevo" *ngIf="item.esUltimo">✨ Más reciente</span>
+          <span class="badge-nuevo" *ngIf="item.esUltimo">
+            <svg class="icon-sparkle" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Más reciente">
+              <title>Más reciente</title>
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            Más reciente
+          </span>
         </div>
         <div class="meta-actividad">
           <span class="tipo-badge" [class.tipo-examen]="item.tipo === 'examen'"

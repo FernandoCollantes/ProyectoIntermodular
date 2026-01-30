@@ -19,6 +19,8 @@
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-small);
   margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
 }
 
 .temporizador-examen {
@@ -82,6 +84,8 @@
   justify-content: space-between;
   align-items: center;
   margin-top: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
 }
 
 .logo-examen {

@@ -7,9 +7,12 @@
     align-items: center;
     margin-bottom: 2rem;
     gap: 1rem;
+    flex-wrap: wrap;
 
     .entrada-busqueda {
-      width: 350px;
+      width: 100%;
+      max-width: 350px;
+      min-width: 200px;
       padding: 0.75rem 1rem;
       border: 1px solid #e2e8f0;
       border-radius: 10px;
@@ -136,12 +139,25 @@
         cursor: pointer;
         font-size: 1.1rem;
         opacity: 0.6;
-        transition: opacity 0.2s;
+        transition: all 0.2s;
         padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          width: 18px;
+          height: 18px;
+          transition: transform 0.2s ease;
+        }
 
         &:hover {
           opacity: 1;
           transform: scale(1.1);
+
+          svg {
+            transform: scale(1.15);
+          }
         }
       }
     }
@@ -209,6 +225,14 @@
             text-align: center;
             font-size: 1rem;
             color: #cbd5e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+              width: 16px;
+              height: 16px;
+            }
           }
 
           &.es-correcta {
@@ -242,6 +266,12 @@
   border-radius: 12px;
   color: #64748b;
   border: 2px dashed #e2e8f0;
+
+  .icono-vacio svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.5;
+  }
 }
 
 /* ESTILOS DEL MODAL */

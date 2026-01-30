@@ -51,7 +51,18 @@
                 {{ loading ? 'Iniciando...' : 'Iniciar Sesión' }}
             </button>
 
-            <!-- Mock Helpers Removed -->
+            <!-- Demo Login & Student Access -->
+            <div class="opciones-adicionales">
+                <button type="button" class="btn-secondary full-width" (click)="loginAsDemo()">
+                    Iniciar Sesión Demo (Profesor)
+                </button>
+
+                <div class="separator-text">o</div>
+
+                <a routerLink="/alumno/acceso" class="link-alumno">
+                    ¿Eres alumno? Ingresa al examen aquí
+                </a>
+            </div>
         </form>
     </div>
 </div>

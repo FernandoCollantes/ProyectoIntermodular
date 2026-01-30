@@ -19,10 +19,29 @@
                 </div>
                 <div class="pregunta-acciones">
                     <button class="boton-accion" (click)="publicarBorrador(borrador._id)" title="Publicar"
-                        style="color: #48bb78;">📤</button>
-                    <button class="boton-accion" (click)="editarBorrador(borrador._id)" title="Editar">✏️</button>
+                        style="color: #48bb78;">
+                        <svg class="icon-publish" viewBox="0 0 24 24" fill="currentColor" role="img"
+                            aria-label="Publicar">
+                            <title>Publicar</title>
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                            <path d="M5 4v2h14V4H5zm0 10h4v6h6v-6h4l-7-7-7 7z" opacity="0.6" />
+                        </svg>
+                    </button>
+                    <button class="boton-accion" (click)="editarBorrador(borrador._id)" title="Editar">
+                        <svg class="icon-edit" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Editar">
+                            <title>Editar</title>
+                            <path
+                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                        </svg>
+                    </button>
                     <button class="boton-accion" (click)="eliminarBorrador(borrador._id)" title="Eliminar"
-                        style="color: var(--danger);">🗑️</button>
+                        style="color: var(--danger);">
+                        <svg class="icon-delete" viewBox="0 0 24 24" fill="currentColor" role="img"
+                            aria-label="Eliminar">
+                            <title>Eliminar</title>
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -38,13 +57,27 @@
             </div>
 
             <div class="pregunta-metadata">
-                <span>📅 {{ formatearFecha(borrador.createdAt) }}</span>
+                <span>
+                    <svg class="icon-calendar" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Fecha">
+                        <title>Fecha</title>
+                        <path
+                            d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                    </svg>
+                    {{ formatearFecha(borrador.createdAt) }}
+                </span>
                 <span><span class="insignia insignia-advertencia">Borrador</span></span>
             </div>
         </div>
 
         <div class="sin-resultados" *ngIf="borradores.length === 0">
-            <div class="icono-vacio">📂</div>
+            <div class="icono-vacio">
+                <svg class="icon-empty-folder" viewBox="0 0 24 24" fill="currentColor" role="img"
+                    aria-label="Sin resultados">
+                    <title>Sin resultados</title>
+                    <path
+                        d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
+                </svg>
+            </div>
             <p>No hay borradores guardados.</p>
             <small *ngIf="terminoBusqueda">Prueba a cambiar los filtros de búsqueda.</small>
             <small *ngIf="!terminoBusqueda">Los borradores que guardes aparecerán aquí.</small>
@@ -60,7 +93,12 @@
 <!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
 <div class="modal-overlay" *ngIf="modalEliminarVisible" (click)="cerrarModal()">
     <div class="modal-contenido" (click)="$event.stopPropagation()">
-        <div class="icono-alerta">⚠️</div>
+        <div class="icono-alerta">
+            <svg class="icon-warning" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Advertencia">
+                <title>Advertencia</title>
+                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+            </svg>
+        </div>
         <h3>¿Eliminar borrador?</h3>
         <p>Esta acción no se puede deshacer. ¿Seguro que quieres borrar este borrador para siempre?</p>
         <div class="modal-acciones">
@@ -73,7 +111,13 @@
 <!-- MODAL DE CONFIRMACIÓN DE PUBLICACIÓN -->
 <div class="modal-overlay" *ngIf="modalPublicarVisible" (click)="cerrarModal()">
     <div class="modal-contenido" (click)="$event.stopPropagation()">
-        <div class="icono-alerta">✅</div>
+        <div class="icono-alerta">
+            <svg class="icon-success" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Éxito">
+                <title>Éxito</title>
+                <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+        </div>
         <h3>¿Publicar examen?</h3>
         <p>El examen estará disponible para los alumnos. ¿Deseas publicarlo ahora?</p>
         <div class="modal-acciones">

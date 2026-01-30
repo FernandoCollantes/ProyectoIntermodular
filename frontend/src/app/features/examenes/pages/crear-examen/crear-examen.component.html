@@ -49,7 +49,12 @@
 
     <!-- Mensaje informativo cuando el formulario no está completo -->
     <div class="seccion-bloqueada" *ngIf="!formularioInicialCompleto()">
-      <div class="icono-info">ℹ️</div>
+      <div class="icono-info">
+        <svg class="icon-info" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Información">
+          <title>Información</title>
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+        </svg>
+      </div>
       <h3>Completa la configuración básica</h3>
       <p>Por favor, completa los campos requeridos (Título, Asignatura y Duración) para poder seleccionar preguntas.</p>
     </div>
@@ -135,7 +140,12 @@
 <!-- MODAL DE CONFIRMACIÓN DE CANCELACIÓN -->
 <div class="modal-overlay" *ngIf="modalCancelarVisible" (click)="cerrarModalCancelar()">
   <div class="modal-contenido" (click)="$event.stopPropagation()">
-    <div class="icono-alerta">⚠️</div>
+    <div class="icono-alerta">
+      <svg class="icon-warning" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Advertencia">
+        <title>Advertencia</title>
+        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+      </svg>
+    </div>
     <h3>¿Cancelar creación del examen?</h3>
     <p>Los cambios no guardados se perderán. ¿Estás seguro de que quieres salir?</p>
     <div class="modal-acciones">
