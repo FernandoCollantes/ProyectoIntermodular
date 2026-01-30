@@ -459,6 +459,16 @@ small,
   margin-bottom: var(--spacing-md);
 }
 
+/* **CONTENEDOR DE INSIGNIAS:** Mejora el espaciado entre badges */
+.insignias {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* Espacio generoso entre insignias */
+  flex-wrap: wrap;
+  /* Permite que se envuelvan en pantallas pequeñas */
+}
+
 /* **INSIGNIA/ETIQUETA:** Estilo base */
 .insignia {
   font-size: 0.75rem;

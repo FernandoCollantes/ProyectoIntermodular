@@ -31,9 +31,21 @@
       </div>
 
       <div class="grupo-formulario">
-        <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
+
+          <!-- Control de límite de tiempo movido aquí -->
+          <label class="etiqueta-formulario"
+            style="font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" [formControl]="$any(examenForm.get('opciones.limite_tiempo'))" />
+            Habilitar límite
+          </label>
+        </div>
+
         <input type="number" id="duration" class="entrada-formulario" formControlName="duracion" placeholder="60"
-          min="5" max="180" />
+          min="5" max="60" />
+        <span class="texto-ayuda" style="font-size: 0.8rem; color: var(--text-secondary);">Mínimo 5 min, Máximo 60
+          min</span>
       </div>
 
       <div class="grupo-formulario">
@@ -112,10 +124,7 @@
           <span>Mostrar respuestas al finalizar</span>
         </label>
 
-        <label class="item-opcion">
-          <input type="checkbox" formControlName="limite_tiempo" />
-          <span>Habilitar límite de tiempo</span>
-        </label>
+        <!-- Opción limite_tiempo eliminada de aquí porque se movió arriba -->
 
         <label class="item-opcion">
           <input type="checkbox" formControlName="navegacion_libre" />

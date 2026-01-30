@@ -4,19 +4,19 @@
       <img src="assets/Logo1.png" alt="Acceso Alumno Logo" class="logo-acceso-img">
       <h1 class="titulo-acceso">Acceso al Examen</h1>
       <h2 class="subtitulo-acceso">
-        Introduce el código de acceso proporcionado por tu profesor
+        Introduce la URL del examen proporcionada por tu profesor
       </h2>
     </div>
 
     <form [formGroup]="accesoForm" (ngSubmit)="onSubmit()" class="formulario-acceso">
       <div class="grupo-formulario">
-        <label for="examCode" class="etiqueta-formulario requerido">Código del examen</label>
-        <input type="text" id="examCode" formControlName="examCode" class="entrada-formulario entrada-codigo-acceso"
-          placeholder="ABC123" maxlength="6"
-          [class.is-invalid]="accesoForm.get('examCode')?.invalid && accesoForm.get('examCode')?.touched">
-        <div *ngIf="accesoForm.get('examCode')?.invalid && accesoForm.get('examCode')?.touched" class="error-text">
-          <small *ngIf="accesoForm.get('examCode')?.errors?.['required']">El código es obligatorio.</small>
-          <small *ngIf="accesoForm.get('examCode')?.errors?.['minlength']">Mínimo 4 caracteres.</small>
+        <label for="examUrl" class="etiqueta-formulario requerido">URL Examen</label>
+        <input type="url" id="examUrl" formControlName="examUrl" class="entrada-formulario" placeholder="https://..."
+          [class.is-invalid]="accesoForm.get('examUrl')?.invalid && accesoForm.get('examUrl')?.touched">
+        <div *ngIf="accesoForm.get('examUrl')?.invalid && accesoForm.get('examUrl')?.touched" class="error-text">
+          <small *ngIf="accesoForm.get('examUrl')?.errors?.['required']">La URL es obligatoria.</small>
+          <small *ngIf="accesoForm.get('examUrl')?.errors?.['pattern']">La URL no es válida. Debe ser un enlace de
+            examen.</small>
         </div>
       </div>
 

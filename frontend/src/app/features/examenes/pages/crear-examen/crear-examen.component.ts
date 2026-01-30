@@ -62,6 +62,7 @@ export class CrearExamenComponent implements OnInit {
 
   ngOnInit(): void {
     this.inicializarFormulario();
+    this.suscribirseACambiosDeOpciones(); // Nuevo
     this.cargarDatosIniciales();
     this.verificarModoEdicion();
   }
@@ -70,7 +71,7 @@ export class CrearExamenComponent implements OnInit {
     this.examenForm = this.fb.group({
       titulo: ['', Validators.required],
       asignatura: ['', Validators.required],
-      duracion: [60, [Validators.required, Validators.min(5), Validators.max(180)]],
+      duracion: [60, [Validators.required, Validators.min(5), Validators.max(60)]], // Max 60
       intentos: [1, [Validators.required, Validators.min(1)]],
       opciones: this.fb.group({
         aleatorio: [false],
@@ -79,6 +80,25 @@ export class CrearExamenComponent implements OnInit {
         navegacion_libre: [false]
       })
     });
+  }
+
+  private suscribirseACambiosDeOpciones(): void {
+    const limiteTiempoControl = this.examenForm.get('opciones.limite_tiempo');
+    const duracionControl = this.examenForm.get('duracion');
+
+    if (limiteTiempoControl && duracionControl) {
+      limiteTiempoControl.valueChanges.subscribe((tieneLimite: boolean) => {
+        if (tieneLimite) {
+          duracionControl.enable();
+          duracionControl.setValidators([Validators.required, Validators.min(5), Validators.max(60)]);
+        } else {
+          duracionControl.disable();
+          duracionControl.clearValidators();
+          duracionControl.setValue(0); // O null, indicando sin límite
+        }
+        duracionControl.updateValueAndValidity();
+      });
+    }
   }
 
   private verificarModoEdicion(): void {
@@ -93,13 +113,28 @@ export class CrearExamenComponent implements OnInit {
   private cargarExamen(id: string): void {
     this.examenService.obtenerExamenPorId(id).subscribe({
       next: (examen) => {
+        // Prepare options values
+        const opciones = {
+          aleatorio: examen.opciones?.aleatorio ?? false,
+          respuestas_inmediatas: examen.opciones?.respuestas_inmediatas ?? false,
+          limite_tiempo: examen.opciones?.limite_tiempo ?? true, // Default true for legacy
+          navegacion_libre: examen.opciones?.navegacion_libre ?? false
+        };
+
         this.examenForm.patchValue({
           titulo: examen.titulo,
           asignatura: examen.asignatura,
           duracion: examen.duracion,
           intentos: examen.intentos,
-          opciones: examen.opciones
+          opciones: opciones
         });
+
+        // Force update of duration state based on loaded option
+        const duracionControl = this.examenForm.get('duracion');
+        if (!opciones.limite_tiempo && duracionControl) {
+          duracionControl.disable();
+          duracionControl.clearValidators();
+        }
 
         // Set selected questions
         if (examen.preguntas && Array.isArray(examen.preguntas)) {
@@ -224,7 +259,11 @@ export class CrearExamenComponent implements OnInit {
     const titulo = this.examenForm.get('titulo')?.value;
     const asignatura = this.examenForm.get('asignatura')?.value;
     const duracion = this.examenForm.get('duracion')?.value;
+    const tieneLimite = this.examenForm.get('opciones.limite_tiempo')?.value;
 
+    if (!tieneLimite) {
+      return !!(titulo && asignatura);
+    }
     return !!(titulo && asignatura && duracion);
   }
 

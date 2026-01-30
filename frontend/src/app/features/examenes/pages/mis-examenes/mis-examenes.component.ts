@@ -118,4 +118,19 @@ export class MisExamenesComponent implements OnInit {
   getCantidadPreguntas(examen: Examen): number {
     return examen.preguntas?.length || 0;
   }
+
+  copiarEnlace(examen: Examen): void {
+    if (!examen._id) return;
+
+    // Generar URL única (formato: origen/alumno/e/ID)
+    const url = `${window.location.origin}/alumno/e/${examen._id}`;
+
+    // Copiar al portapapeles
+    navigator.clipboard.writeText(url).then(() => {
+      this.notificacionService.mostrar('Enlace de examen copiado al portapapeles');
+    }).catch(err => {
+      console.error('Error al copiar enlace:', err);
+      this.notificacionService.mostrar('Error al copiar el enlace', 'error');
+    });
+  }
 }
