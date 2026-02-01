@@ -247,3 +247,90 @@ exports.publishExamById = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+/**
+ * POST /api/examenes/:id/compartir - Share exam via email
+ */
+exports.shareExam = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { emails, userId } = req.body;
+        const result = await examenesService.compartirExamen(id, emails, userId);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * GET /api/examenes/sesion/:token - Get session by token (for students)
+ */
+exports.getSessionByToken = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const result = await examenesService.getSesionByToken(token);
+        res.json({ success: true, data: result });
+    } catch (error) {
+        res.status(404).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * POST /api/examenes/sesion/:id/submit - Submit exam results from a shared session
+ */
+exports.submitSessionExam = async (req, res) => {
+    try {
+        const { id } = req.params; // ID de la sesión
+        const { studentData, answers } = req.body;
+        const result = await examenesService.submitExamFromSesion(id, studentData, answers);
+        res.json({ success: true, result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * GET /api/examenes/sesiones/resultados - Get all shared sessions and results for a teacher
+ */
+exports.getSessionsResults = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) return res.status(400).json({ success: false, message: 'userId is required' });
+        const result = await examenesService.getSesionesConResultados(userId);
+        res.json({ success: true, sesiones: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * GET /api/examenes/sesion/check/:token
+ * Comprobar si un email ya ha realizado el examen en esta sesión (por TOKEN)
+ */
+exports.checkStudentStatusByToken = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ success: false, message: 'email is required' });
+
+        const exists = await examenesService.checkStudentAttempt(token, email);
+        res.json({ success: true, exists });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * DELETE /api/examenes/sesion/:id
+ * Eliminar una sesión de examen y sus resultados
+ */
+exports.deleteSession = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await examenesService.deleteSesionExamen(id);
+        if (!result) return res.status(404).json({ success: false, message: 'Sesión no encontrada' });
+        res.json({ success: true, message: 'Sesión eliminada correctamente' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

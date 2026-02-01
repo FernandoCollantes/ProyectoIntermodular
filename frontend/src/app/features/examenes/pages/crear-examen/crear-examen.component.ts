@@ -9,6 +9,7 @@ import { JerarquiaService } from '../../../../core/services/jerarquia.service';
 import { ExamenService } from '../../services/examen.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 // Models
 import { Pregunta } from '../../../../core/models/pregunta.model';
@@ -42,9 +43,6 @@ export class CrearExamenComponent implements OnInit {
   cargando: boolean = true;
   guardando: boolean = false;
 
-  // Modal states
-  modalCancelarVisible: boolean = false;
-
   // Edit mode
   modoEdicion: boolean = false;
   examenId?: string;
@@ -56,13 +54,13 @@ export class CrearExamenComponent implements OnInit {
     private examenService: ExamenService,
     private authService: AuthService,
     private notificacionService: NotificacionService,
+    private confirmationService: ConfirmationService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.inicializarFormulario();
-    this.suscribirseACambiosDeOpciones(); // Nuevo
     this.cargarDatosIniciales();
     this.verificarModoEdicion();
   }
@@ -71,35 +69,11 @@ export class CrearExamenComponent implements OnInit {
     this.examenForm = this.fb.group({
       titulo: ['', Validators.required],
       asignatura: ['', Validators.required],
-      duracion: [60, [Validators.required, Validators.min(5), Validators.max(60)]], // Max 60
-      intentos: [1, [Validators.required, Validators.min(1)]],
-      opciones: this.fb.group({
-        aleatorio: [false],
-        respuestas_inmediatas: [false],
-        limite_tiempo: [true],
-        navegacion_libre: [false]
-      })
+      duracion: [60, [Validators.required, Validators.min(5), Validators.max(60)]]
     });
   }
 
-  private suscribirseACambiosDeOpciones(): void {
-    const limiteTiempoControl = this.examenForm.get('opciones.limite_tiempo');
-    const duracionControl = this.examenForm.get('duracion');
 
-    if (limiteTiempoControl && duracionControl) {
-      limiteTiempoControl.valueChanges.subscribe((tieneLimite: boolean) => {
-        if (tieneLimite) {
-          duracionControl.enable();
-          duracionControl.setValidators([Validators.required, Validators.min(5), Validators.max(60)]);
-        } else {
-          duracionControl.disable();
-          duracionControl.clearValidators();
-          duracionControl.setValue(0); // O null, indicando sin límite
-        }
-        duracionControl.updateValueAndValidity();
-      });
-    }
-  }
 
   private verificarModoEdicion(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -113,28 +87,13 @@ export class CrearExamenComponent implements OnInit {
   private cargarExamen(id: string): void {
     this.examenService.obtenerExamenPorId(id).subscribe({
       next: (examen) => {
-        // Prepare options values
-        const opciones = {
-          aleatorio: examen.opciones?.aleatorio ?? false,
-          respuestas_inmediatas: examen.opciones?.respuestas_inmediatas ?? false,
-          limite_tiempo: examen.opciones?.limite_tiempo ?? true, // Default true for legacy
-          navegacion_libre: examen.opciones?.navegacion_libre ?? false
-        };
-
         this.examenForm.patchValue({
           titulo: examen.titulo,
           asignatura: examen.asignatura,
-          duracion: examen.duracion,
-          intentos: examen.intentos,
-          opciones: opciones
+          duracion: examen.duracion
         });
 
-        // Force update of duration state based on loaded option
-        const duracionControl = this.examenForm.get('duracion');
-        if (!opciones.limite_tiempo && duracionControl) {
-          duracionControl.disable();
-          duracionControl.clearValidators();
-        }
+
 
         // Set selected questions
         if (examen.preguntas && Array.isArray(examen.preguntas)) {
@@ -199,7 +158,7 @@ export class CrearExamenComponent implements OnInit {
 
     // Filter by RA
     if (this.filtroRA) {
-      resultado = resultado.filter(p => p.tema === this.filtroRA);
+      resultado = resultado.filter(p => p.tema.includes(this.filtroRA));
     }
 
     this.preguntasFiltradas = resultado;
@@ -259,12 +218,8 @@ export class CrearExamenComponent implements OnInit {
     const titulo = this.examenForm.get('titulo')?.value;
     const asignatura = this.examenForm.get('asignatura')?.value;
     const duracion = this.examenForm.get('duracion')?.value;
-    const tieneLimite = this.examenForm.get('opciones.limite_tiempo')?.value;
 
-    if (!tieneLimite) {
-      return !!(titulo && asignatura);
-    }
-    return !!(titulo && asignatura && duracion);
+    return !!(titulo && asignatura && duracion >= 5);
   }
 
   // ============================================================================
@@ -315,18 +270,16 @@ export class CrearExamenComponent implements OnInit {
     preguntasSeleccionadasArray.forEach(preguntaId => {
       const pregunta = this.todasLasPreguntas.find(p => p._id === preguntaId);
       if (pregunta && pregunta.tema) {
-        rasSet.add(pregunta.tema);
+        pregunta.tema.forEach(t => rasSet.add(t));
       }
     });
 
     const examenData: Examen = {
       titulo: this.examenForm.value.titulo,
       asignatura: this.examenForm.value.asignatura,
-      ras: Array.from(rasSet),
       duracion: this.examenForm.value.duracion,
-      intentos: this.examenForm.value.intentos,
+      ras: Array.from(rasSet),
       preguntas: preguntasSeleccionadasArray,
-      opciones: this.examenForm.value.opciones,
       estado: estado,
       creador: currentUser.id
     };
@@ -362,16 +315,23 @@ export class CrearExamenComponent implements OnInit {
   // CANCEL LOGIC
   // ============================================================================
 
-  mostrarModalCancelar(): void {
-    this.modalCancelarVisible = true;
-  }
+  async confirmarCancelacion(): Promise<void> {
+    const hasData = this.examenForm.dirty || this.preguntasSeleccionadas.size > 0;
 
-  cerrarModalCancelar(): void {
-    this.modalCancelarVisible = false;
-  }
+    if (hasData) {
+      const confirmar = await this.confirmationService.confirm({
+        title: '¿Cancelar creación?',
+        message: 'Se perderán todos los datos introducidos y la selección de preguntas.',
+        confirmText: 'Sí, cancelar',
+        cancelText: 'No, continuar',
+        type: 'warning'
+      });
 
-  confirmarCancelacion(): void {
-    this.cerrarModalCancelar();
-    this.router.navigate(['/examenes']);
+      if (confirmar) {
+        this.router.navigate(['/examenes']);
+      }
+    } else {
+      this.router.navigate(['/examenes']);
+    }
   }
 }

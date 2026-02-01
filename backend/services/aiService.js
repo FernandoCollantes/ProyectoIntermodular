@@ -5,18 +5,23 @@ const openai = new OpenAI({
 });
 
 // Mantén MOCK_MODE en true para probar sin gastar créditos
-const MOCK_MODE = false;
+const MOCK_MODE = true;
 
-exports.generateQuestionsFromText = async (textContext, asignatura, numQuestions = 5) => {
+exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQuestions = 10) => {
     try {
         if (MOCK_MODE) {
             console.log("⚠️ MODO SIMULACIÓN: Generando preguntas de prueba...");
             await new Promise(resolve => setTimeout(resolve, 1500));
             return Array.from({ length: numQuestions }, (_, i) => ({
-                enunciado: `(Simulado) ¿Cuál es un concepto clave de ${asignatura}?`,
-                opciones: ["Opción A (Correcta)", "Opción B", "Opción C", "Opción D"],
+                enunciado: `(Simulado) Pregunta ${i + 1}: ¿Cuál es un concepto clave de ${asignatura} en relación con ${tema}?`,
+                opciones: [
+                    `Opción A para la pregunta ${i + 1}`,
+                    `Opción B de relleno`,
+                    `Opción C incorrecta`,
+                    `Opción D de ejemplo`
+                ],
                 respuesta_correcta: 0,
-                tema: "RA1",
+                tema: tema,
                 dificultad: 1
             }));
         }
@@ -25,13 +30,14 @@ exports.generateQuestionsFromText = async (textContext, asignatura, numQuestions
             Actúa como un profesor experto en el módulo de "${asignatura}".
             Basándote exclusivamente en el siguiente contenido técnico: "${textContext.substring(0, 10000)}"
             
-            Genera exactamente ${numQuestions} preguntas de opción múltiple.
+            Genera exactamente ${numQuestions} pregunta(s) de opción múltiple relacionada(s) con el Resultado de Aprendizaje "${tema}".
             
             REGLAS CRÍTICAS:
-            1. El campo "tema" debe ser un código de Resultado de Aprendizaje presente en el módulo (ej: "RA1", "RA2").
+            1. El campo "tema" debe ser exactamente "${tema}".
             2. El campo "respuesta_correcta" debe ser el ÍNDICE (0, 1, 2 o 3) del array de opciones.
             3. "dificultad" debe ser un número: 0 (fácil), 1 (medio) o 2 (difícil).
             4. Responde ÚNICAMENTE con un array JSON válido.
+            5. La pregunta debe estar directamente relacionada con el contenido del PDF.
 
             FORMATO DE SALIDA:
             [
@@ -39,7 +45,7 @@ exports.generateQuestionsFromText = async (textContext, asignatura, numQuestions
                     "enunciado": "La pregunta...",
                     "opciones": ["A", "B", "C", "D"],
                     "respuesta_correcta": 0,
-                    "tema": "RA1",
+                    "tema": "${tema}",
                     "dificultad": 1
                 }
             ]

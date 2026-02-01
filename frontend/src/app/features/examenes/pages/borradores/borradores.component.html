@@ -5,7 +5,7 @@
                 [(ngModel)]="terminoBusqueda" (input)="aplicarFiltros()">
         </div>
 
-        <a [routerLink]="['/examenes/crear']" class="boton boton-primario">
+        <a [routerLink]="['/examenes/elegir']" class="boton boton-primario">
             + Nuevo Examen
         </a>
     </div>
@@ -48,8 +48,7 @@
             <div class="pregunta-contenido">
                 <h3 style="margin: 0 0 10px 0; color: var(--gray-900);">{{ borrador.titulo }}</h3>
                 <p class="pregunta-texto" style="color: var(--gray-600);">
-                    Duración: {{ borrador.duracion }} min | Intentos: {{ borrador.intentos === 999 ? 'Ilimitados' :
-                    borrador.intentos }}
+                    Duración: {{ borrador.duracion }} min
                 </p>
                 <div *ngIf="borrador.ras && borrador.ras.length > 0" style="margin-top: 8px;">
                     <span class="insignia" *ngFor="let ra of borrador.ras" style="margin-right: 4px;">{{ ra }}</span>
@@ -87,42 +86,5 @@
     <div *ngIf="cargando" class="aviso-estado">
         <div class="spinner"></div>
         <p>Cargando borradores...</p>
-    </div>
-</div>
-
-<!-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN -->
-<div class="modal-overlay" *ngIf="modalEliminarVisible" (click)="cerrarModal()">
-    <div class="modal-contenido" (click)="$event.stopPropagation()">
-        <div class="icono-alerta">
-            <svg class="icon-warning" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Advertencia">
-                <title>Advertencia</title>
-                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-            </svg>
-        </div>
-        <h3>¿Eliminar borrador?</h3>
-        <p>Esta acción no se puede deshacer. ¿Seguro que quieres borrar este borrador para siempre?</p>
-        <div class="modal-acciones">
-            <button class="boton boton-secundario" (click)="cerrarModal()">Cancelar</button>
-            <button class="boton boton-peligro" (click)="confirmarEliminacion()">Sí, Eliminar</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DE CONFIRMACIÓN DE PUBLICACIÓN -->
-<div class="modal-overlay" *ngIf="modalPublicarVisible" (click)="cerrarModal()">
-    <div class="modal-contenido" (click)="$event.stopPropagation()">
-        <div class="icono-alerta">
-            <svg class="icon-success" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Éxito">
-                <title>Éxito</title>
-                <path
-                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-            </svg>
-        </div>
-        <h3>¿Publicar examen?</h3>
-        <p>El examen estará disponible para los alumnos. ¿Deseas publicarlo ahora?</p>
-        <div class="modal-acciones">
-            <button class="boton boton-secundario" (click)="cerrarModal()">Cancelar</button>
-            <button class="boton boton-primario" (click)="confirmarPublicacion()">Sí, Publicar</button>
-        </div>
     </div>
 </div>

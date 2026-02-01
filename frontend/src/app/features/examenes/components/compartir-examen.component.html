@@ -1,0 +1,38 @@
+<div class="modal-overlay" (click)="cancel()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Compartir Examen</h2>
+            <button class="close-btn" (click)="cancel()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <p class="exam-info">Estás compartiendo: <strong>{{ examTitle }}</strong></p>
+
+            <form [formGroup]="shareForm" (ngSubmit)="onSubmit()">
+                <label>Correos electrónicos de los alumnos:</label>
+
+                <div formArrayName="emails" class="emails-list">
+                    <div *ngFor="let email of emails.controls; let i=index" class="email-input-group">
+                        <input [formControlName]="i" type="email" placeholder="ejemplo@correo.com"
+                            [class.error]="email.invalid && email.touched">
+                        <button type="button" class="remove-btn" (click)="removeEmail(i)" *ngIf="emails.length > 1">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" class="add-btn" (click)="addEmail()">
+                    <i class="fas fa-plus"></i> Añadir otro correo
+                </button>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" (click)="cancel()">Cancelar</button>
+                    <button type="submit" class="btn-primary" [disabled]="loading || shareForm.invalid">
+                        <span *ngIf="!loading">Enviar Invitaciones</span>
+                        <span *ngIf="loading">Enviando...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

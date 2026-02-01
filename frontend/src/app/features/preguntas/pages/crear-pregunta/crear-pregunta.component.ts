@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
 // Servicios
 import { JerarquiaService } from '../../../../core/services/jerarquia.service';
 import { PreguntaService } from '../../services/pregunta.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 // Modelos
 import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
@@ -21,6 +22,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   styleUrls: ['./crear-pregunta.component.scss']
 })
 export class CrearPreguntaComponent implements OnInit {
+  @ViewChild('preguntaForm') preguntaForm!: NgForm;
   public modulos: ModuloJerarquia[] = [];
   public rasDisponibles: ResultadoAprendizaje[] = [];
   protected readonly String = String;
@@ -31,17 +33,17 @@ export class CrearPreguntaComponent implements OnInit {
   nuevaPregunta = {
     enunciado: '',
     asignatura: '',
-    tema: '', // Required by DTO although we use criterios for multiple RAs
+    tema: [] as string[], // Changed to array for multiple RAs
     dificultad: 1,
     opciones: ['', '', '', ''],
-    respuesta_correcta: '0',
-    criterios: [] as string[] // Stores selected RA codes
+    respuesta_correcta: '0'
   };
 
   constructor(
     private jerarquiaService: JerarquiaService,
     private preguntaService: PreguntaService,
     private notiService: NotificacionService,
+    private confirmationService: ConfirmationService,
     private authService: AuthService,
     public router: Router,
     private route: ActivatedRoute
@@ -72,16 +74,15 @@ export class CrearPreguntaComponent implements OnInit {
         this.nuevaPregunta = {
           enunciado: p.enunciado,
           asignatura: p.asignatura,
-          tema: p.tema,
+          tema: Array.isArray(p.tema) ? [...p.tema] : [p.tema], // Handle legacy string or array
           dificultad: p.dificultad,
           opciones: [...p.opciones],
-          respuesta_correcta: String(p.respuesta_correcta),
-          criterios: [p.tema]
+          respuesta_correcta: String(p.respuesta_correcta)
         };
         // Forzar carga de RAs para el módulo
         this.onModuloChange();
         // Restaurar tema (porque onModuloChange lo resetea)
-        this.nuevaPregunta.tema = p.tema;
+        this.nuevaPregunta.tema = Array.isArray(p.tema) ? [...p.tema] : [p.tema];
       },
       error: () => {
         this.notiService.mostrar('Error al cargar la pregunta', 'error');
@@ -94,11 +95,21 @@ export class CrearPreguntaComponent implements OnInit {
     const moduloSeleccionado = this.modulos.find((m: ModuloJerarquia) => m.nombre === this.nuevaPregunta.asignatura);
     if (moduloSeleccionado) {
       this.rasDisponibles = moduloSeleccionado.ras;
-      // Sólo resetear si NO estamos cargando datos (o si el usuario cambia manualmente)
-      // Para simplificar, si cambia de módulo manual, se resetea.
-      // Al cargar, lo restauramos manualmente después.
-      this.nuevaPregunta.tema = ''; // Reset functionality
+      this.nuevaPregunta.tema = []; // Reset RAs when module changes
     }
+  }
+
+  toggleRA(codigo: string): void {
+    const index = this.nuevaPregunta.tema.indexOf(codigo);
+    if (index === -1) {
+      this.nuevaPregunta.tema.push(codigo);
+    } else {
+      this.nuevaPregunta.tema.splice(index, 1);
+    }
+  }
+
+  isRASelected(codigo: string): boolean {
+    return this.nuevaPregunta.tema.includes(codigo);
   }
 
   // Toggle RA logic removed as we use Radio now
@@ -108,8 +119,23 @@ export class CrearPreguntaComponent implements OnInit {
   }
 
   guardar(): void {
-    if (!this.nuevaPregunta.enunciado || !this.nuevaPregunta.asignatura || !this.nuevaPregunta.tema) {
-      this.notiService.mostrar('Faltan campos obligatorios (Modulo, RA, Enunciado)', 'error');
+    // Check custom validations first
+    if (!this.nuevaPregunta.asignatura) {
+      this.notiService.mostrar('Por favor, selecciona una asignatura', 'error');
+      return;
+    }
+    if (this.nuevaPregunta.tema.length === 0) {
+      this.notiService.mostrar('Por favor, selecciona al menos un Resultado de Aprendizaje (RA)', 'error');
+      return;
+    }
+
+    // Use NgForm validation for the rest
+    if (this.preguntaForm && this.preguntaForm.invalid) {
+      this.notiService.mostrar('Por favor, completa todos los campos obligatorios del formulario', 'error');
+      // Mark fields as touched for visual feedback if styles support it
+      Object.keys(this.preguntaForm.controls).forEach(key => {
+        this.preguntaForm.controls[key].markAsTouched();
+      });
       return;
     }
 
@@ -121,8 +147,7 @@ export class CrearPreguntaComponent implements OnInit {
 
     // Map fields for backend compatibility
     const nuevaPreguntaDto = {
-      ...this.nuevaPregunta,
-      criterios: [this.nuevaPregunta.tema] // Pass as array for service compatibility
+      ...this.nuevaPregunta
     };
 
     if (this.isEditMode && this.preguntaId) {
@@ -152,15 +177,39 @@ export class CrearPreguntaComponent implements OnInit {
     }
   }
 
+  async cancelar(): Promise<void> {
+    // Check if form has been modified
+    const formModified = this.nuevaPregunta.enunciado !== '' ||
+      this.nuevaPregunta.asignatura !== '' ||
+      this.nuevaPregunta.tema.length > 0 ||
+      this.nuevaPregunta.opciones.some(op => op !== '');
+
+    if (formModified) {
+      const confirmar = await this.confirmationService.confirm({
+        title: '¿Está seguro que desea cancelar?',
+        message: 'Se perderán todos los cambios realizados en el formulario.',
+        confirmText: 'Sí, cancelar',
+        cancelText: 'No, continuar',
+        type: 'warning'
+      });
+
+      if (confirmar) {
+        this.resetearFormulario();
+      }
+    } else {
+      this.resetearFormulario();
+    }
+  }
+
   private resetearFormulario(): void {
     this.nuevaPregunta = {
       enunciado: '',
       asignatura: '',
-      tema: '',
+      tema: [],
       opciones: ['', '', '', ''],
       respuesta_correcta: '0',
       dificultad: 1
-    } as any; // Type assertion to avoid criterios requirement
+    };
     this.rasDisponibles = [];
   }
 }

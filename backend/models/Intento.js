@@ -2,14 +2,24 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const IntentoSchema = new Schema({
-    examen_id: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Examen', 
-        required: true 
+    examen_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Examen',
+        required: true
     },
-    alumno: { 
-        type: String, 
-        default: 'Invitado' // Futuro: ID de usuario
+    sesion_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'SesionExamen'
+    },
+    alumno: {
+        type: String,
+        default: 'Invitado'
+    },
+    nombre_alumno: {
+        type: String
+    },
+    email_alumno: {
+        type: String
     },
     respuestas: [{
         pregunta_id: { type: Schema.Types.ObjectId, ref: 'Pregunta' },

@@ -4,11 +4,15 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 
+// Components
+import { CompartirExamenComponent } from '../../components/compartir-examen.component';
+
 // Services
 import { ExamenService } from '../../services/examen.service';
 import { PreguntaService } from '../../../preguntas/services/pregunta.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 // Models
 import { Examen, DownloadExamDto } from '../../../../core/models';
@@ -16,7 +20,7 @@ import { Examen, DownloadExamDto } from '../../../../core/models';
 @Component({
   selector: 'app-mis-examenes',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, CompartirExamenComponent],
   templateUrl: './mis-examenes.component.html',
   styleUrls: ['./mis-examenes.component.scss']
 })
@@ -33,11 +37,15 @@ export class MisExamenesComponent implements OnInit {
   modalEliminarVisible: boolean = false;
   idExamenAEliminar: string | null = null;
 
+  modalCompartirVisible: boolean = false;
+  examenACompartir: Examen | null = null;
+
   constructor(
     private examenService: ExamenService,
     private preguntaService: PreguntaService,
     private authService: AuthService,
     private notificacionService: NotificacionService,
+    private confirmationService: ConfirmationService,
     private router: Router
   ) { }
 
@@ -87,30 +95,27 @@ export class MisExamenesComponent implements OnInit {
     }
   }
 
-  eliminarExamen(id: string | undefined): void {
+  async eliminarExamen(id: string | undefined): Promise<void> {
     if (!id) return;
-    this.idExamenAEliminar = id;
-    this.modalEliminarVisible = true;
-  }
 
-  cerrarModal(): void {
-    this.modalEliminarVisible = false;
-    this.idExamenAEliminar = null;
-  }
+    const confirmar = await this.confirmationService.confirm({
+      title: '¿Eliminar examen?',
+      message: 'Esta acción eliminará el examen de forma permanente y no se podrá deshacer.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
 
-  confirmarEliminacion(): void {
-    if (!this.idExamenAEliminar) return;
+    if (!confirmar) return;
 
-    this.examenService.eliminarExamen(this.idExamenAEliminar).subscribe({
+    this.examenService.eliminarExamen(id).subscribe({
       next: () => {
         this.notificacionService.mostrar('Examen eliminado con éxito');
         this.cargarExamenes();
-        this.cerrarModal();
       },
       error: (err) => {
         console.error('Error deleting exam:', err);
         this.notificacionService.mostrar('No se pudo eliminar el examen', 'error');
-        this.cerrarModal();
       }
     });
   }
@@ -125,19 +130,15 @@ export class MisExamenesComponent implements OnInit {
     return examen.preguntas?.length || 0;
   }
 
-  copiarEnlace(examen: Examen): void {
+  abrirCompartir(examen: Examen): void {
     if (!examen._id) return;
+    this.examenACompartir = examen;
+    this.modalCompartirVisible = true;
+  }
 
-    // Generar URL única (formato: origen/alumno/e/ID)
-    const url = `${window.location.origin}/alumno/e/${examen._id}`;
-
-    // Copiar al portapapeles
-    navigator.clipboard.writeText(url).then(() => {
-      this.notificacionService.mostrar('Enlace de examen copiado al portapapeles');
-    }).catch(err => {
-      console.error('Error al copiar enlace:', err);
-      this.notificacionService.mostrar('Error al copiar el enlace', 'error');
-    });
+  cerrarCompartir(): void {
+    this.modalCompartirVisible = false;
+    this.examenACompartir = null;
   }
 
   isDescargando(examen: Examen): boolean {

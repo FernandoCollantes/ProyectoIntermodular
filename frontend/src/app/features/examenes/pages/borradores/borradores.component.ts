@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { ExamenService } from '../../services/examen.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 // Models
 import { Examen } from '../../../../core/models/examen.model';
@@ -24,15 +25,14 @@ export class BorradoresComponent implements OnInit {
     cargando: boolean = true;
     terminoBusqueda: string = '';
 
-    // Modal states
-    modalEliminarVisible: boolean = false;
-    modalPublicarVisible: boolean = false;
+    // Modal states (using ConfirmationService instead)
     idExamenSeleccionado: string | null = null;
 
     constructor(
         private examenService: ExamenService,
         private authService: AuthService,
         private notificacionService: NotificacionService,
+        private confirmationService: ConfirmationService,
         private router: Router
     ) { }
 
@@ -82,56 +82,58 @@ export class BorradoresComponent implements OnInit {
         }
     }
 
-    eliminarBorrador(id: string | undefined): void {
+    async eliminarBorrador(id: string | undefined): Promise<void> {
         if (!id) return;
-        this.idExamenSeleccionado = id;
-        this.modalEliminarVisible = true;
-    }
 
-    publicarBorrador(id: string | undefined): void {
-        if (!id) return;
-        this.idExamenSeleccionado = id;
-        this.modalPublicarVisible = true;
-    }
+        const confirmar = await this.confirmationService.confirm({
+            title: '¿Eliminar borrador?',
+            message: 'Esta acción eliminará el borrador de forma permanente y no se podrá deshacer.',
+            confirmText: 'Sí, eliminar',
+            cancelText: 'Cancelar',
+            type: 'danger'
+        });
 
-    cerrarModal(): void {
-        this.modalEliminarVisible = false;
-        this.modalPublicarVisible = false;
-        this.idExamenSeleccionado = null;
-    }
+        if (!confirmar) return;
 
-    confirmarEliminacion(): void {
-        if (!this.idExamenSeleccionado) return;
-
-        this.examenService.eliminarExamen(this.idExamenSeleccionado).subscribe({
+        this.examenService.eliminarExamen(id).subscribe({
             next: () => {
                 this.notificacionService.mostrar('Borrador eliminado con éxito');
                 this.cargarBorradores();
-                this.cerrarModal();
             },
             error: (err) => {
                 console.error('Error deleting draft:', err);
                 this.notificacionService.mostrar('No se pudo eliminar el borrador', 'error');
-                this.cerrarModal();
             }
         });
     }
 
-    confirmarPublicacion(): void {
-        if (!this.idExamenSeleccionado) return;
+    async publicarBorrador(id: string | undefined): Promise<void> {
+        if (!id) return;
 
-        this.examenService.publicarExamen(this.idExamenSeleccionado).subscribe({
+        const confirmar = await this.confirmationService.confirm({
+            title: '¿Publicar examen?',
+            message: 'El examen estará disponible para los alumnos. ¿Deseas publicarlo ahora?',
+            confirmText: 'Sí, publicar',
+            cancelText: 'Cancelar',
+            type: 'info'
+        });
+
+        if (!confirmar) return;
+
+        this.examenService.publicarExamen(id).subscribe({
             next: () => {
                 this.notificacionService.mostrar('Examen publicado con éxito');
                 this.cargarBorradores();
-                this.cerrarModal();
             },
             error: (err) => {
                 console.error('Error publishing exam:', err);
                 this.notificacionService.mostrar('No se pudo publicar el examen', 'error');
-                this.cerrarModal();
             }
         });
+    }
+
+    cerrarModal(): void {
+        this.idExamenSeleccionado = null;
     }
 
     formatearFecha(fecha: Date | undefined): string {

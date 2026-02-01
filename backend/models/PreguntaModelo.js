@@ -12,9 +12,9 @@ const PreguntaSchema = new Schema({
     }, // Guardaremos el nombre del Módulo (ej: "Sistemas Informáticos")
 
     tema: {
-        type: String,
+        type: [String],
         required: true
-    }, // Aquí guardaremos el código del RA (ej: "RA1")
+    }, // Aquí guardaremos los códigos de los RAs (ej: ["RA1", "RA2"])
 
     dificultad: {
         type: Number,

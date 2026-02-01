@@ -53,7 +53,14 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'realizar-examen',
+        path: 'e/:token',
+        loadComponent: () =>
+          import('./features/alumno/pages/acceso-alumno/acceso-alumno.component').then(
+            (m) => m.AccesoAlumnoComponent,
+          ),
+      },
+      {
+        path: 'realizar/:token',
         loadComponent: () =>
           import('./features/alumno/pages/realizar-examen/realizar-examen.component').then(
             (m) => m.RealizarExamenComponent,

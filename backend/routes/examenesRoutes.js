@@ -25,4 +25,14 @@ router.put('/:id', controller.updateExam);               // Update exam
 router.delete('/:id', controller.deleteExam);            // Delete exam
 router.patch('/:id/publicar', controller.publishExamById); // Publish draft
 
+// ============================================================================
+// SHARED EXAM & RESULTS ROUTES
+// ============================================================================
+router.post('/:id/compartir', controller.shareExam);         // Share exam
+router.get('/sesion/:token', controller.getSessionByToken);  // Get session (student)
+router.post('/sesion/:id/submit', controller.submitSessionExam); // Submit results
+router.get('/sesion/check/:token', controller.checkStudentStatusByToken);   // Check if already taken by token
+router.get('/sesiones/resultados', controller.getSessionsResults); // Results dashboard
+router.delete('/sesion/:id', controller.deleteSession);      // Delete session and results
+
 module.exports = router;

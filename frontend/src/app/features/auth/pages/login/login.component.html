@@ -11,6 +11,25 @@
 
             <!-- Cycle Selection Removed -->
 
+            <!-- Nombre Completo -->
+            <div class="form-group">
+                <label for="nombreCompleto" class="requerido">Nombre Completo</label>
+                <input type="text" id="nombreCompleto" formControlName="nombreCompleto" class="form-control"
+                    placeholder="Ej: Fernando Collantes">
+                <div *ngIf="loginForm.get('nombreCompleto')?.touched && loginForm.get('nombreCompleto')?.errors?.['required']"
+                    class="error-text">
+                    El nombre completo es obligatorio.
+                </div>
+                <div *ngIf="loginForm.get('nombreCompleto')?.touched && loginForm.get('nombreCompleto')?.errors?.['minlength']"
+                    class="error-text">
+                    El nombre debe tener al menos 3 caracteres.
+                </div>
+                <div *ngIf="loginForm.get('nombreCompleto')?.touched && loginForm.get('nombreCompleto')?.errors?.['pattern']"
+                    class="error-text">
+                    El nombre solo puede contener letras, espacios y acentos.
+                </div>
+            </div>
+
             <!-- Email -->
             <div class="form-group">
                 <label for="email" class="requerido">Correo Electrónico</label>
@@ -42,27 +61,16 @@
                     La contraseña es obligatoria.
                 </div>
             </div>
-
+            <!-- Error Message -->
             <div *ngIf="errorMsg" class="alert-error">
                 {{ errorMsg }}
             </div>
 
-            <button type="submit" class="btn-primary" [disabled]="loginForm.invalid || loading">
+            <!-- Login Button -->
+            <button type="submit" class="btn-primary" [disabled]="loginForm.invalid || loading"
+                style="margin-top: 20px;">
                 {{ loading ? 'Iniciando...' : 'Iniciar Sesión' }}
             </button>
-
-            <!-- Demo Login & Student Access -->
-            <div class="opciones-adicionales">
-                <button type="button" class="btn-secondary full-width" (click)="loginAsDemo()">
-                    Iniciar Sesión Demo (Profesor)
-                </button>
-
-                <div class="separator-text">o</div>
-
-                <a routerLink="/alumno/acceso" class="link-alumno">
-                    ¿Eres alumno? Ingresa al examen aquí
-                </a>
-            </div>
         </form>
     </div>
 </div>

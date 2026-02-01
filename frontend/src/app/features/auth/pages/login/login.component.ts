@@ -28,7 +28,11 @@ export class LoginComponent {
         private router: Router
     ) {
         this.loginForm = this.fb.group({
-            // cycle removed
+            nombreCompleto: ['', [
+                Validators.required,
+                Validators.minLength(3),
+                Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/)
+            ]],
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required]
         });
@@ -45,15 +49,15 @@ export class LoginComponent {
         if (this.loginForm.valid) {
             this.loading = true;
             this.errorMsg = '';
-            const { email, password } = this.loginForm.value;
+            const { nombreCompleto, email, password } = this.loginForm.value;
 
-            this.authService.login(email, password).subscribe({
-                next: (success) => {
+            this.authService.login(nombreCompleto, email, password).subscribe({
+                next: (result) => {
                     this.loading = false;
-                    if (success) {
+                    if (result.success) {
                         this.router.navigate(['/dashboard']); // or wherever
                     } else {
-                        this.errorMsg = 'Credenciales incorrectas o usuario no encontrado.';
+                        this.errorMsg = result.error || 'Error al iniciar sesión';
                     }
                 },
                 error: () => {
@@ -66,17 +70,4 @@ export class LoginComponent {
         }
     }
 
-    // Helper removed or simplified for dev testing if needed (but removed from template)
-    fillMock(type: 'DAM' | 'DAW') {
-        const email = type === 'DAM' ? 'profesor.dam@example.com' : 'profesor.daw@example.com';
-        this.loginForm.patchValue({
-            email: email,
-            password: 'pass123'
-        });
-    }
-
-    loginAsDemo() {
-        this.fillMock('DAM');
-        this.onSubmit();
-    }
 }

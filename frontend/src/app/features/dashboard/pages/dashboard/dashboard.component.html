@@ -1,16 +1,16 @@
 <div class="rejilla-estadisticas">
   <a [routerLink]="['/preguntas']" class="tarjeta-estadistica">
-    <div class="valor-estadistica">124</div>
+    <div class="valor-estadistica">{{ totalPreguntas }}</div>
     <div class="etiqueta-estadistica">Total Preguntas</div>
   </a>
 
   <a [routerLink]="['/examenes']" class="tarjeta-estadistica">
-    <div class="valor-estadistica">18</div>
+    <div class="valor-estadistica">{{ totalExamenes }}</div>
     <div class="etiqueta-estadistica">Exámenes Creados</div>
   </a>
 
   <a [routerLink]="['/asignaturas']" class="tarjeta-estadistica">
-    <div class="valor-estadistica">5</div>
+    <div class="valor-estadistica">{{ totalAsignaturas }}</div>
     <div class="etiqueta-estadistica">Asignaturas</div>
   </a>
 </div>
@@ -49,25 +49,24 @@
   <div class="lista-actividad" *ngIf="!cargando && actividadReciente.length > 0">
     <div class="item-actividad" *ngFor="let item of actividadReciente" [class.item-destacado]="item.esUltimo">
       <div class="icono-actividad">
-        <svg *ngIf="item.tipo === 'examen'" class="icon-exam-activity" viewBox="0 0 24 24" fill="currentColor"
-          role="img" aria-label="Examen">
-          <title>Examen</title>
+        <svg *ngIf="item.tipo === 'examen'" class="icon-exam-activity" viewBox="0 0 24 24" fill="currentColor">
           <path
             d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
         </svg>
-        <svg *ngIf="item.tipo === 'pregunta'" class="icon-question-activity" viewBox="0 0 24 24" fill="currentColor"
-          role="img" aria-label="Pregunta">
-          <title>Pregunta</title>
+        <svg *ngIf="item.tipo === 'pregunta'" class="icon-question-activity" viewBox="0 0 24 24" fill="currentColor">
           <path
             d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
+        </svg>
+        <svg *ngIf="item.tipo === 'realizado'" class="icon-result-activity" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
         </svg>
       </div>
       <div class="contenido-actividad">
         <div class="titulo-actividad">
           {{ item.titulo }}
           <span class="badge-nuevo" *ngIf="item.esUltimo">
-            <svg class="icon-sparkle" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Más reciente">
-              <title>Más reciente</title>
+            <svg class="icon-sparkle" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
             </svg>
             Más reciente
@@ -75,10 +74,25 @@
         </div>
         <div class="meta-actividad">
           <span class="tipo-badge" [class.tipo-examen]="item.tipo === 'examen'"
-            [class.tipo-pregunta]="item.tipo === 'pregunta'">
+            [class.tipo-pregunta]="item.tipo === 'pregunta'" [class.tipo-realizado]="item.tipo === 'realizado'">
             {{ getTipoTexto(item.tipo) }}
           </span>
-          <span class="fecha-actividad">{{ formatearFecha(item.fecha) }}</span>
+
+          <!-- Question Specific -->
+          <span class="dificultad-badge" *ngIf="item.tipo === 'pregunta'">
+            Dificultad: {{ getDificultadTexto(item.dificultad) }}
+          </span>
+
+          <!-- Exam Specific -->
+          <span class="modulo-badge" *ngIf="(item.tipo === 'examen' || item.tipo === 'realizado') && item.modulo">
+            Módulo: {{ item.modulo }}
+          </span>
+
+          <span class="fecha-actividad">
+            <span class="fecha-calendario">{{ item.fecha | date:'d MMMM' | titlecase }}</span>
+            <span class="separador-punto">•</span>
+            {{ formatearFecha(item.fecha) }}
+          </span>
         </div>
       </div>
     </div>

@@ -34,22 +34,16 @@ export class PreguntaService {
      * Transforma el DTO del frontend al formato esperado por el backend.
      */
     crearPregunta(dto: CrearPreguntaDto, creatorId: string): Observable<Pregunta> {
-        // Backend changes:
-        // 1. 'tema' expects a single RA code (e.g. "RA1"). We take the first one from criterios.
-        // 2. 'respuesta_correcta' expects the INDEX (number).
-        // 3. 'opciones' expects the full array of strings.
-
         const payload = {
             enunciado: dto.enunciado,
             asignatura: dto.asignatura,
-            tema: dto.criterios[0] || 'RA1', // Fallback or take first
+            tema: dto.tema, // Ahora enviamos el array completo
             dificultad: Number(dto.dificultad),
             opciones: dto.opciones,
             respuesta_correcta: parseInt(dto.respuesta_correcta, 10),
             creador: creatorId
         };
 
-        // El endpoint ahora es /api/preguntas/add
         return this.http.post<{ success: boolean, question: Pregunta }>(`${this.apiUrl}/add`, payload).pipe(
             map(response => response.question)
         );
@@ -69,7 +63,7 @@ export class PreguntaService {
         const payload = {
             enunciado: dto.enunciado,
             asignatura: dto.asignatura,
-            tema: dto.criterios[0] || 'RA1',
+            tema: dto.tema, // Ahora enviamos el array completo
             dificultad: Number(dto.dificultad),
             opciones: dto.opciones,
             respuesta_correcta: parseInt(dto.respuesta_correcta, 10),

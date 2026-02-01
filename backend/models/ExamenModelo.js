@@ -13,28 +13,18 @@ const ExamenSchema = new Schema({
     ras: [{
         type: String
     }], // Array of RA codes
-    duracion: {
-        type: Number,
-        required: true
-    }, // minutes
-    intentos: {
-        type: Number,
-        default: 1
-    },
     preguntas: [{
         type: Schema.Types.ObjectId,
         ref: 'Pregunta'
     }],
-    opciones: {
-        aleatorio: { type: Boolean, default: false },
-        respuestas_inmediatas: { type: Boolean, default: false },
-        limite_tiempo: { type: Boolean, default: true },
-        navegacion_libre: { type: Boolean, default: false }
-    },
     estado: {
         type: String,
         enum: ['borrador', 'publicado'],
         default: 'borrador'
+    },
+    duracion: {
+        type: Number,
+        default: 60
     },
     creador: {
         type: String,

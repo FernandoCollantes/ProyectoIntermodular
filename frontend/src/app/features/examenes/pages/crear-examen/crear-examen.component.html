@@ -20,6 +20,12 @@
         </select>
       </div>
 
+      <div class="grupo-formulario">
+        <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
+        <input type="number" id="duration" class="entrada-formulario" formControlName="duracion" min="5" max="60"
+          placeholder="Min 5, Max 60" />
+      </div>
+
       <div class="grupo-formulario" *ngIf="rasDisponibles.length > 0">
         <label class="etiqueta-formulario">Resultado de Aprendizaje (RA)</label>
         <div class="contenedor-chips">
@@ -28,34 +34,6 @@
             {{ ra.codigo }}
           </div>
         </div>
-      </div>
-
-      <div class="grupo-formulario">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <label for="duration" class="etiqueta-formulario requerido">Duración (minutos)</label>
-
-          <!-- Control de límite de tiempo movido aquí -->
-          <label class="etiqueta-formulario"
-            style="font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-            <input type="checkbox" [formControl]="$any(examenForm.get('opciones.limite_tiempo'))" />
-            Habilitar límite
-          </label>
-        </div>
-
-        <input type="number" id="duration" class="entrada-formulario" formControlName="duracion" placeholder="60"
-          min="5" max="60" />
-        <span class="texto-ayuda" style="font-size: 0.8rem; color: var(--text-secondary);">Mínimo 5 min, Máximo 60
-          min</span>
-      </div>
-
-      <div class="grupo-formulario">
-        <label for="attempts" class="etiqueta-formulario">Intentos permitidos</label>
-        <select id="attempts" class="seleccion-formulario" formControlName="intentos">
-          <option value="1">1 intento</option>
-          <option value="2">2 intentos</option>
-          <option value="3">3 intentos</option>
-          <option value="999">Ilimitados</option>
-        </select>
       </div>
     </div>
 
@@ -80,8 +58,6 @@
           {{ preguntasSeleccionadas.size }} preguntas seleccionadas
         </span>
       </div>
-
-      <!-- Filters are now controlled by the form above -->
 
       <!-- Questions List -->
       <div class="lista-preguntas" *ngIf="!cargando">
@@ -110,31 +86,8 @@
       </div>
     </div>
 
-    <div class="grupo-formulario" formGroupName="opciones">
-      <label class="etiqueta-formulario">Opciones de configuración</label>
-
-      <div class="contenedor-opciones-adicionales">
-        <label class="item-opcion">
-          <input type="checkbox" formControlName="aleatorio" />
-          <span>Mezclar preguntas aleatoriamente</span>
-        </label>
-
-        <label class="item-opcion">
-          <input type="checkbox" formControlName="respuestas_inmediatas" />
-          <span>Mostrar respuestas al finalizar</span>
-        </label>
-
-        <!-- Opción limite_tiempo eliminada de aquí porque se movió arriba -->
-
-        <label class="item-opcion">
-          <input type="checkbox" formControlName="navegacion_libre" />
-          <span>Permitir volver atrás</span>
-        </label>
-      </div>
-    </div>
-
     <div class="acciones-formulario">
-      <button type="button" (click)="mostrarModalCancelar()" class="boton boton-contorno">Cancelar</button>
+      <button type="button" (click)="confirmarCancelacion()" class="boton boton-contorno">Cancelar</button>
       <button type="button" (click)="guardarBorrador()" class="boton boton-secundario" [disabled]="guardando">
         {{ guardando ? 'Guardando...' : 'Guardar como borrador' }}
       </button>
@@ -144,22 +97,4 @@
       </button>
     </div>
   </form>
-</div>
-
-<!-- MODAL DE CONFIRMACIÓN DE CANCELACIÓN -->
-<div class="modal-overlay" *ngIf="modalCancelarVisible" (click)="cerrarModalCancelar()">
-  <div class="modal-contenido" (click)="$event.stopPropagation()">
-    <div class="icono-alerta">
-      <svg class="icon-warning" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Advertencia">
-        <title>Advertencia</title>
-        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-      </svg>
-    </div>
-    <h3>¿Cancelar creación del examen?</h3>
-    <p>Los cambios no guardados se perderán. ¿Estás seguro de que quieres salir?</p>
-    <div class="modal-acciones">
-      <button class="boton boton-secundario" (click)="cerrarModalCancelar()">No, Continuar Editando</button>
-      <button class="boton boton-peligro" (click)="confirmarCancelacion()">Sí, Cancelar</button>
-    </div>
-  </div>
 </div>

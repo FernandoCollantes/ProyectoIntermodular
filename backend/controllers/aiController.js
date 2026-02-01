@@ -10,12 +10,13 @@ exports.generateFromPdf = async (req, res) => {
         }
 
         // 2. Extraer metadatos del cuerpo de la petición (FormData)
-        const { curso, asignatura } = req.body;
+        const { asignatura, tema, numPreguntas } = req.body;
+        const count = parseInt(numPreguntas) || 10;
 
-        if (!curso || !asignatura) {
+        if (!asignatura || !tema) {
             // Borramos el archivo si faltan datos para no dejar basura
             fs.unlinkSync(req.file.path);
-            return res.status(400).json({ success: false, message: "Faltan el curso o la asignatura." });
+            return res.status(400).json({ success: false, message: "Faltan la asignatura o el tema (RA)." });
         }
 
         // 3. Leer y extraer texto del PDF
@@ -28,8 +29,8 @@ exports.generateFromPdf = async (req, res) => {
             return res.status(400).json({ success: false, message: "El PDF parece vacío." });
         }
 
-        // 4. Llamar a la IA pasando los nuevos parámetros
-        const generatedQuestions = await aiService.generateQuestionsFromText(textContent, curso, asignatura, 5);
+        // 4. Llamar a la IA pasando los parámetros correctos
+        const generatedQuestions = await aiService.generateQuestionsFromText(textContent, asignatura, tema, count);
 
         // 5. Limpieza
         fs.unlinkSync(req.file.path);

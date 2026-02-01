@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ExamenService } from '../../../../features/examenes/services/examen.service';
 
 @Component({
   selector: 'app-acceso-alumno',
@@ -10,16 +11,19 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
   templateUrl: './acceso-alumno.component.html',
   styleUrls: ['./acceso-alumno.component.scss']
 })
-export class AccesoAlumnoComponent {
+export class AccesoAlumnoComponent implements OnInit {
   accesoForm: FormGroup;
   generalError: string = '';
+  token: string | null = null;
+  cargando: boolean = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private examenService: ExamenService
+  ) {
     this.accesoForm = this.fb.group({
-      examUrl: ['', [
-        Validators.required,
-        Validators.pattern(/^https?:\/\/.*\/alumno\/e\/[a-zA-Z0-9_-]+$/)
-      ]],
       studentName: ['', [
         Validators.required,
         Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+(\s[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+)*$/)
@@ -27,34 +31,49 @@ export class AccesoAlumnoComponent {
       studentEmail: ['', [Validators.required, Validators.email]]
     });
 
-    // Limpiar error general cuando el usuario modifica el formulario
     this.accesoForm.valueChanges.subscribe(() => {
-      if (this.generalError) {
-        this.generalError = '';
+      if (this.generalError) this.generalError = '';
+    });
+  }
+
+  ngOnInit(): void {
+    // Capturamos el token de la URL automáticamente
+    this.route.params.subscribe(params => {
+      this.token = params['token'];
+      if (!this.token) {
+        this.generalError = 'Enlace de examen no válido o incompleto.';
       }
     });
   }
 
   onSubmit() {
-    if (this.accesoForm.valid) {
-      const { examUrl, studentName } = this.accesoForm.value;
+    if (this.accesoForm.valid && this.token) {
+      const { studentName, studentEmail } = this.accesoForm.value;
+      this.cargando = true;
 
-      // Extract ID from URL (last segment)
-      // URL format: .../alumno/e/[ID]
-      const urlParts = examUrl.split('/');
-      const examId = urlParts[urlParts.length - 1];
-
-      if (examId) {
-        this.router.navigate(['/alumno/realizar-examen'], {
-          queryParams: { id: examId },
-          state: { studentName: studentName }
-        });
-      } else {
-        this.generalError = 'No se pudo obtener el ID del examen de la URL proporcionada.';
-      }
+      // Primero verificamos si el alumno ya ha realizado este examen
+      this.examenService.verificarIntentoExistente(this.token, studentEmail).subscribe({
+        next: (existe) => {
+          this.cargando = false;
+          if (existe) {
+            this.generalError = 'El examen ya ha sido realizado.';
+          } else {
+            // Navegamos a la ruta de realizar examen pasando la identificación
+            this.router.navigate(['/alumno/realizar', this.token], {
+              state: { studentName, studentEmail }
+            });
+          }
+        },
+        error: (err) => {
+          this.cargando = false;
+          this.generalError = 'Error al verificar el acceso: ' + err.message;
+        }
+      });
+    } else if (!this.token) {
+      this.generalError = 'No se puede acceder al examen sin un token válido.';
     } else {
       this.accesoForm.markAllAsTouched();
-      this.generalError = 'Por favor, completa todos los campos correctamente para continuar.';
+      this.generalError = 'Por favor, completa tus datos correctamente.';
     }
   }
 }

@@ -7,10 +7,11 @@ import { FormsModule } from '@angular/forms';
 import { PreguntaService } from '../../services/pregunta.service';
 import { JerarquiaService } from '../../../../core/services/jerarquia.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 
 // Modelos (Importamos el nuevo modelo de Módulo)
 import { Pregunta } from '../../../../core/models/pregunta.model';
-import { ModuloJerarquia } from '../../../../core/models/jerarquia.model';
+import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
 
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -23,6 +24,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   encapsulation: ViewEncapsulation.None
 })
 export class MisPreguntasComponent implements OnInit {
+  protected readonly Array = Array;
   String = String;
   preguntas: Pregunta[] = [];
 
@@ -31,7 +33,11 @@ export class MisPreguntasComponent implements OnInit {
 
   cargando: boolean = true;
   filtroModulo: string = '';
+  filtroRA: string = '';
+  filtroDificultad: string = '';
   terminoBusqueda: string = '';
+
+  rasDisponibles: ResultadoAprendizaje[] = [];
 
   // Modal states
   modalEliminarVisible: boolean = false;
@@ -41,6 +47,7 @@ export class MisPreguntasComponent implements OnInit {
     private preguntaService: PreguntaService,
     private jerarquiaService: JerarquiaService,
     private notiService: NotificacionService,
+    private confirmationService: ConfirmationService,
     private authService: AuthService,
     private router: Router
   ) { }
@@ -66,6 +73,35 @@ export class MisPreguntasComponent implements OnInit {
 
   seleccionarModulo(nombreModulo: string): void {
     this.filtroModulo = nombreModulo;
+    this.filtroRA = ''; // Reset RA when module changes
+    this.filtroDificultad = ''; // Reset Difficulty when module changes
+
+    if (nombreModulo) {
+      const modulo = this.listaModulosXML.find(m => m.nombre === nombreModulo);
+      this.rasDisponibles = modulo?.ras || [];
+    } else {
+      this.rasDisponibles = [];
+    }
+
+    this.aplicarFiltros();
+  }
+
+  seleccionarRA(codigo: string): void {
+    // Toggle RA check
+    if (this.filtroRA === codigo) {
+      this.filtroRA = '';
+    } else {
+      this.filtroRA = codigo;
+    }
+    this.aplicarFiltros();
+  }
+
+  seleccionarDificultad(nivel: string): void {
+    if (this.filtroDificultad === nivel) {
+      this.filtroDificultad = '';
+    } else {
+      this.filtroDificultad = nivel;
+    }
     this.aplicarFiltros();
   }
 
@@ -78,6 +114,8 @@ export class MisPreguntasComponent implements OnInit {
     // Enviamos el nombre del módulo como filtro al backend
     this.preguntaService.buscarPreguntas({
       subject: this.filtroModulo || undefined,
+      difficulty: this.filtroDificultad || undefined,
+      theme: this.filtroRA || undefined,
       creatorId: currentUser?.id
     }).subscribe({
       next: (data: Pregunta[]) => {
@@ -98,29 +136,26 @@ export class MisPreguntasComponent implements OnInit {
     });
   }
 
-  borrarPregunta(id: string | undefined): void {
+  async borrarPregunta(id: string | undefined): Promise<void> {
     if (!id) return;
-    this.idPreguntaAEliminar = id;
-    this.modalEliminarVisible = true;
-  }
 
-  cerrarModal(): void {
-    this.modalEliminarVisible = false;
-    this.idPreguntaAEliminar = null;
-  }
+    const confirmar = await this.confirmationService.confirm({
+      title: '¿Eliminar pregunta?',
+      message: 'Esta acción eliminará la pregunta de forma permanente y no se podrá deshacer.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
 
-  confirmarEliminacion(): void {
-    if (!this.idPreguntaAEliminar) return;
+    if (!confirmar) return;
 
-    this.preguntaService.eliminarPregunta(this.idPreguntaAEliminar).subscribe({
+    this.preguntaService.eliminarPregunta(id).subscribe({
       next: () => {
         this.notiService.mostrar('Pregunta eliminada con éxito');
         this.aplicarFiltros();
-        this.cerrarModal();
       },
       error: () => {
         this.notiService.mostrar('No se pudo eliminar la pregunta', 'error');
-        this.cerrarModal();
       }
     });
   }
@@ -138,9 +173,9 @@ export class MisPreguntasComponent implements OnInit {
 
   getClaseDificultad(dificultad: any): string {
     const nivel = parseInt(dificultad, 10);
-    if (nivel === 1) return 'insignia-exito';
-    if (nivel === 2) return 'insignia-advertencia';
-    if (nivel >= 3) return 'insignia-peligro';
+    if (nivel === 0) return 'insignia-exito';
+    if (nivel === 1) return 'insignia-advertencia';
+    if (nivel >= 2) return 'insignia-peligro';
 
     // Fallback para strings antiguos por si acaso
     const d = String(dificultad || '').toLowerCase();

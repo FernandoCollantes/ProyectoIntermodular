@@ -4,21 +4,11 @@
       <img src="assets/Logo1.png" alt="Acceso Alumno Logo" class="logo-acceso-img">
       <h1 class="titulo-acceso">Acceso al Examen</h1>
       <h2 class="subtitulo-acceso">
-        Introduce la URL del examen proporcionada por tu profesor
+        Introduce tus datos para comenzar el examen
       </h2>
     </div>
 
     <form [formGroup]="accesoForm" (ngSubmit)="onSubmit()" class="formulario-acceso">
-      <div class="grupo-formulario">
-        <label for="examUrl" class="etiqueta-formulario requerido">URL Examen</label>
-        <input type="url" id="examUrl" formControlName="examUrl" class="entrada-formulario" placeholder="https://..."
-          [class.is-invalid]="accesoForm.get('examUrl')?.invalid && accesoForm.get('examUrl')?.touched">
-        <div *ngIf="accesoForm.get('examUrl')?.invalid && accesoForm.get('examUrl')?.touched" class="error-text">
-          <small *ngIf="accesoForm.get('examUrl')?.errors?.['required']">La URL es obligatoria.</small>
-          <small *ngIf="accesoForm.get('examUrl')?.errors?.['pattern']">La URL no es válida. Debe ser un enlace de
-            examen.</small>
-        </div>
-      </div>
 
       <div class="grupo-formulario">
         <label for="studentName" class="etiqueta-formulario requerido">Tu nombre completo</label>

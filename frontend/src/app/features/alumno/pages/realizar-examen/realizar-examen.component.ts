@@ -1,16 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Subscription } from 'rxjs';
+import { CommonModule as NgCommonModule } from '@angular/common';
 
 // Services
 import { ExamenService } from '../../../../features/examenes/services/examen.service';
-import { PreguntaService } from '../../../../features/preguntas/services/pregunta.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
-
-// Models
-import { Examen } from '../../../../core/models/examen.model';
-import { Pregunta } from '../../../../core/models/pregunta.model';
 
 @Component({
   selector: 'app-realizar-examen',
@@ -20,21 +15,23 @@ import { Pregunta } from '../../../../core/models/pregunta.model';
   styleUrls: ['./realizar-examen.component.scss']
 })
 export class RealizarExamenComponent implements OnInit, OnDestroy {
-  examen: Examen | null = null;
-  preguntas: Pregunta[] = [];
-  studentName: string = 'Alumno';
+  examen: any | null = null;
+  preguntas: any[] = [];
+  studentName: string = '';
+  studentEmail: string = '';
+  token: string | null = null;
+  sesionId: string | null = null;
 
   currentQuestionIndex: number = 0;
   answers: { [key: string]: number } = {}; // questionId -> answerIndex
 
-  timeLeft: number = 0; // seconds
-  timerInterval: any;
   loading: boolean = true;
   mostrarModalConfirmacion: boolean = false;
-  mostrarModalResultados: boolean = false; // Nuevo: Modal de Resultados
-  resultadoExamen = { aciertos: 0, total: 0, nota: 0 }; // Nuevo: Estado de resultados
-
-  tieneLimite: boolean = true; // Nuevo: Control de límite de tiempo
+  mostrarModalResultados: boolean = false;
+  resultadoExamen = { aciertos: 0, total: 0, nota: 0 };
+  tieneLimite: boolean = false;
+  timeLeft: number = 0; // en segundos
+  timerInterval: any;
 
   // Para mostrar letras en lugar de índices (A, B, C, D)
   letters: string[] = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -43,25 +40,26 @@ export class RealizarExamenComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private examenService: ExamenService,
-    private preguntaService: PreguntaService,
-    private notificacionService: NotificacionService,
-    private location: Location
+    private notificacionService: NotificacionService
   ) { }
 
   ngOnInit(): void {
-    // Recuperar nombre del alumno del estado de navegación
     const state = history.state;
-    if (state && state.studentName) {
+    if (state && state.studentName && state.studentEmail) {
       this.studentName = state.studentName;
+      this.studentEmail = state.studentEmail;
+    } else {
+      this.notificacionService.mostrar('Por favor, introduce tus datos para comenzar', 'error');
+      this.router.navigate(['/alumno/acceso']);
+      return;
     }
 
-    // Obtener ID del examen de los query params
-    this.route.queryParams.subscribe(params => {
-      const id = params['id'];
-      if (id) {
-        this.loadExam(id);
+    this.route.params.subscribe(params => {
+      this.token = params['token'];
+      if (this.token) {
+        this.loadSesion(this.token);
       } else {
-        this.notificacionService.mostrar('No se especificó un examen', 'error');
+        this.notificacionService.mostrar('Acceso denegado: Token no proporcionado', 'error');
         this.router.navigate(['/alumno/acceso']);
       }
     });
@@ -73,82 +71,31 @@ export class RealizarExamenComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadExam(id: string): void {
+  loadSesion(token: string): void {
     this.loading = true;
-    this.examenService.obtenerExamenPorId(id).subscribe({
-      next: (exam) => {
-        this.examen = exam;
+    this.examenService.obtenerSesionPorToken(token).subscribe({
+      next: (data) => {
+        this.sesionId = data.sesion_id;
+        this.examen = data;
+        this.preguntas = data.preguntas;
+        this.loading = false;
 
-        // Configurar temporizador
-        this.tieneLimite = exam.opciones?.limite_tiempo ?? true;
-
-        if (this.tieneLimite) {
-          this.timeLeft = (exam.duracion || 60) * 60;
+        if (this.examen.duracion) {
+          this.tieneLimite = true;
+          this.timeLeft = this.examen.duracion * 60;
           this.startTimer();
-        } else {
-          // Sin límite de tiempo, no iniciamos temporizador
-          this.timeLeft = 0;
-        }
-
-        // Robust question loading
-        if (exam.preguntas && exam.preguntas.length > 0) {
-          const firstQ = exam.preguntas[0];
-          // Check if it's an object (populated) or string (ID)
-          if (typeof firstQ === 'object' && firstQ !== null) {
-            this.preguntas = exam.preguntas as unknown as Pregunta[];
-            this.loading = false;
-          } else {
-            // Assuming it's ID string
-            const requests = (exam.preguntas as unknown as string[]).map(qId =>
-              this.preguntaService.obtenerPregunta(qId)
-            );
-            forkJoin(requests).subscribe({
-              next: (questions) => {
-                this.preguntas = questions;
-                this.loading = false;
-              },
-              error: (err) => {
-                console.error('Error loading questions detail:', err);
-                this.loading = false;
-                this.notificacionService.mostrar('Error al cargar las preguntas', 'error');
-              }
-            });
-          }
-        } else {
-          this.loading = false;
-          this.notificacionService.mostrar('El examen no tiene preguntas', 'error');
         }
       },
-      error: (err) => {
-        console.error('Error loading exam:', err);
-        this.loading = false;
-        this.notificacionService.mostrar('Error al cargar el examen', 'error');
+      error: (err: any) => {
+        this.notificacionService.mostrar('Error al cargar la sesión: ' + err.message, 'error');
         this.router.navigate(['/alumno/acceso']);
       }
     });
   }
 
-  startTimer(): void {
-    this.timerInterval = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-        if (this.timeLeft === 300) {
-          this.notificacionService.mostrar('¡Atención! Quedan 5 minutos para finalizar.', 'error');
-        }
-      } else {
-        clearInterval(this.timerInterval);
-        this.finalizarExamen(true);
-      }
-    }, 1000);
-  }
 
-  formatearTiempo(): string {
-    const minutes = Math.floor(this.timeLeft / 60);
-    const seconds = this.timeLeft % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  }
 
-  get preguntaActual(): Pregunta | null {
+  get preguntaActual(): any | null {
     if (!this.preguntas || this.preguntas.length === 0) return null;
     return this.preguntas[this.currentQuestionIndex];
   }
@@ -176,8 +123,6 @@ export class RealizarExamenComponent implements OnInit, OnDestroy {
   siguiente(): void {
     if (this.currentQuestionIndex < this.preguntas.length - 1) {
       this.currentQuestionIndex++;
-    } else {
-      this.notificacionService.mostrar('Fin de preguntas alcanzado', 'error');
     }
   }
 
@@ -194,41 +139,47 @@ export class RealizarExamenComponent implements OnInit, OnDestroy {
     this.finalizarExamen();
   }
 
+  finalizarExamen(): void {
+    const answersList = Object.keys(this.answers).map(qId => ({
+      preguntaId: qId,
+      valor: this.answers[qId]
+    }));
+
+    const studentData = { nombre: this.studentName, email: this.studentEmail };
+
+    this.examenService.enviarResultadosSesion(this.sesionId!, studentData, answersList).subscribe({
+      next: (res: any) => {
+        this.resultadoExamen = {
+          aciertos: res.result.aciertos,
+          total: res.result.total,
+          nota: parseFloat(res.result.nota)
+        };
+        this.mostrarModalResultados = true;
+      },
+      error: (err: any) => {
+        this.notificacionService.mostrar('Error al enviar resultados: ' + err.message, 'error');
+      }
+    });
+  }
+
   cerrarModalResultados(): void {
     this.mostrarModalResultados = false;
     this.router.navigate(['/alumno/acceso']);
   }
 
-  finalizarExamen(porTiempo: boolean = false): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-
-    if (porTiempo) {
-      this.notificacionService.mostrar('El tiempo ha finalizado. Calculando resultados...', 'error');
-    }
-
-    // Calcular resultado (Simulación frontend)
-    let aciertos = 0;
-    let total = this.preguntas.length;
-
-    this.preguntas.forEach(p => {
-      // Comparison: p.respuesta_correcta is number index
-      if (p._id && this.answers[p._id] === p.respuesta_correcta) {
-        aciertos++;
+  startTimer(): void {
+    this.timerInterval = setInterval(() => {
+      this.timeLeft--;
+      if (this.timeLeft <= 0) {
+        clearInterval(this.timerInterval);
+        this.finalizarExamen();
       }
-    });
+    }, 1000);
+  }
 
-    const nota = total > 0 ? (aciertos / total) * 10 : 0;
-
-    // Guardar resultados para mostrar en el modal
-    this.resultadoExamen = {
-      aciertos,
-      total,
-      nota
-    };
-
-    // Mostrar modal en lugar de alert
-    this.mostrarModalResultados = true;
+  formatearTiempo(): string {
+    const minutes = Math.floor(this.timeLeft / 60);
+    const seconds = this.timeLeft % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   }
 }

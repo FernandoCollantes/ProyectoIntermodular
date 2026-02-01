@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 const PreguntaModel = require('../models/PreguntaModelo');
 const ExamenModel = require('../models/ExamenModelo');
 const IntentoModel = require('../models/Intento');
+const SesionExamenModel = require('../models/SesionExamen');
 const ExamenClass = require('../classes/Examen');
 const PreguntaClass = require('../classes/Pregunta');
 const PDFDocument = require('pdfkit');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 exports.generateExamPreview = async (subjectId, amount) => {
     try {
@@ -78,7 +81,7 @@ exports.searchExams = async (subjectId, autor, tipo) => {
 
         return await ExamenModel.find(match)
             .populate('asignatura', 'nombre')
-            .sort({ fecha_creacion: -1 })
+            .sort({ createdAt: -1 })
             .lean();
     } catch (error) { throw new Error('Error buscando exámenes: ' + error.message); }
 };
@@ -366,5 +369,189 @@ exports.publishExam = async (id) => {
         );
     } catch (error) {
         throw new Error(`Error publishing exam: ${error.message}`);
+    }
+};
+
+/**
+ * Compartir examen: Generar sesión, token y enviar correos
+ */
+exports.compartirExamen = async (examId, emails, creador) => {
+    try {
+        const token = crypto.randomBytes(16).toString('hex');
+
+        const nuevaSesion = new SesionExamenModel({
+            examen_id: examId,
+            token,
+            invitados_emails: emails,
+            creador
+        });
+
+        await nuevaSesion.save();
+
+        console.log("Configurando envío con Gmail para:", process.env.EMAIL_USER);
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        // Verificar la conexión antes de intentar enviar
+        try {
+            await transporter.verify();
+            console.log("Servidor de correo listo para enviar");
+        } catch (verifyError) {
+            console.error("Fallo en la verificación del transporter:", verifyError);
+            throw new Error(`Error de autenticación con Gmail: ${verifyError.message}`);
+        }
+
+        const urlExamen = `${process.env.FRONTEND_URL || 'http://localhost:4200'}/alumno/e/${token}`;
+
+        for (const email of emails) {
+            try {
+                await transporter.sendMail({
+                    from: `"Gestor de Exámenes" <${process.env.EMAIL_USER}>`,
+                    to: email,
+                    subject: "Invitación a realizar un examen",
+                    html: `
+                        <h1>Has sido invitado a realizar un examen</h1>
+                        <p>Puedes acceder al examen haciendo clic en el siguiente enlace:</p>
+                        <a href="${urlExamen}">${urlExamen}</a>
+                        <p>¡Suerte!</p>
+                    `
+                });
+            } catch (mailError) {
+                console.error(`Error enviando email a ${email}:`, mailError);
+                throw new Error(`Error en el servidor de correo: ${mailError.message}`);
+            }
+        }
+
+        return { success: true, token };
+    } catch (error) {
+        throw new Error(`Error compartiendo examen: ${error.message}`);
+    }
+};
+
+/**
+ * Obtener sesión por token (Validación de acceso alumno)
+ */
+exports.getSesionByToken = async (token) => {
+    try {
+        const sesion = await SesionExamenModel.findOne({ token, activa: true })
+            .populate({
+                path: 'examen_id',
+                populate: { path: 'preguntas' }
+            });
+
+        if (!sesion) throw new Error("Sesión no encontrada o inactiva");
+
+        const examDoc = sesion.examen_id;
+        const preguntasLimpias = examDoc.preguntas.map(q => new PreguntaClass(q).getClientData());
+
+        return {
+            sesion_id: sesion._id,
+            nombre: examDoc.nombre || examDoc.titulo, // Handle both just in case
+            autor: examDoc.creador,
+            duracion: examDoc.duracion,
+            preguntas: preguntasLimpias
+        };
+    } catch (error) {
+        throw new Error(`Error validando sesión: ${error.message}`);
+    }
+};
+
+/**
+ * Guardar intento vinculado a una sesión
+ */
+exports.submitExamFromSesion = async (sesionId, studentData, userAnswers) => {
+    try {
+        const sesion = await SesionExamenModel.findById(sesionId).populate('examen_id');
+        if (!sesion) throw new Error("Sesión no encontrada");
+
+        const examen = await ExamenModel.findById(sesion.examen_id._id).populate('preguntas');
+        let aciertos = 0;
+        const detallesRespuestas = [];
+
+        examen.preguntas.forEach(preguntaOriginal => {
+            const respuestaUsuario = userAnswers.find(a => a.preguntaId === preguntaOriginal._id.toString());
+            const esCorrecta = respuestaUsuario && respuestaUsuario.valor === preguntaOriginal.respuesta_correcta;
+            if (esCorrecta) aciertos++;
+
+            detallesRespuestas.push({
+                pregunta_id: preguntaOriginal._id,
+                respuesta_marcada: respuestaUsuario ? respuestaUsuario.valor : null,
+                es_correcta: esCorrecta
+            });
+        });
+
+        const notaFinal = examen.preguntas.length > 0 ? (aciertos / examen.preguntas.length) * 10 : 0;
+
+        const nuevoIntento = new IntentoModel({
+            examen_id: sesion.examen_id._id,
+            sesion_id: sesionId,
+            nombre_alumno: studentData.nombre,
+            email_alumno: studentData.email,
+            respuestas: detallesRespuestas,
+            nota: notaFinal.toFixed(2)
+        });
+
+        await nuevoIntento.save();
+        return { nota: notaFinal.toFixed(2), aciertos, total: examen.preguntas.length };
+    } catch (error) {
+        throw new Error(`Error guardando resultado: ${error.message}`);
+    }
+};
+
+/**
+ * Obtener sesiones con sus resultados para el profesor
+ */
+exports.getSesionesConResultados = async (userId) => {
+    try {
+        const sesiones = await SesionExamenModel.find({ creador: userId })
+            .populate('examen_id', 'titulo asignatura')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        for (const sesion of sesiones) {
+            sesion.intentos = await IntentoModel.find({ sesion_id: sesion._id })
+                .select('nombre_alumno email_alumno nota fecha_intento')
+                .lean();
+        }
+
+        return sesiones;
+    } catch (error) {
+        throw new Error(`Error recuperando sesiones: ${error.message}`);
+    }
+};
+
+/**
+ * Comprobar si un alumno ya ha realizado un examen en una sesión específica
+ */
+exports.checkStudentAttempt = async (token, email) => {
+    try {
+        const sesion = await SesionExamenModel.findOne({ token });
+        if (!sesion) return false;
+
+        const intento = await IntentoModel.findOne({ sesion_id: sesion._id, email_alumno: email });
+        return !!intento;
+    } catch (error) {
+        throw new Error(`Error comprobando intento: ${error.message}`);
+    }
+};
+
+/**
+ * Eliminar una sesión de examen y todos sus resultados asociados
+ */
+exports.deleteSesionExamen = async (sesionId) => {
+    try {
+        // 1. Eliminar todos los intentos asociados a esta sesión
+        await IntentoModel.deleteMany({ sesion_id: sesionId });
+
+        // 2. Eliminar la sesión
+        return await SesionExamenModel.findByIdAndDelete(sesionId);
+    } catch (error) {
+        throw new Error(`Error eliminando sesión: ${error.message}`);
     }
 };

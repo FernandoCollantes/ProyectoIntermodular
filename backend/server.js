@@ -1,3 +1,4 @@
+require('dotenv').config({ path: './Mongo.env' });
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -17,10 +18,11 @@ app.use(express.static(path.join(__dirname, 'Pagina')));
 app.use(express.static(path.join(__dirname, '../'))); // Acceso a la raíz del proyecto (opcional, úsalo con cuidado)
 
 // --- RUTAS MODULARES ---
-app.use('/api/asignaturas', require('./routes/asignaturasRoutes')); 
+app.use('/api/asignaturas', require('./routes/asignaturasRoutes'));
 app.use('/api/preguntas', require('./routes/preguntasRoutes'));
 app.use('/api/examenes', require('./routes/examenesRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
 
 connect().then(() => {
     app.listen(3000, () => {

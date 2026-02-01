@@ -6,17 +6,20 @@ import { RouterModule } from '@angular/router';
 import { ExamenService } from '../../../examenes/services/examen.service';
 import { PreguntaService } from '../../../preguntas/services/pregunta.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { JerarquiaService } from '../../../../core/services/jerarquia.service';
 
 // Models
 import { Examen } from '../../../../core/models/examen.model';
 import { Pregunta } from '../../../../core/models/pregunta.model';
 
 interface ActividadReciente {
-  tipo: 'examen' | 'pregunta';
+  tipo: 'examen' | 'pregunta' | 'realizado';
   titulo: string;
   fecha: Date;
   id?: string;
-  esUltimo?: boolean; // Flag to highlight the most recent item
+  esUltimo?: boolean;
+  dificultad?: number;
+  modulo?: string;
 }
 
 @Component({
@@ -29,11 +32,15 @@ interface ActividadReciente {
 export class DashboardComponent implements OnInit {
   actividadReciente: ActividadReciente[] = [];
   cargando: boolean = true;
+  totalPreguntas: number = 0;
+  totalExamenes: number = 0;
+  totalAsignaturas: number = 0;
 
   constructor(
     private examenService: ExamenService,
     private preguntaService: PreguntaService,
-    private authService: AuthService
+    private authService: AuthService,
+    private jerarquiaService: JerarquiaService
   ) { }
 
   ngOnInit(): void {
@@ -49,59 +56,87 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    // Load both exams and questions in parallel
+    // Load exams, drafts, questions, and shared sessions (results) in parallel
     Promise.all([
       this.examenService.obtenerExamenes(currentUser.id).toPromise(),
       this.examenService.obtenerBorradores(currentUser.id).toPromise(),
-      this.preguntaService.buscarPreguntas({ creatorId: currentUser.id }).toPromise()
-    ]).then(([examenesPublicados, borradores, preguntas]) => {
+      this.preguntaService.buscarPreguntas({ creatorId: currentUser.id }).toPromise(),
+      this.examenService.obtenerSesionesConResultados(currentUser.id).toPromise(),
+      this.jerarquiaService.getJerarquia().toPromise()
+    ]).then(([examenesPublicados, borradores, preguntas, sesiones, modulos]) => {
+      this.totalPreguntas = preguntas?.length || 0;
+      this.totalExamenes = (examenesPublicados?.length || 0) + (borradores?.length || 0);
+      this.totalAsignaturas = modulos?.length || 0;
+
+
+
       const actividades: ActividadReciente[] = [];
 
-      // Combine published and draft exams
+      // 1. Process Created Exams (Published + Drafts)
       const todosExamenes = [...(examenesPublicados || []), ...(borradores || [])];
-
-      // Add exams to activity
       todosExamenes.forEach(examen => {
         actividades.push({
           tipo: 'examen',
           titulo: examen.titulo,
-          fecha: examen.createdAt || new Date(),
-          id: examen._id
+          fecha: examen.createdAt ? new Date(examen.createdAt) : new Date(),
+          id: examen._id,
+          modulo: examen.asignatura
         });
       });
 
-      // Add questions to activity
+      // 2. Process Created Questions
       (preguntas || []).forEach(pregunta => {
         actividades.push({
           tipo: 'pregunta',
           titulo: pregunta.enunciado,
-          fecha: (pregunta as any).createdAt || (pregunta as any).fecha_creacion || new Date(),
-          id: pregunta._id
+          fecha: (pregunta as any).createdAt ? new Date((pregunta as any).createdAt) :
+            ((pregunta as any).fecha_creacion ? new Date((pregunta as any).fecha_creacion) : new Date()),
+          id: pregunta._id,
+          dificultad: pregunta.dificultad
         });
       });
 
-      // Sort by date (most recent first)
-      actividades.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+      // 3. Process Completed Exams (Results from Shared Sessions)
+      const todosResultados: any[] = [];
+      (sesiones || []).forEach(sesion => {
+        (sesion.intentos || []).forEach((intento: any) => {
+          todosResultados.push({
+            ...intento,
+            tituloExamen: sesion.examen_id?.titulo || 'Examen sin título',
+            modulo: sesion.examen_id?.asignatura,
+            idExamen: sesion.examen_id?._id
+          });
+        });
+      });
 
-      // Get only the most recent exam and most recent question
+      todosResultados.forEach(resultado => {
+        actividades.push({
+          tipo: 'realizado',
+          titulo: resultado.tituloExamen,
+          fecha: resultado.fecha_intento ? new Date(resultado.fecha_intento) : new Date(),
+          id: resultado.idExamen,
+          modulo: resultado.modulo
+        });
+      });
+
+      // Sort all by date to find the absolute "most recent" of each category
+      actividades.sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
+
       const ultimoExamen = actividades.find(a => a.tipo === 'examen');
       const ultimaPregunta = actividades.find(a => a.tipo === 'pregunta');
+      const ultimoRealizado = actividades.find(a => a.tipo === 'realizado');
 
-      // Create array with only these two items
+      // Create array with the top 3 items
       const actividadesFinales: ActividadReciente[] = [];
+      if (ultimoExamen) actividadesFinales.push(ultimoExamen);
+      if (ultimaPregunta) actividadesFinales.push(ultimaPregunta);
+      if (ultimoRealizado) actividadesFinales.push(ultimoRealizado);
 
-      if (ultimoExamen) {
-        ultimoExamen.esUltimo = true;
-        actividadesFinales.push(ultimoExamen);
+      // Identify the absolute most recent among the three
+      if (actividadesFinales.length > 0) {
+        actividadesFinales.sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
+        actividadesFinales[0].esUltimo = true;
       }
-
-      if (ultimaPregunta) {
-        ultimaPregunta.esUltimo = true;
-        actividadesFinales.push(ultimaPregunta);
-      }
-
-      // Sort again to show most recent first
-      actividadesFinales.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
       this.actividadReciente = actividadesFinales;
       this.cargando = false;
@@ -127,7 +162,20 @@ export class DashboardComponent implements OnInit {
     return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
   }
 
-  getTipoTexto(tipo: 'examen' | 'pregunta'): string {
-    return tipo === 'examen' ? 'Examen' : 'Pregunta';
+  getTipoTexto(tipo: 'examen' | 'pregunta' | 'realizado'): string {
+    if (tipo === 'examen') return 'Examen Creado';
+    if (tipo === 'pregunta') return 'Pregunta Creada';
+    if (tipo === 'realizado') return 'Examen Realizado';
+    return '';
+  }
+
+  getDificultadTexto(nivel: number | undefined): string {
+    if (nivel === undefined) return 'N/A';
+    const niveles: Record<number, string> = {
+      0: 'Fácil',
+      1: 'Media',
+      2: 'Difícil'
+    };
+    return niveles[nivel] || 'N/A';
   }
 }

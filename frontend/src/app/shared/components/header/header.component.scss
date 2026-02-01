@@ -47,6 +47,49 @@
   }
 }
 
+.institutional-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(9, 51, 112, 0.08) 0%, rgba(0, 188, 212, 0.08) 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(9, 51, 112, 0.15);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-heading);
+  box-shadow: 0 2px 8px rgba(9, 51, 112, 0.08);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(9, 51, 112, 0.12);
+  }
+
+  .course-badge {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #0a3d70 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(9, 51, 112, 0.3);
+  }
+
+  .separator-dot {
+    color: var(--color-text-secondary);
+    font-weight: 700;
+    opacity: 0.5;
+  }
+
+  .campus-name {
+    color: var(--color-text-subtitle);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+}
+
 .acciones-header {
   display: flex;
   align-items: center;

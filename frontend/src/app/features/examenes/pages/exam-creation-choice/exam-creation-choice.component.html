@@ -1,0 +1,89 @@
+<div class="choice-container">
+    <div class="choice-header">
+        <h1 class="choice-title">¿Cómo deseas crear tu examen?</h1>
+        <p class="choice-subtitle">Elige el método que mejor se adapte a tus necesidades</p>
+    </div>
+
+    <div class="choice-cards">
+        <!-- Manual Creation Card -->
+        <div class="choice-card manual-card" (click)="navigateToManual()">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                </svg>
+            </div>
+            <h2 class="card-title">Creación Manual</h2>
+            <p class="card-description">
+                Crea tu examen paso a paso seleccionando preguntas existentes o creando nuevas con control total.
+            </p>
+            <div class="card-features">
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    <span>Control total</span>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    <span>Selección de preguntas</span>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    <span>Personalización completa</span>
+                </div>
+            </div>
+            <button class="card-button manual-button">
+                Crear Manualmente
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- AI Creation Card -->
+        <div class="choice-card ai-card" (click)="navigateToAI()">
+            <div class="card-icon ai-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
+                </svg>
+            </div>
+            <div class="ai-badge">IA</div>
+            <h2 class="card-title">Generación con IA</h2>
+            <p class="card-description">
+                Sube un PDF con el contenido y la IA generará automáticamente un examen completo de 10-15 preguntas.
+            </p>
+            <div class="card-features">
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    <span>Rápido y eficiente</span>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    <span>10-15 preguntas automáticas</span>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    <span>Powered by OpenAI</span>
+                </div>
+            </div>
+            <button class="card-button ai-button">
+                Generar con IA
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

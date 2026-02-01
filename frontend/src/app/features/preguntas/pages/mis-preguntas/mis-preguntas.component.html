@@ -19,6 +19,39 @@
     </div>
   </div>
 
+  <div class="contenedor-subfiltros" *ngIf="filtroModulo">
+    <div class="grupo-filtro">
+      <span class="subtitulo-filtro">Filtrar por RA:</span>
+      <div class="chips-subfiltro">
+        <div class="chip-sub" [class.activo]="filtroRA === ''" (click)="seleccionarRA('')">
+          Todos los RAs
+        </div>
+        <div class="chip-sub" *ngFor="let ra of rasDisponibles" [class.activo]="filtroRA === ra.codigo"
+          (click)="seleccionarRA(ra.codigo)" [title]="ra.texto">
+          {{ ra.codigo }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grupo-filtro">
+      <span class="subtitulo-filtro">Dificultad:</span>
+      <div class="chips-subfiltro">
+        <div class="chip-sub" [class.activo]="filtroDificultad === ''" (click)="seleccionarDificultad('')">
+          Todas
+        </div>
+        <div class="chip-sub d-facil" [class.activo]="filtroDificultad === '0'" (click)="seleccionarDificultad('0')">
+          Fácil
+        </div>
+        <div class="chip-sub d-media" [class.activo]="filtroDificultad === '1'" (click)="seleccionarDificultad('1')">
+          Media
+        </div>
+        <div class="chip-sub d-dificil" [class.activo]="filtroDificultad === '2'" (click)="seleccionarDificultad('2')">
+          Difícil
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="rejilla-pregunta" *ngIf="!cargando">
 
     <div class="tarjeta-pregunta" *ngFor="let p of preguntas">
@@ -26,7 +59,7 @@
         <div class="info-superior">
           <span class="etiqueta-asignatura">{{ p.asignatura }}</span>
           <span class="insignia-dificultad" [ngClass]="getClaseDificultad(p.dificultad)">
-            {{ p.dificultad === 1 ? 'Fácil' : p.dificultad === 2 ? 'Media' : 'Difícil' }}
+            {{ p.dificultad === 0 ? 'Fácil' : p.dificultad === 1 ? 'Media' : 'Difícil' }}
           </span>
         </div>
         <div class="pregunta-acciones">
@@ -47,8 +80,8 @@
       </div>
 
       <div class="pregunta-cuerpo">
-        <div class="info-tema" *ngIf="p.tema">
-          <strong>RAs:</strong> {{ p.tema }}
+        <div class="info-tema" *ngIf="p.tema && p.tema.length > 0">
+          <strong>RAs:</strong> {{ Array.isArray(p.tema) ? p.tema.join(', ') : p.tema }}
         </div>
 
         <p class="pregunta-enunciado">{{ p.enunciado }}</p>
@@ -90,23 +123,5 @@
   <div *ngIf="cargando" class="aviso-estado">
     <div class="spinner"></div>
     <p>Conectando con el servidor...</p>
-  </div>
-</div>
-
-<!-- MODAL DE CONFIRMACIÓN -->
-<div class="modal-overlay" *ngIf="modalEliminarVisible" (click)="cerrarModal()">
-  <div class="modal-contenido" (click)="$event.stopPropagation()">
-    <div class="icono-alerta">
-      <svg class="icon-warning" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Advertencia">
-        <title>Advertencia</title>
-        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-      </svg>
-    </div>
-    <h3>¿Eliminar pregunta?</h3>
-    <p>Esta acción no se puede deshacer. ¿Seguro que quieres borrarla para siempre?</p>
-    <div class="modal-acciones">
-      <button class="boton boton-secundario" (click)="cerrarModal()">Cancelar</button>
-      <button class="boton boton-peligro" (click)="confirmarEliminacion()">Sí, Eliminar</button>
-    </div>
   </div>
 </div>

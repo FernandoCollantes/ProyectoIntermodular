@@ -15,18 +15,22 @@ exports.getQuestionsByCriteria = async (filters) => {
         }
 
         if (tema) {
+            // MongoDB maneja automáticamente el regex en arrays:
+            // busca si ALGUNO de los elementos del array coincide con el regex.
             matchCriteria.tema = { $regex: new RegExp(tema, 'i') };
         }
 
         if (dificultad !== undefined && dificultad !== '') {
-            matchCriteria.dificultad = parseInt(difficulty, 10);
+            matchCriteria.dificultad = parseInt(dificultad, 10);
         }
 
         if (creador) {
             matchCriteria.creador = creador;
         }
 
-        const rawQuestions = await PreguntaModel.find(matchCriteria).lean();
+        const rawQuestions = await PreguntaModel.find(matchCriteria)
+            .sort({ createdAt: -1 })
+            .lean();
 
         // Adaptamos los resultados al formato que espera el Frontend
         return rawQuestions.map(q => {

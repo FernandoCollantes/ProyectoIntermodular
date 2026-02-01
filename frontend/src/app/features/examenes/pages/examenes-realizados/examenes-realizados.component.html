@@ -1,0 +1,58 @@
+<div class="page-container">
+    <div class="header">
+        <h1>Exámenes Realizados</h1>
+        <p>Historial de sesiones compartidas y resultados de alumnos.</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando resultados...</p>
+    </div>
+
+    <div *ngIf="!loading && sesiones.length === 0" class="empty-state">
+        <i class="fas fa-clipboard-check"></i>
+        <p>Aún no hay exámenes realizados.</p>
+        <span>Cuando los alumnos completen los exámenes compartidos, aparecerán aquí.</span>
+    </div>
+
+    <div class="sesiones-grid" *ngIf="!loading && sesiones.length > 0">
+        <div class="sesion-card" *ngFor="let sesion of sesiones">
+            <div class="sesion-header">
+                <div class="title-area">
+                    <h3>{{ sesion.examen_id?.nombre || 'Examen eliminado' }}</h3>
+                    <span class="fecha">{{ formatearFecha(sesion.createdAt) }}</span>
+                </div>
+                <div class="header-actions">
+                    <div class="stats">
+                        <span class="badge">{{ sesion.intentos.length }} Alumnos</span>
+                    </div>
+                    <button class="boton-accion-delete" (click)="eliminarSesion(sesion._id)" title="Eliminar Registro">
+                        <svg class="icon-delete" viewBox="0 0 24 24" fill="currentColor" role="img"
+                            aria-label="Eliminar Registro">
+                            <title>Eliminar Registro</title>
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="intentos-list">
+                <div class="intento-item header-row">
+                    <span>Alumno</span>
+                    <span>Email</span>
+                    <span class="text-right">Nota</span>
+                </div>
+                <div class="intento-item" *ngFor="let intento of sesion.intentos">
+                    <span class="name">{{ intento.nombre_alumno }}</span>
+                    <span class="email">{{ intento.email_alumno }}</span>
+                    <span class="score" [className]="'score ' + getNotaClass(intento.nota)">
+                        {{ intento.nota }}
+                    </span>
+                </div>
+                <div class="no-intentos" *ngIf="sesion.intentos.length === 0">
+                    Nadie ha realizado el examen todavía.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

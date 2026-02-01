@@ -22,17 +22,10 @@ export interface Examen {
     titulo: string;
     asignatura: string;
     ras: string[];
-    duracion: number;
-    intentos: number;
     preguntas: string[]; // Array of question IDs
-    opciones: {
-        aleatorio: boolean;
-        respuestas_inmediatas: boolean;
-        limite_tiempo: boolean;
-        navegacion_libre: boolean;
-    };
     estado: 'borrador' | 'publicado';
     creador: string;
+    duracion?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }

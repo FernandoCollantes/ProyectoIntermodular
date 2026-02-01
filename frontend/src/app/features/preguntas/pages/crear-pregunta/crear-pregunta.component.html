@@ -21,8 +21,9 @@
           disponibles.</p>
 
         <div *ngFor="let ra of rasDisponibles" class="item-ra-checkbox">
-          <label class="etiqueta-ra">
-            <input type="radio" name="ra_selection" [value]="ra.codigo" [(ngModel)]="nuevaPregunta.tema" required>
+          <label class="etiqueta-ra" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+            <input type="checkbox" [checked]="isRASelected(ra.codigo)" (change)="toggleRA(ra.codigo)"
+              style="margin-top: 4px;">
             <span class="ra-info">
               <strong>{{ ra.codigo }}:</strong> {{ ra.texto }}
             </span>
@@ -65,10 +66,10 @@
     </div>
 
     <div class="acciones-formulario">
-      <button type="button" (click)="router.navigate(['/preguntas/mis-preguntas'])" class="boton boton-secundario">
+      <button type="button" (click)="cancelar()" class="boton boton-secundario">
         Cancelar
       </button>
-      <button type="submit" class="boton boton-primario" [disabled]="!preguntaForm.valid">
+      <button type="submit" class="boton boton-primario">
         Guardar Pregunta
       </button>
     </div>

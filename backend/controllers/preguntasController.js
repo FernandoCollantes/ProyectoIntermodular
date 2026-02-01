@@ -75,7 +75,15 @@ exports.addQuestion = async (req, res) => {
             });
         }
 
-        // 2. Validación de consistencia de opciones
+        // 2. Validación de consistencia de RAs (tema debe ser array)
+        if (!Array.isArray(tema) || tema.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'La pregunta debe estar asociada a al menos un RA (tema).'
+            });
+        }
+
+        // 3. Validación de consistencia de opciones
         if (!Array.isArray(opciones) || opciones.length < 2) {
             return res.status(400).json({
                 success: false,

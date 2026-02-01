@@ -8,20 +8,11 @@
       </p>
     </div>
     <div class="header-right" style="display: flex; align-items: center; gap: 16px;">
-      <img src="assets/Logo2.png" alt="ExamGen" class="logo-examen">
-      <div class="temporizador-examen" [class.tiempo-critico]="tieneLimite && timeLeft < 300"
-        [class.sin-limite]="!tieneLimite">
-        <div class="icono-temporizador">
-          <!-- Icono Clock SVG inline para asegurar visibilidad -->
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-        </div>
-        <span *ngIf="tieneLimite">{{ formatearTiempo() }}</span>
-        <span *ngIf="!tieneLimite">Sin Límite</span>
+      <div *ngIf="tieneLimite" class="timer-display" [class.tiempo-critico]="timeLeft < 60"
+        style="font-family: monospace; font-size: 1.5rem; background: var(--gray-100); padding: 5px 15px; border-radius: 8px; border: 2px solid var(--border-color); color: var(--text-primary);">
+        {{ formatearTiempo() }}
       </div>
+      <img src="assets/Logo2.png" alt="ExamGen" class="logo-examen">
     </div>
   </div>
 
@@ -66,63 +57,64 @@
       Finalizar Examen
     </button>
   </div>
-</div>
 
-<!-- Modal de Confirmación Personalizado -->
-<div class="modal-overlay" *ngIf="mostrarModalConfirmacion">
-  <div class="modal-contenido">
-    <div class="modal-icono">
-      <svg viewBox="0 0 24 24" fill="none" class="icon-warning">
-        <path
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-    </div>
-    <h3 class="modal-titulo">¿Finalizar Examen?</h3>
-    <p class="modal-mensaje">
-      Estás a punto de enviar tus respuestas. Una vez finalizado, no podrás realizar cambios.
-      <br><br>
-      <strong>Preguntas respondidas:</strong> {{ preguntasRespondidas }} de {{ preguntas.length }}
-    </p>
-    <div class="modal-acciones">
-      <button class="boton boton-contorno" (click)="cancelarFinalizar()">Cancelar</button>
-      <button class="boton boton-exito" (click)="confirmarFinalizar()">Sí, Finalizar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de Resultados -->
-<div class="modal-overlay" *ngIf="mostrarModalResultados">
-  <div class="modal-contenido">
-    <div class="modal-icono exito">
-      <svg viewBox="0 0 24 24" fill="none" class="icon-success">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" />
-        <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" />
-      </svg>
-    </div>
-    <h3 class="modal-titulo">¡Examen Finalizado!</h3>
-
-    <div class="resultado-destacado" [class.suspenso]="resultadoExamen.nota < 5"
-      [class.aprobado]="resultadoExamen.nota >= 5">
-      <span class="etiqueta-nota">Tu Nota</span>
-      <span class="valor-nota">{{ resultadoExamen.nota | number:'1.2-2' }}</span>
-    </div>
-
-    <p class="modal-mensaje">
-      Has acertado <strong>{{ resultadoExamen.aciertos }}</strong> de <strong>{{ resultadoExamen.total }}</strong>
-      preguntas.
-      <br>
-      <span *ngIf="resultadoExamen.nota >= 5" style="color: var(--success); font-weight: 600;">¡Enhorabuena! Has
-        aprobado.</span>
-      <span *ngIf="resultadoExamen.nota < 5" style="color: var(--error); font-weight: 600;">Necesitas mejorar.</span>
-    </p>
-
-    <div class="modal-acciones">
-      <button class="boton boton-primario" (click)="cerrarModalResultados()">Volver al Inicio</button>
+  <!-- Modal de Confirmación Personalizado -->
+  <div class="modal-overlay" *ngIf="mostrarModalConfirmacion">
+    <div class="modal-contenido">
+      <div class="modal-icono">
+        <svg viewBox="0 0 24 24" fill="none" class="icon-warning">
+          <path
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h3 class="modal-titulo">¿Finalizar Examen?</h3>
+      <p class="modal-mensaje">
+        Estás a punto de enviar tus respuestas. Una vez finalizado, no podrás realizar cambios.
+        <br><br>
+        <strong>Preguntas respondidas:</strong> {{ preguntasRespondidas }} de {{ preguntas.length }}
+      </p>
+      <div class="modal-acciones">
+        <button class="boton boton-contorno" (click)="cancelarFinalizar()">Cancelar</button>
+        <button class="boton boton-exito" (click)="confirmarFinalizar()">Sí, Finalizar</button>
+      </div>
     </div>
   </div>
+
+  <!-- Modal de Resultados -->
+  <div class="modal-overlay" *ngIf="mostrarModalResultados">
+    <div class="modal-contenido">
+      <div class="modal-icono exito">
+        <svg viewBox="0 0 24 24" fill="none" class="icon-success">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </div>
+      <h3 class="modal-titulo">¡Examen Finalizado!</h3>
+
+      <div class="resultado-destacado" [class.suspenso]="resultadoExamen.nota < 5"
+        [class.aprobado]="resultadoExamen.nota >= 5">
+        <span class="etiqueta-nota">Tu Nota</span>
+        <span class="valor-nota">{{ resultadoExamen.nota | number:'1.2-2' }}</span>
+      </div>
+
+      <p class="modal-mensaje">
+        Has acertado <strong>{{ resultadoExamen.aciertos }}</strong> de <strong>{{ resultadoExamen.total }}</strong>
+        preguntas.
+        <br>
+        <span *ngIf="resultadoExamen.nota >= 5" style="color: var(--success); font-weight: 600;">¡Enhorabuena! Has
+          aprobado.</span>
+        <span *ngIf="resultadoExamen.nota < 5" style="color: var(--error); font-weight: 600;">Necesitas mejorar.</span>
+      </p>
+
+      <div class="modal-acciones">
+        <button class="boton boton-primario" (click)="cerrarModalResultados()">Volver al Inicio</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <ng-template #loadingTpl>

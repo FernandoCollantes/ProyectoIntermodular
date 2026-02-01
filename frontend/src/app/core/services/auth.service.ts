@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 
@@ -7,23 +9,7 @@ import { Router } from '@angular/router';
     providedIn: 'root'
 })
 export class AuthService {
-    // MOCKED USERS
-    private readonly MOCK_USERS = {
-        'profesor.dam@example.com': {
-            id: '1',
-            name: 'Profesor DAM',
-            email: 'profesor.dam@example.com',
-            role: 'professor' as const,
-            avatar: 'PD'
-        },
-        'profesor.daw@example.com': {
-            id: '2',
-            name: 'Profesor DAW',
-            email: 'profesor.daw@example.com',
-            role: 'professor' as const,
-            avatar: 'PW'
-        }
-    };
+    private apiUrl = 'http://localhost:3000/api/auth';
 
     private currentUserSubject = new BehaviorSubject<User | null>(null);
     public currentUser$ = this.currentUserSubject.asObservable();
@@ -34,7 +20,7 @@ export class AuthService {
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-    constructor(private router: Router) {
+    constructor(private router: Router, private http: HttpClient) {
         // Check local storage on init (mock persistence)
         const storedUser = localStorage.getItem('currentUser');
         const storedCycle = localStorage.getItem('currentCycle');
@@ -47,27 +33,29 @@ export class AuthService {
         }
     }
 
-    login(email: string, password: string): Observable<boolean> {
-        // Mock check
-        const user = this.MOCK_USERS[email as keyof typeof this.MOCK_USERS];
+    login(nombreCompleto: string, email: string, password: string): Observable<{ success: boolean; error?: string }> {
+        return this.http.post<User>(`${this.apiUrl}/login`, { nombreCompleto, email, password }).pipe(
+            map(user => {
+                if (user) {
+                    // Update state
+                    this.currentUserSubject.next(user);
+                    // Defaulting to DAM for internal compatibility
+                    this.currentCycleSubject.next('DAM');
+                    this.isAuthenticatedSubject.next(true);
 
-        // In a real app we would check password hash, etc.
-        if (user && password === 'pass123') { // Mock password for all
+                    // Persist session
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    localStorage.setItem('currentCycle', 'DAM');
 
-            // Update state
-            this.currentUserSubject.next(user);
-            // Defaulting to DAM for internal compatibility, but removing user choice
-            this.currentCycleSubject.next('DAM');
-            this.isAuthenticatedSubject.next(true);
-
-            // Persist mock session
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            localStorage.setItem('currentCycle', 'DAM');
-
-            return of(true);
-        }
-
-        return of(false);
+                    return { success: true };
+                }
+                return { success: false, error: 'Error desconocido' };
+            }),
+            catchError((error) => {
+                const errorMessage = error.error?.message || 'Ocurrió un error al intentar iniciar sesión.';
+                return of({ success: false, error: errorMessage });
+            })
+        );
     }
 
     logout() {

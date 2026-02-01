@@ -18,7 +18,7 @@ export class HeaderComponent {
   // switchCycle output removed
 
   get iniciales(): string {
-    if (!this.user?.name) return '??';
-    return this.user.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase();
+    if (!this.user?.nombre) return '??';
+    return this.user.nombre.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase();
   }
 }

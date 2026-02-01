@@ -105,4 +105,60 @@ export class ExamenService {
             map(response => response.exam)
         );
     }
+
+    // ============================================================================
+    // SHARED EXAM & RESULTS METHODS
+    // ============================================================================
+
+    /**
+     * Share exam via email
+     */
+    compartirExamen(id: string, emails: string[], userId: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/${id}/compartir`, { emails, userId });
+    }
+
+    /**
+     * Get session by token (for students)
+     */
+    obtenerSesionPorToken(token: string): Observable<any> {
+        return this.http.get<{ success: boolean; data: any }>(`${this.apiUrl}/sesion/${token}`).pipe(
+            map(response => response.data)
+        );
+    }
+
+    /**
+     * Submit exam results from a shared session
+     */
+    enviarResultadosSesion(sesionId: string, studentData: any, answers: any[]): Observable<any> {
+        return this.http.post(`${this.apiUrl}/sesion/${sesionId}/submit`, { studentData, answers });
+    }
+
+    /**
+     * Get all shared sessions and results for a teacher
+     */
+    obtenerSesionesConResultados(userId: string): Observable<any[]> {
+        return this.http.get<{ success: boolean; sesiones: any[] }>(`${this.apiUrl}/sesiones/resultados?userId=${userId}`).pipe(
+            map(response => response.sesiones)
+        );
+    }
+
+    /**
+     * Verificar si un alumno ya ha realizado un examen en una sesión específica (por token)
+     */
+    verificarIntentoExistente(token: string, email: string): Observable<boolean> {
+        return this.http.get<{ success: boolean; exists: boolean }>(
+            `${this.apiUrl}/sesion/check/${token}?email=${email}`
+        ).pipe(
+            map(response => response.exists)
+        );
+    }
+
+    /**
+     * Eliminar una sesión de examen y sus resultados
+     */
+    eliminarSesion(id: string): Observable<void> {
+        return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/sesion/${id}`).pipe(
+            map(() => void 0)
+        );
+    }
 }

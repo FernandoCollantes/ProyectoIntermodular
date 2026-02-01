@@ -44,7 +44,7 @@ export class MainLayoutComponent {
 
     getPageTitle(): string {
         const path = window.location.pathname;
-        if (path.includes('dashboard')) return 'Dashboard';
+        if (path.includes('dashboard')) return 'INICIO';
         if (path.includes('crear-pregunta') || path.includes('preguntas/crear')) return 'Crear Nueva Pregunta';
         if (path.includes('preguntas')) return 'Banco de Preguntas';
         if (path.includes('crear-examen') || path.includes('examenes/crear')) return 'Crear Nuevo Examen';
