@@ -16,7 +16,7 @@ export interface HasPendingChanges {
 export const pendingChangesGuard: CanDeactivateFn<HasPendingChanges> = (component) => {
     const confirmationService = inject(ConfirmationService);
 
-    if (component.hasPendingChanges()) {
+    if (component.hasPendingChanges && component.hasPendingChanges()) {
         return from(confirmationService.confirm({
             title: '¿Deseas salir?',
             message: 'Tienes cambios sin guardar. Si sales ahora, perderás todo el proceso.',

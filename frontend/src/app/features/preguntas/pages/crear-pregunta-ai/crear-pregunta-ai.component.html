@@ -16,15 +16,23 @@
             </div>
 
             <!-- Selección de RA -->
-            <div class="grupo-formulario">
-                <label for="ra" class="etiqueta-formulario requerido">Resultado de Aprendizaje (RA)</label>
-                <select id="ra" class="entrada-formulario" [(ngModel)]="formData.tema"
-                    [disabled]="!formData.asignatura">
-                    <option value="" disabled selected>Selecciona un RA</option>
-                    <option *ngFor="let ra of rasDisponibles" [value]="ra.codigo">
-                        {{ ra.codigo }}: {{ ra.descripcion }}
-                    </option>
-                </select>
+            <div class="grupo-formulario col-completa">
+                <label class="etiqueta-formulario requerido">Resultado de Aprendizaje (RA)</label>
+                <div class="contenedor-ras-scroll" [class.deshabilitado]="!formData.asignatura">
+                    <p *ngIf="!formData.asignatura" class="aviso-vacio">Selecciona un módulo para ver los RAs
+                        disponibles.</p>
+                    <p *ngIf="formData.asignatura && rasDisponibles.length === 0" class="aviso-vacio">No hay RAs
+                        disponibles para este módulo.</p>
+
+                    <div *ngFor="let ra of rasDisponibles" class="item-ra"
+                        [class.seleccionado]="formData.tema === ra.codigo" (click)="formData.tema = ra.codigo">
+                        <input type="radio" name="ra-select" [value]="ra.codigo" [(ngModel)]="formData.tema"
+                            (click)="$event.stopPropagation()">
+                        <div class="ra-texto">
+                            <strong>{{ ra.codigo }}:</strong> {{ ra.texto }}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Número de Preguntas -->
@@ -74,7 +82,8 @@
 
         <div class="acciones-generar">
             <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
-            <button class="btn-primario" (click)="generateQuestions()" [disabled]="isGenerating || !selectedFile">
+            <button class="btn-primario" (click)="generateQuestions()"
+                [disabled]="isGenerating || !selectedFile || !formData.asignatura || !formData.tema || !formData.numPreguntas">
                 <span *ngIf="!isGenerating">Generar con IA</span>
                 <span *ngIf="isGenerating" class="cargando">Generando preguntas...</span>
             </button>

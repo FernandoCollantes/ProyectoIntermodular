@@ -13,6 +13,7 @@ import { ConfirmationService } from '../../../../core/services/confirmation.serv
 
 // Models
 import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
+import { HasPendingChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
     selector: 'app-crear-pregunta-ai',
@@ -21,7 +22,7 @@ import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/j
     templateUrl: './crear-pregunta-ai.component.html',
     styleUrls: ['./crear-pregunta-ai.component.scss']
 })
-export class CrearPreguntaAiComponent implements OnInit {
+export class CrearPreguntaAiComponent implements OnInit, HasPendingChanges {
     public moduloHierarchy: ModuloJerarquia[] = [];
     public rasDisponibles: ResultadoAprendizaje[] = [];
     protected readonly String = String;
@@ -111,8 +112,15 @@ export class CrearPreguntaAiComponent implements OnInit {
     }
 
     generateQuestions(): void {
-        if (!this.formData.asignatura || !this.formData.tema) {
-            this.notiService.mostrar('Por favor, selecciona módulo y RA', 'error');
+        const { asignatura, tema, numPreguntas, dificultad } = this.formData;
+
+        if (!asignatura || !tema || !numPreguntas || dificultad === undefined || dificultad === null) {
+            this.notiService.mostrar('Por favor, completa todos los campos del formulario', 'error');
+            return;
+        }
+
+        if (numPreguntas < 1 || numPreguntas > 20) {
+            this.notiService.mostrar('El número de preguntas debe estar entre 1 y 20', 'error');
             return;
         }
 
@@ -211,5 +219,10 @@ export class CrearPreguntaAiComponent implements OnInit {
             2: 'Difícil'
         };
         return niveles[nivel] || 'Media';
+    }
+
+    hasPendingChanges(): boolean {
+        // Retornamos true si hay datos en el formulario o preguntas generadas no guardadas
+        return !!(this.formData.asignatura || this.selectedFile || this.generatedQuestions.length > 0);
     }
 }
