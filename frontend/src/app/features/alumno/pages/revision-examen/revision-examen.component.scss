@@ -1,0 +1,274 @@
+.revision-container {
+    min-height: 100vh;
+    background-color: #f7fafc;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.revision-content {
+    width: 100%;
+    max-width: 800px;
+}
+
+.revision-header {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+
+    .info-principal {
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1a202c;
+        }
+
+        .asignatura {
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+    }
+
+    .nota-box {
+        text-align: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+
+        .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .valor {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        &.aprobado {
+            background: #f0fff4;
+            color: #2f855a;
+            border: 1px solid #c6f6d5;
+        }
+
+        &.suspenso {
+            background: #fff5f5;
+            color: #c53030;
+            border: 1px solid #fed7d7;
+        }
+    }
+}
+
+.lista-preguntas-revision {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tarjeta-pregunta-revision {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+
+    .cabecera-pregunta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        .numero {
+            font-weight: 700;
+            color: #4a5568;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .estado-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+
+            &.acierto {
+                background: #c6f6d5;
+                color: #22543d;
+            }
+
+            &.fallo {
+                background: #fed7d7;
+                color: #822727;
+            }
+        }
+    }
+
+    .enunciado {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+    }
+
+    .opciones-revision {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .opcion-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #4a5568;
+        position: relative;
+
+        .letra {
+            font-weight: 800;
+            margin-right: 1rem;
+            color: #a0aec0;
+            width: 20px;
+        }
+
+        .texto {
+            flex: 1;
+        }
+
+        .indicador-opcion {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .badge-revision {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            &.correct {
+                background: #48bb78;
+                color: white;
+            }
+
+            &.chosen {
+                background: #f56565;
+                color: white;
+            }
+
+            .icono {
+                font-size: 0.8rem;
+            }
+        }
+
+        &.correcta {
+            background: #f0fff4;
+            border-color: #48bb78;
+            color: #2f855a;
+
+            .letra {
+                color: #48bb78;
+            }
+        }
+
+        &.incorrecta {
+            background: #fff5f5;
+            border-color: #f56565;
+            color: #c53030;
+
+            .letra {
+                color: #f56565;
+            }
+        }
+    }
+
+    .explicacion-box {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #ebf8ff;
+        border-radius: 10px;
+        border-left: 4px solid #3182ce;
+
+        strong {
+            display: block;
+            font-size: 0.875rem;
+            color: #2b6cb0;
+            margin-bottom: 0.25rem;
+        }
+
+        p {
+            margin: 0;
+            color: #2c5282;
+            font-size: 0.95rem;
+        }
+    }
+}
+
+.revision-footer {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 3rem;
+
+    .boton-volver {
+        background: #2d3748;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            background: #1a202c;
+            transform: translateY(-2px);
+        }
+    }
+}
+
+.loading-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem;
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #edf2f7;
+        border-top: 5px solid #3182ce;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -38,7 +38,17 @@ export class CrearExamenComponent implements OnInit, HasPendingChanges {
   filtroTexto: string = '';
   filtroModulo: string = '';
   filtrosRA: string[] = [];
+  filtroRATexto: string = ''; // Nuevo: para filtrar los chips de RA
   rasDisponibles: ResultadoAprendizaje[] = [];
+
+  get rasFiltrados(): ResultadoAprendizaje[] {
+    if (!this.filtroRATexto.trim()) return this.rasDisponibles;
+    const term = this.filtroRATexto.toLowerCase();
+    return this.rasDisponibles.filter(ra =>
+      ra.codigo.toLowerCase().includes(term) ||
+      ra.texto.toLowerCase().includes(term)
+    );
+  }
 
   // Loading state
   cargando: boolean = true;

@@ -160,4 +160,13 @@ export class ExamenService {
             map(() => void 0)
         );
     }
+
+    /**
+     * Obtener detalles de un intento para revisión del alumno
+     */
+    obtenerDetallesIntento(intentoId: string): Observable<any> {
+        return this.http.get<{ success: boolean; result: any }>(`${this.apiUrl}/intento/${intentoId}`).pipe(
+            map(response => response.result)
+        );
+    }
 }

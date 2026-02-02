@@ -27,10 +27,20 @@
 
       <div class="grupo-formulario" *ngIf="rasDisponibles.length > 0">
         <label class="etiqueta-formulario">Resultado de Aprendizaje (RA)</label>
+
+        <!-- Buscador de RA -->
+        <div class="buscador-ra">
+          <input type="text" [(ngModel)]="filtroRATexto" [ngModelOptions]="{standalone: true}"
+            placeholder="Buscar RA por código o descripción..." class="entrada-formulario mini" />
+        </div>
+
         <div class="contenedor-chips">
-          <div class="chip" *ngFor="let ra of rasDisponibles" [class.activo]="filtrosRA.includes(ra.codigo)"
-            (click)="toggleRA(ra.codigo)">
+          <div class="chip" *ngFor="let ra of rasFiltrados" [class.activo]="filtrosRA.includes(ra.codigo)"
+            (click)="toggleRA(ra.codigo)" [title]="ra.texto">
             {{ ra.codigo }}
+          </div>
+          <div *ngIf="rasFiltrados.length === 0" class="no-ras">
+            No se encontraron RAs con ese criterio.
           </div>
         </div>
       </div>
@@ -52,6 +62,10 @@
     <div class="seleccion-preguntas" *ngIf="formularioInicialCompleto()">
       <div class="cabecera-seleccion">
         <h2>Seleccionar Preguntas</h2>
+        <div class="busqueda-preguntas">
+          <input type="text" [(ngModel)]="filtroTexto" [ngModelOptions]="{standalone: true}" (input)="aplicarFiltros()"
+            placeholder="Buscar en el enunciado..." class="entrada-formulario mini" />
+        </div>
         <span class="contador-seleccionado">
           <div class="indicador-estado"></div>
           {{ preguntasSeleccionadas.size }} preguntas seleccionadas

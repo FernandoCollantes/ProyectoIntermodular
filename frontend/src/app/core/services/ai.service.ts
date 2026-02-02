@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
     providedIn: 'root'
 })
 export class AiService {
-    private apiUrl = environment.apiUrl || 'http://localhost:3000/api';
+    private apiUrl = environment.apiUrl;
 
     constructor(private http: HttpClient) { }
 

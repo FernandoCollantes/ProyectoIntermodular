@@ -284,6 +284,19 @@ exports.submitSessionExam = async (req, res) => {
 };
 
 /**
+ * GET /api/examenes/intento/:id - Get attempt details for review
+ */
+exports.getAttemptDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await examenesService.getAttemptDetails(id);
+        res.json({ success: true, result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
  * GET /api/examenes/sesiones/resultados - Get all shared sessions and results for a teacher
  */
 exports.getSessionsResults = async (req, res) => {

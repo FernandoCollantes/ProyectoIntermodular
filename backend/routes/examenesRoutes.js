@@ -33,6 +33,7 @@ router.get('/sesion/:token', controller.getSessionByToken);  // Get session (stu
 router.post('/sesion/:id/submit', controller.submitSessionExam); // Submit results
 router.get('/sesion/check/:token', controller.checkStudentStatusByToken);   // Check if already taken by token
 router.get('/sesiones/resultados', controller.getSessionsResults); // Results dashboard
+router.get('/intento/:id', controller.getAttemptDetails);    // Attempt details for student review
 router.delete('/sesion/:id', controller.deleteSession);      // Delete session and results
 
 module.exports = router;

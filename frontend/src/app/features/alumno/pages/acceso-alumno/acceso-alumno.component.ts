@@ -56,7 +56,7 @@ export class AccesoAlumnoComponent implements OnInit {
         next: (existe) => {
           this.cargando = false;
           if (existe) {
-            this.generalError = 'El examen ya ha sido realizado.';
+            this.generalError = 'El examen ya fue registrado por esa cuenta de correo.';
           } else {
             // Navegamos a la ruta de realizar examen pasando la identificación
             this.router.navigate(['/alumno/realizar', this.token], {

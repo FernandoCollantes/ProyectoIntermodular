@@ -66,6 +66,13 @@ export const routes: Routes = [
             (m) => m.RealizarExamenComponent,
           ),
       },
+      {
+        path: 'revision/:id',
+        loadComponent: () =>
+          import('./features/alumno/pages/revision-examen/revision-examen.component').then(
+            (m) => m.RevisionExamenComponent,
+          ),
+      },
     ],
   },
 

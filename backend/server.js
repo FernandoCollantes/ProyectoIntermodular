@@ -24,8 +24,25 @@ app.use('/api/examenes', require('./routes/examenesRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 
+const os = require('os');
+
 connect().then(() => {
     app.listen(3000, () => {
-        console.log('Servidor escuchando en el puerto 3000');
+        const networkInterfaces = os.networkInterfaces();
+        let localIp = 'localhost';
+
+        for (const interfaceName in networkInterfaces) {
+            for (const iface of networkInterfaces[interfaceName]) {
+                if (iface.family === 'IPv4' && !iface.internal) {
+                    localIp = iface.address;
+                }
+            }
+        }
+
+        console.log('--------------------------------------------------');
+        console.log(`Servidor Backend corriendo en:`);
+        console.log(`- Local:   http://localhost:3000`);
+        console.log(`- Red:     http://${localIp}:3000`);
+        console.log('--------------------------------------------------');
     });
 });

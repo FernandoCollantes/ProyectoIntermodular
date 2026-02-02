@@ -4,23 +4,69 @@
         <p>Historial de sesiones compartidas y resultados de alumnos.</p>
     </div>
 
+    <!-- Filtros de Módulo (Chips) -->
+    <div class="contenedor-chips">
+        <div class="chip" [class.activo]="filtros.modulo === ''" (click)="seleccionarModulo('')">
+            TODOS
+        </div>
+        <div class="chip" *ngFor="let m of modulos" [class.activo]="filtros.modulo === m.nombre"
+            (click)="seleccionarModulo(m.nombre)">
+            {{ m.nombre | uppercase }}
+        </div>
+    </div>
+
+    <!-- Subfiltros (RA, Fecha, Orden) -->
+    <div class="contenedor-subfiltros">
+        <div class="grupo-filtro" *ngIf="filtros.modulo">
+            <span class="subtitulo-filtro">Filtrar por RA:</span>
+            <div class="chips-subfiltro">
+                <div class="chip-sub" [class.activo]="filtros.ras.length === 0" (click)="seleccionarRA('')">
+                    Todos los RAs
+                </div>
+                <div class="chip-sub" *ngFor="let ra of rasDisponibles" [class.activo]="filtros.ras.includes(ra.codigo)"
+                    (click)="seleccionarRA(ra.codigo)" [title]="ra.texto">
+                    {{ ra.codigo }}
+                </div>
+            </div>
+        </div>
+
+        <div class="filtros-adicionales">
+            <div class="control-filtro">
+                <label>Fecha Realización</label>
+                <input type="date" [(ngModel)]="filtros.fecha" (change)="aplicarFiltros()">
+            </div>
+
+            <div class="control-filtro">
+                <label>Ordenar Por</label>
+                <select [(ngModel)]="filtros.orden" (change)="aplicarFiltros()">
+                    <option value="desc">Más recientes primero</option>
+                    <option value="asc">Más antiguos primero</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
     <div *ngIf="loading" class="loading-state">
         <div class="spinner"></div>
         <p>Cargando resultados...</p>
     </div>
 
-    <div *ngIf="!loading && sesiones.length === 0" class="empty-state">
+    <div *ngIf="!loading && sesionesFiltradas.length === 0" class="empty-state">
         <i class="fas fa-clipboard-check"></i>
-        <p>Aún no hay exámenes realizados.</p>
-        <span>Cuando los alumnos completen los exámenes compartidos, aparecerán aquí.</span>
+        <p>No se encontraron resultados para los filtros seleccionados.</p>
+        <span *ngIf="sesiones.length === 0">Cuando los alumnos completen los exámenes compartidos, aparecerán
+            aquí.</span>
     </div>
 
-    <div class="sesiones-grid" *ngIf="!loading && sesiones.length > 0">
-        <div class="sesion-card" *ngFor="let sesion of sesiones">
+    <div class="sesiones-grid" *ngIf="!loading && sesionesFiltradas.length > 0">
+        <div class="sesion-card" *ngFor="let sesion of sesionesFiltradas">
             <div class="sesion-header">
                 <div class="title-area">
-                    <h3>{{ sesion.examen_id?.nombre || 'Examen eliminado' }}</h3>
-                    <span class="fecha">{{ formatearFecha(sesion.createdAt) }}</span>
+                    <h3>{{ sesion.examen_id?.titulo || 'Examen eliminado' }}</h3>
+                    <div class="info-examen">
+                        <span class="modulo-tag">{{ sesion.examen_id?.asignatura }}</span>
+                        <span class="fecha">{{ formatearFecha(sesion.createdAt) }}</span>
+                    </div>
                 </div>
                 <div class="header-actions">
                     <div class="stats">
@@ -34,6 +80,13 @@
                         </svg>
                     </button>
                 </div>
+            </div>
+
+            <!-- Mostrar los RAs del examen -->
+            <div class="ras-container" *ngIf="sesion.examen_id?.ras?.length > 0">
+                <span class="insignia" *ngFor="let ra of sesion.examen_id.ras" title="Resultado de Aprendizaje">
+                    {{ ra }}
+                </span>
             </div>
 
             <div class="intentos-list">

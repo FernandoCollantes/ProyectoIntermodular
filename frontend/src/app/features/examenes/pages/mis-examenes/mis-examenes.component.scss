@@ -201,4 +201,21 @@
     .pregunta-contenido {
         margin-top: 1rem;
     }
+
+    .ras-container {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+
+        .insignia {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+    }
 }

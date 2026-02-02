@@ -461,9 +461,55 @@ exports.submitExamFromSesion = async (sesionId, studentData, userAnswers) => {
         });
 
         await nuevoIntento.save();
-        return { nota: notaFinal.toFixed(2), aciertos, total: examen.preguntas.length };
+        return {
+            intentoId: nuevoIntento._id,
+            nota: notaFinal.toFixed(2),
+            aciertos,
+            total: examen.preguntas.length
+        };
     } catch (error) {
         throw new Error(`Error guardando resultado: ${error.message}`);
+    }
+};
+
+/**
+ * Obtener detalles de un intento para revisión
+ */
+exports.getAttemptDetails = async (intentoId) => {
+    try {
+        const intento = await IntentoModel.findById(intentoId)
+            .populate({
+                path: 'examen_id',
+                populate: { path: 'preguntas' }
+            })
+            .lean();
+
+        if (!intento) throw new Error("Intento no encontrado");
+
+        // Reconstruimos el objeto para la revisión asegurando el orden de las preguntas
+        const reviewData = {
+            examen: {
+                titulo: intento.examen_id.titulo,
+                asignatura: intento.examen_id.asignatura
+            },
+            nota: intento.nota,
+            preguntas: intento.examen_id.preguntas.map(preg => {
+                const respuestaGuardada = intento.respuestas.find(r => r.pregunta_id.toString() === preg._id.toString());
+                return {
+                    enunciado: preg.enunciado,
+                    opciones: preg.opciones,
+                    respuesta_correcta: preg.respuesta_correcta,
+                    respuesta_marcada: respuestaGuardada ? parseInt(respuestaGuardada.respuesta_marcada) : null,
+                    es_correcta: respuestaGuardada ? respuestaGuardada.es_correcta : false,
+                    explicacion: preg.explicacion || ''
+                };
+            }),
+            fecha: intento.fecha_intento
+        };
+
+        return reviewData;
+    } catch (error) {
+        throw new Error(`Error recuperando detalles del intento: ${error.message}`);
     }
 };
 
@@ -473,7 +519,7 @@ exports.submitExamFromSesion = async (sesionId, studentData, userAnswers) => {
 exports.getSesionesConResultados = async (userId) => {
     try {
         const sesiones = await SesionExamenModel.find({})
-            .populate('examen_id', 'titulo asignatura')
+            .populate('examen_id', 'titulo asignatura ras')
             .sort({ createdAt: -1 })
             .lean();
 
@@ -482,11 +528,16 @@ exports.getSesionesConResultados = async (userId) => {
             .select('sesion_id nombre_alumno email_alumno nota fecha_intento')
             .lean();
 
+        const sesionesConResultados = [];
         for (const sesion of sesiones) {
-            sesion.intentos = todosLosIntentos.filter(i => i.sesion_id.toString() === sesion._id.toString());
+            const intentos = todosLosIntentos.filter(i => i.sesion_id.toString() === sesion._id.toString());
+            if (intentos.length > 0) {
+                sesion.intentos = intentos;
+                sesionesConResultados.push(sesion);
+            }
         }
 
-        return sesiones;
+        return sesionesConResultados;
     } catch (error) {
         throw new Error(`Error recuperando sesiones: ${error.message}`);
     }

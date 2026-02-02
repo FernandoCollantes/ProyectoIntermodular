@@ -1,0 +1,61 @@
+<div class="revision-container">
+    <div class="loading-overlay" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Cargando revisión...</p>
+    </div>
+
+    <div class="revision-content" *ngIf="!loading && intento">
+        <header class="revision-header">
+            <div class="info-principal">
+                <h1>Revisión: {{ intento.examen.titulo }}</h1>
+                <span class="asignatura">{{ intento.examen.asignatura }}</span>
+            </div>
+            <div class="nota-box" [ngClass]="intento.nota >= 5 ? 'aprobado' : 'suspenso'">
+                <span class="label">Nota Final</span>
+                <span class="valor">{{ intento.nota }}</span>
+            </div>
+        </header>
+
+        <div class="lista-preguntas-revision">
+            <div class="tarjeta-pregunta-revision" *ngFor="let preg of intento.preguntas; let i = index">
+                <div class="cabecera-pregunta">
+                    <span class="numero">Pregunta {{ i + 1 }}</span>
+                    <span class="estado-badge" [ngClass]="preg.es_correcta ? 'acierto' : 'fallo'">
+                        {{ preg.es_correcta ? 'ACERTADA' : 'FALLADA' }}
+                    </span>
+                </div>
+
+                <p class="enunciado">{{ preg.enunciado }}</p>
+
+                <div class="opciones-revision">
+                    <div class="opcion-item" *ngFor="let op of preg.opciones; let idx = index"
+                        [ngClass]="getClaseOpcion(preg, idx)">
+                        <span class="letra">{{ letters[idx] }}</span>
+                        <span class="texto">{{ op }}</span>
+
+                        <div class="indicador-opcion">
+                            <span class="badge-revision correct" *ngIf="idx === preg.respuesta_correcta">
+                                Correcta <span class="icono">✓</span>
+                            </span>
+                            <span class="badge-revision chosen"
+                                *ngIf="idx === preg.respuesta_marcada && !preg.es_correcta">
+                                Tu elección <span class="icono">✗</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="explicacion-box" *ngIf="preg.explicacion">
+                    <strong>Explicación:</strong>
+                    <p>{{ preg.explicacion }}</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="revision-footer">
+            <button class="boton-volver" [routerLink]="['/alumno/acceso']">
+                Volver al Inicio
+            </button>
+        </footer>
+    </div>
+</div>

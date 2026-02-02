@@ -88,8 +88,8 @@
         <p class="pregunta-texto" style="color: var(--gray-600);">
           Duración: {{ examen.duracion }} min
         </p>
-        <div *ngIf="examen.ras && examen.ras.length > 0" style="margin-top: 8px;">
-          <span class="insignia" *ngFor="let ra of examen.ras" style="margin-right: 4px;">{{ ra }}</span>
+        <div class="ras-container" *ngIf="examen.ras && examen.ras.length > 0">
+          <span class="insignia" *ngFor="let ra of examen.ras">{{ ra }}</span>
         </div>
       </div>
 

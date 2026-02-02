@@ -111,6 +111,10 @@
 
       <div class="modal-acciones">
         <button class="boton boton-primario" (click)="cerrarModalResultados()">Volver al Inicio</button>
+        <button *ngIf="ultimoIntentoId" class="boton boton-contorno"
+          [routerLink]="['/alumno/revision', ultimoIntentoId]">
+          Ver Revisión
+        </button>
       </div>
     </div>
   </div>

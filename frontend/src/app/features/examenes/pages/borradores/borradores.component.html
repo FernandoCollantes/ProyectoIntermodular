@@ -50,8 +50,8 @@
                 <p class="pregunta-texto" style="color: var(--gray-600);">
                     Duración: {{ borrador.duracion }} min
                 </p>
-                <div *ngIf="borrador.ras && borrador.ras.length > 0" style="margin-top: 8px;">
-                    <span class="insignia" *ngFor="let ra of borrador.ras" style="margin-right: 4px;">{{ ra }}</span>
+                <div class="ras-container" *ngIf="borrador.ras && borrador.ras.length > 0">
+                    <span class="insignia" *ngFor="let ra of borrador.ras">{{ ra }}</span>
                 </div>
             </div>
 

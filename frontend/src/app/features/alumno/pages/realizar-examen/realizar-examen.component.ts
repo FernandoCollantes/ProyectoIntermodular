@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule as NgCommonModule } from '@angular/common';
 
 // Services
@@ -10,7 +10,7 @@ import { NotificacionService } from '../../../../core/services/notificacion.serv
 @Component({
   selector: 'app-realizar-examen',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './realizar-examen.component.html',
   styleUrls: ['./realizar-examen.component.scss']
 })
@@ -32,6 +32,7 @@ export class RealizarExamenComponent implements OnInit, OnDestroy {
   tieneLimite: boolean = false;
   timeLeft: number = 0; // en segundos
   timerInterval: any;
+  ultimoIntentoId: string | null = null;
 
   // Para mostrar letras en lugar de índices (A, B, C, D)
   letters: string[] = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -154,6 +155,7 @@ export class RealizarExamenComponent implements OnInit, OnDestroy {
           total: res.result.total,
           nota: parseFloat(res.result.nota)
         };
+        this.ultimoIntentoId = res.result.intentoId;
         this.mostrarModalResultados = true;
       },
       error: (err: any) => {
