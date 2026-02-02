@@ -66,7 +66,8 @@ export class AccesoAlumnoComponent implements OnInit {
         },
         error: (err) => {
           this.cargando = false;
-          this.generalError = 'Error al verificar el acceso: ' + err.message;
+          // Mostramos el mensaje exacto que viene del backend (Error normalizado o 403)
+          this.generalError = err.error?.message || err.message || 'Error al verificar el acceso';
         }
       });
     } else if (!this.token) {

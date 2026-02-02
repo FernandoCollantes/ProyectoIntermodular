@@ -51,10 +51,9 @@ export class ExamenService {
     /**
      * Get published exams for a user
      */
-    obtenerExamenes(userId: string): Observable<Examen[]> {
-        return this.http.get<{ success: boolean; examenes: Examen[] }>(
-            `${this.apiUrl}/mis-examenes?userId=${userId}`
-        ).pipe(
+    obtenerExamenes(userId?: string): Observable<Examen[]> {
+        const url = userId ? `${this.apiUrl}/mis-examenes?userId=${userId}` : `${this.apiUrl}/mis-examenes`;
+        return this.http.get<{ success: boolean; examenes: Examen[] }>(url).pipe(
             map(response => response.examenes)
         );
     }
@@ -62,10 +61,9 @@ export class ExamenService {
     /**
      * Get draft exams for a user
      */
-    obtenerBorradores(userId: string): Observable<Examen[]> {
-        return this.http.get<{ success: boolean; borradores: Examen[] }>(
-            `${this.apiUrl}/borradores?userId=${userId}`
-        ).pipe(
+    obtenerBorradores(userId?: string): Observable<Examen[]> {
+        const url = userId ? `${this.apiUrl}/borradores?userId=${userId}` : `${this.apiUrl}/borradores`;
+        return this.http.get<{ success: boolean; borradores: Examen[] }>(url).pipe(
             map(response => response.borradores)
         );
     }
@@ -136,8 +134,9 @@ export class ExamenService {
     /**
      * Get all shared sessions and results for a teacher
      */
-    obtenerSesionesConResultados(userId: string): Observable<any[]> {
-        return this.http.get<{ success: boolean; sesiones: any[] }>(`${this.apiUrl}/sesiones/resultados?userId=${userId}`).pipe(
+    obtenerSesionesConResultados(userId?: string): Observable<any[]> {
+        const url = userId ? `${this.apiUrl}/sesiones/resultados?userId=${userId}` : `${this.apiUrl}/sesiones/resultados`;
+        return this.http.get<{ success: boolean; sesiones: any[] }>(url).pipe(
             map(response => response.sesiones)
         );
     }

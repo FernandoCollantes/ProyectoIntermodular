@@ -139,6 +139,35 @@ small,
       /* Slightly lighter */
     }
   }
+
+  &.boton-exito {
+    background-color: var(--color-alerta-exito);
+    color: #ffffff;
+
+    &:hover {
+      filter: brightness(1.1);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.boton-error,
+  &.boton-peligro {
+    background-color: var(--color-alerta-error);
+    color: #ffffff;
+
+    &:hover {
+      filter: brightness(1.1);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-1px);
+    }
+  }
+
+  &.boton-grande {
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+  }
 }
 
 /* 6. FORMULARIOS */

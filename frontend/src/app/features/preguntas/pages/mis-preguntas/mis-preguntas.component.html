@@ -23,10 +23,10 @@
     <div class="grupo-filtro">
       <span class="subtitulo-filtro">Filtrar por RA:</span>
       <div class="chips-subfiltro">
-        <div class="chip-sub" [class.activo]="filtroRA === ''" (click)="seleccionarRA('')">
+        <div class="chip-sub" [class.activo]="filtrosRA.length === 0" (click)="seleccionarRA('')">
           Todos los RAs
         </div>
-        <div class="chip-sub" *ngFor="let ra of rasDisponibles" [class.activo]="filtroRA === ra.codigo"
+        <div class="chip-sub" *ngFor="let ra of rasDisponibles" [class.activo]="filtrosRA.includes(ra.codigo)"
           (click)="seleccionarRA(ra.codigo)" [title]="ra.texto">
           {{ ra.codigo }}
         </div>

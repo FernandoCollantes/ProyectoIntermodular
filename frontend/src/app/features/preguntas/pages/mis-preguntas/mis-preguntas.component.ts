@@ -33,7 +33,7 @@ export class MisPreguntasComponent implements OnInit {
 
   cargando: boolean = true;
   filtroModulo: string = '';
-  filtroRA: string = '';
+  filtrosRA: string[] = [];
   filtroDificultad: string = '';
   terminoBusqueda: string = '';
 
@@ -73,7 +73,7 @@ export class MisPreguntasComponent implements OnInit {
 
   seleccionarModulo(nombreModulo: string): void {
     this.filtroModulo = nombreModulo;
-    this.filtroRA = ''; // Reset RA when module changes
+    this.filtrosRA = []; // Reset RAs when module changes
     this.filtroDificultad = ''; // Reset Difficulty when module changes
 
     if (nombreModulo) {
@@ -87,11 +87,15 @@ export class MisPreguntasComponent implements OnInit {
   }
 
   seleccionarRA(codigo: string): void {
-    // Toggle RA check
-    if (this.filtroRA === codigo) {
-      this.filtroRA = '';
+    if (!codigo) {
+      this.filtrosRA = [];
     } else {
-      this.filtroRA = codigo;
+      const index = this.filtrosRA.indexOf(codigo);
+      if (index > -1) {
+        this.filtrosRA.splice(index, 1);
+      } else {
+        this.filtrosRA.push(codigo);
+      }
     }
     this.aplicarFiltros();
   }
@@ -109,23 +113,38 @@ export class MisPreguntasComponent implements OnInit {
     this.cargando = true;
     this.preguntas = [];
 
-    const currentUser = this.authService.getCurrentUser();
-
     // Enviamos el nombre del módulo como filtro al backend
+    // No enviamos el RA (tema) al backend para permitir multi-filtrado local
     this.preguntaService.buscarPreguntas({
       subject: this.filtroModulo || undefined,
-      difficulty: this.filtroDificultad || undefined,
-      theme: this.filtroRA || undefined,
-      creatorId: currentUser?.id
+      difficulty: this.filtroDificultad || undefined
     }).subscribe({
       next: (data: Pregunta[]) => {
         console.log('Datos recibidos del backend:', data); // DEBUG
+
+        let filtradas = data;
+
+        // Filtrado por RA (Multi-selección)
+        if (this.filtrosRA.length > 0) {
+          filtradas = filtradas.filter(p =>
+            p.tema && p.tema.some(t => this.filtrosRA.includes(t))
+          );
+        }
+
+        // 3. Filtrado por módulo (case-insensitive y trimmed)
+        if (this.filtroModulo) {
+          filtradas = filtradas.filter(p =>
+            p.asignatura.toLowerCase().trim() === this.filtroModulo.toLowerCase().trim()
+          );
+        }
+
+        // Filtrado por texto
         if (this.terminoBusqueda) {
-          this.preguntas = data.filter(p =>
+          this.preguntas = filtradas.filter(p =>
             p.enunciado.toLowerCase().includes(this.terminoBusqueda.toLowerCase())
           );
         } else {
-          this.preguntas = data;
+          this.preguntas = filtradas;
         }
         this.cargando = false;
       },

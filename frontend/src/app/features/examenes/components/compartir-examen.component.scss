@@ -95,15 +95,33 @@
     }
 
     .remove-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background: #fee2e2;
         color: #ef4444;
-        border: none;
-        padding: 0.5rem 0.75rem;
-        border-radius: 6px;
+        border: 1px solid #fecaca;
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
         cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0;
+
+        .icon-delete {
+            width: 20px;
+            height: 20px;
+        }
 
         &:hover {
-            background: #fecaca;
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+            transform: scale(1.05);
+        }
+
+        &:active {
+            transform: scale(0.95);
         }
     }
 }

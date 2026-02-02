@@ -86,45 +86,6 @@ exports.searchExams = async (subjectId, autor, tipo) => {
     } catch (error) { throw new Error('Error buscando exámenes: ' + error.message); }
 };
 
-exports.generateExamPreview = async (subjectId, amount) => {
-    try {
-        const randomQuestions = await PreguntaModel.aggregate([
-            { $match: { asignatura: subjectId } },
-            { $sample: { size: parseInt(amount) } }
-        ]);
-
-        if (randomQuestions.length === 0) throw new Error(`No hay preguntas suficientes.`);
-
-        const preguntasConNombres = await PreguntaModel.populate(randomQuestions, [
-            { path: 'asignatura' },
-            { path: 'criterios_evaluacion' }
-        ]);
-
-        const preguntasAdaptadas = preguntasConNombres.map(q => ({
-            ...q,
-            asignatura: q.asignatura?.nombre || '',
-            tema: q.criterios_evaluacion ? q.criterios_evaluacion.map(c => c.nombre).join(', ') : ''
-        }));
-
-        const nombreSugerido = `Examen_${Date.now()}`;
-        const examenVista = new ExamenClass(nombreSugerido, preguntasAdaptadas);
-        const data = examenVista.getClientData();
-        data.asignaturaId = subjectId;
-        return data;
-    } catch (error) {
-        throw new Error('Error generando preview: ' + error.message);
-    }
-};
-
-exports.searchExams = async (subjectId, autor) => {
-    try {
-        const match = {};
-        if (subjectId) match.asignatura = subjectId;
-        if (autor) match.autor = { $regex: new RegExp(autor, 'i') };
-        return await ExamenModel.find(match).populate('asignatura', 'nombre').sort({ fecha_creacion: -1 }).lean();
-    } catch (error) { throw new Error('Error buscando exámenes: ' + error.message); }
-};
-
 // --- CORRECCIÓN DE EXAMEN ---
 
 exports.submitExamAttempt = async (examId, userAnswers) => {
@@ -296,8 +257,7 @@ exports.getExamForExport = async (examId) => {
  */
 exports.createExam = async (examData) => {
     try {
-        const nuevoExamen = new ExamenModel(examData);
-        return await nuevoExamen.save();
+        return await ExamenModel.create(examData);
     } catch (error) {
         throw new Error(`Error creating exam: ${error.message}`);
     }
@@ -308,13 +268,13 @@ exports.createExam = async (examData) => {
  */
 exports.getExamsByUser = async (userId, estado = null) => {
     try {
-        const query = { creador: userId };
+        const query = {};
         if (estado) {
             query.estado = estado;
         }
         return await ExamenModel.find(query)
-            .populate('preguntas')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
     } catch (error) {
         throw new Error(`Error fetching exams: ${error.message}`);
     }
@@ -379,10 +339,13 @@ exports.compartirExamen = async (examId, emails, creador) => {
     try {
         const token = crypto.randomBytes(16).toString('hex');
 
+        // Normalizar emails (minúsculas y sin espacios)
+        const emailsNormalizados = emails.map(e => e.trim().toLowerCase());
+
         const nuevaSesion = new SesionExamenModel({
             examen_id: examId,
             token,
-            invitados_emails: emails,
+            invitados_emails: emailsNormalizados,
             creador
         });
 
@@ -409,7 +372,7 @@ exports.compartirExamen = async (examId, emails, creador) => {
 
         const urlExamen = `${process.env.FRONTEND_URL || 'http://localhost:4200'}/alumno/e/${token}`;
 
-        for (const email of emails) {
+        for (const email of emailsNormalizados) {
             try {
                 await transporter.sendMail({
                     from: `"Gestor de Exámenes" <${process.env.EMAIL_USER}>`,
@@ -509,15 +472,18 @@ exports.submitExamFromSesion = async (sesionId, studentData, userAnswers) => {
  */
 exports.getSesionesConResultados = async (userId) => {
     try {
-        const sesiones = await SesionExamenModel.find({ creador: userId })
+        const sesiones = await SesionExamenModel.find({})
             .populate('examen_id', 'titulo asignatura')
             .sort({ createdAt: -1 })
             .lean();
 
+        const sesionIds = sesiones.map(s => s._id);
+        const todosLosIntentos = await IntentoModel.find({ sesion_id: { $in: sesionIds } })
+            .select('sesion_id nombre_alumno email_alumno nota fecha_intento')
+            .lean();
+
         for (const sesion of sesiones) {
-            sesion.intentos = await IntentoModel.find({ sesion_id: sesion._id })
-                .select('nombre_alumno email_alumno nota fecha_intento')
-                .lean();
+            sesion.intentos = todosLosIntentos.filter(i => i.sesion_id.toString() === sesion._id.toString());
         }
 
         return sesiones;
@@ -527,17 +493,48 @@ exports.getSesionesConResultados = async (userId) => {
 };
 
 /**
- * Comprobar si un alumno ya ha realizado un examen en una sesión específica
+ * Comprobar si un alumno ya ha realizado un examen en una sesión específica (por token)
+ */
+exports.checkStudentStatusByToken = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ success: false, message: 'email is required' });
+
+        const exists = await examenesService.checkStudentAttempt(token, email);
+        res.json({ success: true, exists });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+/**
+ * Comprobar si un email ya ha realizado el examen en esta sesión (por TOKEN) y si está autorizado.
  */
 exports.checkStudentAttempt = async (token, email) => {
     try {
         const sesion = await SesionExamenModel.findOne({ token });
-        if (!sesion) return false;
+        if (!sesion) throw new Error("Enlace de examen no válido o sesión expirada.");
 
-        const intento = await IntentoModel.findOne({ sesion_id: sesion._id, email_alumno: email });
+        // Normalizar email del alumno
+        const emailAlumno = email.trim().toLowerCase();
+
+        // Validar si está en la lista de invitados (si la lista no está vacía)
+        if (sesion.invitados_emails && sesion.invitados_emails.length > 0) {
+            const isInvited = sesion.invitados_emails.some(
+                invitedEmail => invitedEmail.toLowerCase() === emailAlumno
+            );
+
+            if (!isInvited) {
+                throw new Error("Este correo electrónico no está autorizado para realizar este examen.");
+            }
+        }
+
+        const intento = await IntentoModel.findOne({ sesion_id: sesion._id, email_alumno: emailAlumno });
         return !!intento;
     } catch (error) {
-        throw new Error(`Error comprobando intento: ${error.message}`);
+        // Lanzamos el error tal cual para que el controlador lo use
+        throw error;
     }
 };
 

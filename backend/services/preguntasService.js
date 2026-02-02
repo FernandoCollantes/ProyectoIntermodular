@@ -24,10 +24,6 @@ exports.getQuestionsByCriteria = async (filters) => {
             matchCriteria.dificultad = parseInt(dificultad, 10);
         }
 
-        if (creador) {
-            matchCriteria.creador = creador;
-        }
-
         const rawQuestions = await PreguntaModel.find(matchCriteria)
             .sort({ createdAt: -1 })
             .lean();

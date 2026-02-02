@@ -157,9 +157,6 @@ exports.addExam = async (req, res) => {
 exports.getMisExamenes = async (req, res) => {
     try {
         const { userId } = req.query;
-        if (!userId) {
-            return res.status(400).json({ success: false, message: 'userId is required' });
-        }
         const examenes = await examenesService.getExamsByUser(userId, 'publicado');
         res.json({ success: true, examenes });
     } catch (error) {
@@ -173,9 +170,6 @@ exports.getMisExamenes = async (req, res) => {
 exports.getBorradores = async (req, res) => {
     try {
         const { userId } = req.query;
-        if (!userId) {
-            return res.status(400).json({ success: false, message: 'userId is required' });
-        }
         const borradores = await examenesService.getExamsByUser(userId, 'borrador');
         res.json({ success: true, borradores });
     } catch (error) {
@@ -295,7 +289,6 @@ exports.submitSessionExam = async (req, res) => {
 exports.getSessionsResults = async (req, res) => {
     try {
         const { userId } = req.query;
-        if (!userId) return res.status(400).json({ success: false, message: 'userId is required' });
         const result = await examenesService.getSesionesConResultados(userId);
         res.json({ success: true, sesiones: result });
     } catch (error) {
@@ -316,6 +309,10 @@ exports.checkStudentStatusByToken = async (req, res) => {
         const exists = await examenesService.checkStudentAttempt(token, email);
         res.json({ success: true, exists });
     } catch (error) {
+        // Si el mensaje es el de falta de autorización, devolvemos 403
+        if (error.message.includes("no está autorizado")) {
+            return res.status(403).json({ success: false, message: error.message });
+        }
         res.status(500).json({ success: false, message: error.message });
     }
 };

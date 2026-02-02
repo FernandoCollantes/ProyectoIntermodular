@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { pendingChangesGuard } from '../../core/guards/pending-changes.guard';
 import { MisExamenesComponent } from './pages/mis-examenes/mis-examenes.component';
 import { CrearExamenComponent } from './pages/crear-examen/crear-examen.component';
 import { BorradoresComponent } from './pages/borradores/borradores.component';
@@ -15,15 +16,18 @@ const routes: Routes = [
   },
   {
     path: 'crear',
-    component: CrearExamenComponent // Carga el formulario en /examenes/crear
+    component: CrearExamenComponent, // Carga el formulario en /examenes/crear
+    canDeactivate: [pendingChangesGuard]
   },
   {
     path: 'crear-ai',
-    loadComponent: () => import('./pages/crear-examen-ai/crear-examen-ai.component').then(m => m.CrearExamenAiComponent)
+    loadComponent: () => import('./pages/crear-examen-ai/crear-examen-ai.component').then(m => m.CrearExamenAiComponent),
+    canDeactivate: [pendingChangesGuard]
   },
   {
     path: 'editar/:id',
-    component: CrearExamenComponent // Reutiliza el formulario para editar
+    component: CrearExamenComponent, // Reutiliza el formulario para editar
+    canDeactivate: [pendingChangesGuard]
   },
   {
     path: 'borradores',

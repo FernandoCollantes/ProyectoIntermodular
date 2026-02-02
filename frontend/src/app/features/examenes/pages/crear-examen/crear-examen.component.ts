@@ -15,6 +15,7 @@ import { ConfirmationService } from '../../../../core/services/confirmation.serv
 import { Pregunta } from '../../../../core/models/pregunta.model';
 import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
 import { Examen } from '../../../../core/models/examen.model';
+import { HasPendingChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-crear-examen',
@@ -23,7 +24,7 @@ import { Examen } from '../../../../core/models/examen.model';
   templateUrl: './crear-examen.component.html',
   styleUrls: ['./crear-examen.component.scss']
 })
-export class CrearExamenComponent implements OnInit {
+export class CrearExamenComponent implements OnInit, HasPendingChanges {
   // Form
   examenForm!: FormGroup;
 
@@ -36,7 +37,7 @@ export class CrearExamenComponent implements OnInit {
   // Filters
   filtroTexto: string = '';
   filtroModulo: string = '';
-  filtroRA: string = '';
+  filtrosRA: string[] = [];
   rasDisponibles: ResultadoAprendizaje[] = [];
 
   // Loading state
@@ -71,6 +72,11 @@ export class CrearExamenComponent implements OnInit {
       asignatura: ['', Validators.required],
       duracion: [60, [Validators.required, Validators.min(5), Validators.max(60)]]
     });
+  }
+
+  hasPendingChanges(): boolean {
+    if (this.guardando) return false;
+    return this.examenForm.dirty || this.preguntasSeleccionadas.size > 0;
   }
 
 
@@ -127,7 +133,9 @@ export class CrearExamenComponent implements OnInit {
   }
 
   cargarPreguntas(): void {
-    this.preguntaService.buscarPreguntas({}).subscribe({
+    const subject = this.examenForm.get('asignatura')?.value;
+
+    this.preguntaService.buscarPreguntas({ subject }).subscribe({
       next: (preguntas) => {
         this.todasLasPreguntas = preguntas;
         this.aplicarFiltros();
@@ -151,22 +159,32 @@ export class CrearExamenComponent implements OnInit {
       );
     }
 
-    // Filter by module
+    // Filter by module - Now handled by backend in cargarPreguntas()
+    // but we can keep it for extra safety or if todasLasPreguntas contains everything
     if (this.filtroModulo) {
-      resultado = resultado.filter(p => p.asignatura === this.filtroModulo);
+      resultado = resultado.filter(p =>
+        p.asignatura.toLowerCase().trim() === this.filtroModulo.toLowerCase().trim()
+      );
     }
 
-    // Filter by RA
-    if (this.filtroRA) {
-      resultado = resultado.filter(p => p.tema.includes(this.filtroRA));
+    // Filter by RAs (Multi-selection)
+    if (this.filtrosRA.length > 0) {
+      resultado = resultado.filter(p => {
+        // Robustez: Asegurar que tema sea un array antes de usar some()
+        const temas = Array.isArray(p.tema) ? p.tema : (p.tema ? [String(p.tema)] : []);
+        return this.filtrosRA.some(f => temas.includes(f));
+      });
     }
 
     this.preguntasFiltradas = resultado;
   }
 
   onModuloChange(): void {
+    const selectedModulo = this.examenForm.get('asignatura')?.value;
+    this.filtroModulo = selectedModulo;
+
     // Reset RA filter when module changes
-    this.filtroRA = '';
+    this.filtrosRA = [];
 
     // Update available RAs based on selected module
     if (this.filtroModulo) {
@@ -176,6 +194,17 @@ export class CrearExamenComponent implements OnInit {
       this.rasDisponibles = [];
     }
 
+    // Al cambiar el módulo, recargamos las preguntas desde el backend para este módulo específicamente
+    this.cargarPreguntas();
+  }
+
+  toggleRA(codigo: string): void {
+    const index = this.filtrosRA.indexOf(codigo);
+    if (index > -1) {
+      this.filtrosRA.splice(index, 1);
+    } else {
+      this.filtrosRA.push(codigo);
+    }
     this.aplicarFiltros();
   }
 
@@ -270,7 +299,9 @@ export class CrearExamenComponent implements OnInit {
     preguntasSeleccionadasArray.forEach(preguntaId => {
       const pregunta = this.todasLasPreguntas.find(p => p._id === preguntaId);
       if (pregunta && pregunta.tema) {
-        pregunta.tema.forEach(t => rasSet.add(t));
+        // Robustez: Asegurar que tema sea un array antes de usar forEach()
+        const temas = Array.isArray(pregunta.tema) ? pregunta.tema : [String(pregunta.tema)];
+        temas.forEach(t => rasSet.add(t));
       }
     });
 
@@ -294,7 +325,8 @@ export class CrearExamenComponent implements OnInit {
           ? `Examen actualizado como ${estado}`
           : `Examen creado como ${estado}`;
         this.notificacionService.mostrar(mensaje);
-        this.guardando = false;
+        // Desactiva el flag guardando se mantiene en true para evitar que el PendingChangesGuard
+        // salte durante la navegación inmediata
 
         // Navigate to appropriate page
         if (estado === 'publicado') {
@@ -305,7 +337,8 @@ export class CrearExamenComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error saving exam:', err);
-        this.notificacionService.mostrar('Error al guardar el examen', 'error');
+        const mensajeError = err.error?.message || 'Error al guardar el examen';
+        this.notificacionService.mostrar(mensajeError, 'error');
         this.guardando = false;
       }
     });

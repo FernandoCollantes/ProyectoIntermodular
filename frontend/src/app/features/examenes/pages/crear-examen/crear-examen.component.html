@@ -13,8 +13,7 @@
     <div class="rejilla-configuracion-examen">
       <div class="grupo-formulario">
         <label for="subject" class="etiqueta-formulario requerido">Asignatura</label>
-        <select id="subject" class="seleccion-formulario" formControlName="asignatura" [(ngModel)]="filtroModulo"
-          (change)="onModuloChange()">
+        <select id="subject" class="seleccion-formulario" formControlName="asignatura" (change)="onModuloChange()">
           <option value="">Seleccionar...</option>
           <option *ngFor="let m of modulos" [value]="m.nombre">{{ m.nombre }}</option>
         </select>
@@ -29,8 +28,8 @@
       <div class="grupo-formulario" *ngIf="rasDisponibles.length > 0">
         <label class="etiqueta-formulario">Resultado de Aprendizaje (RA)</label>
         <div class="contenedor-chips">
-          <div class="chip" *ngFor="let ra of rasDisponibles" [class.activo]="filtroRA === ra.codigo"
-            (click)="filtroRA = filtroRA === ra.codigo ? '' : ra.codigo; aplicarFiltros()">
+          <div class="chip" *ngFor="let ra of rasDisponibles" [class.activo]="filtrosRA.includes(ra.codigo)"
+            (click)="toggleRA(ra.codigo)">
             {{ ra.codigo }}
           </div>
         </div>

@@ -35,4 +35,9 @@ const ExamenSchema = new Schema({
     timestamps: true
 });
 
+// Índices para optimización de búsquedas
+ExamenSchema.index({ asignatura: 1 });
+ExamenSchema.index({ creador: 1 });
+ExamenSchema.index({ estado: 1 });
+
 module.exports = mongoose.model('Examen', ExamenSchema);

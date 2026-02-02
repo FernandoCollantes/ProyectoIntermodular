@@ -9,11 +9,8 @@ const uri = process.env.MONGO_URI;
  */
 async function connect() {
   try {
-    // Intentamos conectar con las opciones predeterminadas de Mongoose
     await mongoose.connect(uri);
-
     console.log("¡MongoDB conectado exitosamente vía Mongoose!");
-
   } catch (err) {
     console.error("Error de conexión a MongoDB:", err);
     // Si falla la conexión crítica, cerramos el proceso para evitar que la app corra sin BD

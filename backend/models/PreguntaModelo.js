@@ -26,7 +26,12 @@ const PreguntaSchema = new Schema({
     creador: { type: String, default: 'Sistema' }
 }, {
     collection: 'Preguntas',
-    timestamps: true // Esto nos dará 'createdAt' y 'updatedAt' automáticamente
+    timestamps: true
 });
+
+// Índices para optimización de búsquedas
+PreguntaSchema.index({ asignatura: 1 });
+PreguntaSchema.index({ tema: 1 });
+PreguntaSchema.index({ creador: 1 });
 
 module.exports = mongoose.model('Pregunta', PreguntaSchema);

@@ -28,6 +28,12 @@ const IntentoSchema = new Schema({
     }],
     nota: { type: Number, required: true }, // Nota sobre 10
     fecha_intento: { type: Date, default: Date.now }
-}, { collection: 'Intentos' });
+}, {
+    collection: 'Intentos'
+});
+
+// Índices para optimización
+IntentoSchema.index({ examen_id: 1 });
+IntentoSchema.index({ sesion_id: 1 });
 
 module.exports = mongoose.model('Intento', IntentoSchema);

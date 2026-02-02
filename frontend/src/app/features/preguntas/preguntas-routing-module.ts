@@ -1,22 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { pendingChangesGuard } from '../../core/guards/pending-changes.guard';
+import { MisPreguntasComponent } from './pages/mis-preguntas/mis-preguntas.component';
+import { CrearPreguntaComponent } from './pages/crear-pregunta/crear-pregunta.component';
 
 const routes: Routes = [
   {
     path: '',
-    // CAMBIO AQUÍ: de ./pages/lista-preguntas/ a ./pages/mis-preguntas/
-    loadComponent: () => import('./pages/mis-preguntas/mis-preguntas.component')
-      .then(m => m.MisPreguntasComponent)
+    component: MisPreguntasComponent
   },
   {
     path: 'crear',
-    loadComponent: () => import('./pages/crear-pregunta/crear-pregunta.component')
-      .then(m => m.CrearPreguntaComponent)
+    component: CrearPreguntaComponent,
+    canDeactivate: [pendingChangesGuard]
   },
   {
     path: 'editar/:id',
-    loadComponent: () => import('./pages/crear-pregunta/crear-pregunta.component')
-      .then(m => m.CrearPreguntaComponent)
+    component: CrearPreguntaComponent,
+    canDeactivate: [pendingChangesGuard]
   }
 ];
 

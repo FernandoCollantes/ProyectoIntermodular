@@ -13,6 +13,7 @@ import { ConfirmationService } from '../../../../core/services/confirmation.serv
 import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { HasPendingChanges } from '../../../../core/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-crear-pregunta',
@@ -21,7 +22,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './crear-pregunta.component.html',
   styleUrls: ['./crear-pregunta.component.scss']
 })
-export class CrearPreguntaComponent implements OnInit {
+export class CrearPreguntaComponent implements OnInit, HasPendingChanges {
   @ViewChild('preguntaForm') preguntaForm!: NgForm;
   public modulos: ModuloJerarquia[] = [];
   public rasDisponibles: ResultadoAprendizaje[] = [];
@@ -97,6 +98,10 @@ export class CrearPreguntaComponent implements OnInit {
       this.rasDisponibles = moduloSeleccionado.ras;
       this.nuevaPregunta.tema = []; // Reset RAs when module changes
     }
+  }
+
+  hasPendingChanges(): boolean {
+    return this.preguntaForm && this.preguntaForm.dirty || false;
   }
 
   toggleRA(codigo: string): void {

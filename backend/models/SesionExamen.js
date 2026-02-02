@@ -28,4 +28,8 @@ const SesionExamenSchema = new Schema({
     timestamps: true
 });
 
+// Índices para optimización de búsquedas
+SesionExamenSchema.index({ examen_id: 1 });
+SesionExamenSchema.index({ creador: 1 });
+
 module.exports = mongoose.model('SesionExamen', SesionExamenSchema);

@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, F
 import { ExamenService } from '../services/examen.service';
 import { NotificacionService } from '../../../core/services/notificacion.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmationService } from '../../../core/services/confirmation.service';
 
 @Component({
     selector: 'app-compartir-examen',
@@ -24,7 +25,8 @@ export class CompartirExamenComponent {
         private fb: FormBuilder,
         private examenService: ExamenService,
         private notificacionService: NotificacionService,
-        private authService: AuthService
+        private authService: AuthService,
+        private confirmationService: ConfirmationService
     ) {
         this.shareForm = this.fb.group({
             emails: this.fb.array([this.createEmailControl()])
@@ -72,7 +74,23 @@ export class CompartirExamenComponent {
         }
     }
 
-    cancel() {
-        this.close.emit();
+    async cancel() {
+        const hasEmails = this.emails.controls.some(control => control.value && control.value.trim() !== '');
+
+        if (hasEmails || this.emails.length > 1) {
+            const confirmed = await this.confirmationService.confirm({
+                title: '¿Cancelar compartir?',
+                message: 'Se perderán los correos introducidos. ¿Deseas salir?',
+                confirmText: 'Sí, salir',
+                cancelText: 'Continuar editando',
+                type: 'warning'
+            });
+
+            if (confirmed) {
+                this.close.emit();
+            }
+        } else {
+            this.close.emit();
+        }
     }
 }

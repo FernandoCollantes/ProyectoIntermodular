@@ -13,9 +13,11 @@ import { PreguntaService } from '../../../preguntas/services/pregunta.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
+import { JerarquiaService } from '../../../../core/services/jerarquia.service';
 
 // Models
 import { Examen, DownloadExamDto } from '../../../../core/models';
+import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
 
 @Component({
   selector: 'app-mis-examenes',
@@ -29,6 +31,12 @@ export class MisExamenesComponent implements OnInit {
   examenesTodas: Examen[] = [];
   cargando: boolean = true;
   terminoBusqueda: string = '';
+
+  // Filtros
+  listaModulosXML: ModuloJerarquia[] = [];
+  rasDisponibles: ResultadoAprendizaje[] = [];
+  filtroModulo: string = '';
+  filtroRA: string = '';
 
   // States
   descargandoIds: Set<string> = new Set();
@@ -46,24 +54,35 @@ export class MisExamenesComponent implements OnInit {
     private authService: AuthService,
     private notificacionService: NotificacionService,
     private confirmationService: ConfirmationService,
+    private jerarquiaService: JerarquiaService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.cargarExamenes();
+    this.cargarDatosIniciales();
+  }
+
+  cargarDatosIniciales(): void {
+    this.cargando = true;
+
+    // 1. Cargamos la jerarquía desde el XML
+    this.jerarquiaService.getJerarquia().subscribe({
+      next: (modulos) => {
+        this.listaModulosXML = modulos;
+        // 2. Cargamos los exámenes después de tener la jerarquía (aunque no dependen estrictamente, es mejor orden)
+        this.cargarExamenes();
+      },
+      error: () => {
+        this.notificacionService.mostrar('Error al leer el archivo XML', 'error');
+        this.cargarExamenes(); // Intentamos cargar exámenes de todas formas
+      }
+    });
   }
 
   cargarExamenes(): void {
     this.cargando = true;
-    const currentUser = this.authService.getCurrentUser();
 
-    if (!currentUser) {
-      this.notificacionService.mostrar('Usuario no autenticado', 'error');
-      this.cargando = false;
-      return;
-    }
-
-    this.examenService.obtenerExamenes(currentUser.id).subscribe({
+    this.examenService.obtenerExamenes().subscribe({
       next: (examenes) => {
         this.examenesTodas = examenes;
         this.aplicarFiltros();
@@ -77,16 +96,52 @@ export class MisExamenesComponent implements OnInit {
     });
   }
 
+  seleccionarModulo(nombreModulo: string): void {
+    this.filtroModulo = nombreModulo;
+    this.filtroRA = ''; // Reset RA when module changes
+
+    if (nombreModulo) {
+      const modulo = this.listaModulosXML.find(m => m.nombre === nombreModulo);
+      this.rasDisponibles = modulo?.ras || [];
+    } else {
+      this.rasDisponibles = [];
+    }
+
+    this.aplicarFiltros();
+  }
+
+  seleccionarRA(codigo: string): void {
+    // Toggle RA check
+    if (this.filtroRA === codigo) {
+      this.filtroRA = '';
+    } else {
+      this.filtroRA = codigo;
+    }
+    this.aplicarFiltros();
+  }
+
   aplicarFiltros(): void {
+    let resultados = [...this.examenesTodas];
+
+    // 1. Filtro por Módulo (Asignatura)
+    if (this.filtroModulo) {
+      resultados = resultados.filter(e => e.asignatura === this.filtroModulo);
+    }
+
+    // 2. Filtro por RA/Tema - Checking if the selected RA is in the exam's RAs array
+    if (this.filtroRA) {
+      resultados = resultados.filter(e => e.ras && e.ras.includes(this.filtroRA));
+    }
+
+    // 3. Búsqueda por texto (Título)
     if (this.terminoBusqueda.trim()) {
       const textoLower = this.terminoBusqueda.toLowerCase();
-      this.examenes = this.examenesTodas.filter(e =>
-        e.titulo.toLowerCase().includes(textoLower) ||
-        e.asignatura.toLowerCase().includes(textoLower)
+      resultados = resultados.filter(e =>
+        e.titulo.toLowerCase().includes(textoLower)
       );
-    } else {
-      this.examenes = [...this.examenesTodas];
     }
+
+    this.examenes = resultados;
   }
 
   editarExamen(id: string | undefined): void {
