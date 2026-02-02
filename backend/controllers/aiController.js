@@ -10,8 +10,9 @@ exports.generateFromPdf = async (req, res) => {
         }
 
         // 2. Extraer metadatos del cuerpo de la petición (FormData)
-        const { asignatura, tema, numPreguntas } = req.body;
+        const { asignatura, tema, numPreguntas, dificultad } = req.body;
         const count = parseInt(numPreguntas) || 10;
+        const diff = parseInt(dificultad) || 1; // Default to Middle (1)
 
         if (!asignatura || !tema) {
             // Borramos el archivo si faltan datos para no dejar basura
@@ -30,7 +31,7 @@ exports.generateFromPdf = async (req, res) => {
         }
 
         // 4. Llamar a la IA pasando los parámetros correctos
-        const generatedQuestions = await aiService.generateQuestionsFromText(textContent, asignatura, tema, count);
+        const generatedQuestions = await aiService.generateQuestionsFromText(textContent, asignatura, tema, count, diff);
 
         // 5. Limpieza
         fs.unlinkSync(req.file.path);

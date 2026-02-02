@@ -11,17 +11,8 @@ const routes: Routes = [
     component: MisExamenesComponent // Carga la lista al entrar a /examenes
   },
   {
-    path: 'elegir',
-    loadComponent: () => import('./pages/exam-creation-choice/exam-creation-choice.component').then(m => m.ExamCreationChoiceComponent)
-  },
-  {
     path: 'crear',
     component: CrearExamenComponent, // Carga el formulario en /examenes/crear
-    canDeactivate: [pendingChangesGuard]
-  },
-  {
-    path: 'crear-ai',
-    loadComponent: () => import('./pages/crear-examen-ai/crear-examen-ai.component').then(m => m.CrearExamenAiComponent),
     canDeactivate: [pendingChangesGuard]
   },
   {

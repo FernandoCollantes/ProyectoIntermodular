@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 // Services
 import { JerarquiaService } from '../../../../core/services/jerarquia.service';
 import { AiService } from '../../../../core/services/ai.service';
-import { ExamenService } from '../../services/examen.service';
+import { PreguntaService } from '../../services/pregunta.service';
 import { NotificacionService } from '../../../../core/services/notificacion.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
@@ -15,13 +15,13 @@ import { ConfirmationService } from '../../../../core/services/confirmation.serv
 import { ModuloJerarquia, ResultadoAprendizaje } from '../../../../core/models/jerarquia.model';
 
 @Component({
-    selector: 'app-crear-examen-ai',
+    selector: 'app-crear-pregunta-ai',
     standalone: true,
     imports: [CommonModule, FormsModule],
-    templateUrl: './crear-examen-ai.component.html',
-    styleUrls: ['./crear-examen-ai.component.scss']
+    templateUrl: './crear-pregunta-ai.component.html',
+    styleUrls: ['./crear-pregunta-ai.component.scss']
 })
-export class CrearExamenAiComponent implements OnInit {
+export class CrearPreguntaAiComponent implements OnInit {
     public moduloHierarchy: ModuloJerarquia[] = [];
     public rasDisponibles: ResultadoAprendizaje[] = [];
     protected readonly String = String;
@@ -35,17 +35,14 @@ export class CrearExamenAiComponent implements OnInit {
     formData = {
         asignatura: '',
         tema: '',
-        numPreguntas: 10
-    };
-
-    examData = {
-        titulo: ''
+        numPreguntas: 5,
+        dificultad: 1 // 0: Fácil, 1: Media, 2: Difícil
     };
 
     constructor(
         private jerarquiaService: JerarquiaService,
         private aiService: AiService,
-        private examenService: ExamenService,
+        private preguntaService: PreguntaService,
         private notiService: NotificacionService,
         private authService: AuthService,
         private confirmationService: ConfirmationService,
@@ -113,7 +110,7 @@ export class CrearExamenAiComponent implements OnInit {
         this.fileName = '';
     }
 
-    generateExam(): void {
+    generateQuestions(): void {
         if (!this.formData.asignatura || !this.formData.tema) {
             this.notiService.mostrar('Por favor, selecciona módulo y RA', 'error');
             return;
@@ -131,6 +128,7 @@ export class CrearExamenAiComponent implements OnInit {
             this.formData.asignatura,
             this.formData.tema,
             this.formData.numPreguntas,
+            this.formData.dificultad,
             this.selectedFile
         ).subscribe({
             next: (response) => {
@@ -144,20 +142,15 @@ export class CrearExamenAiComponent implements OnInit {
             },
             error: (err) => {
                 this.isGenerating = false;
-                console.error('Error generating exam:', err);
-                const errorMsg = err.error?.message || 'Error al generar el examen con IA';
+                console.error('Error generating questions:', err);
+                const errorMsg = err.error?.message || 'Error al generar las preguntas con IA';
                 this.notiService.mostrar(errorMsg, 'error');
             }
         });
     }
 
-    saveExam(): void {
+    saveQuestions(): void {
         if (!this.generatedQuestions.length) return;
-
-        if (!this.examData.titulo.trim()) {
-            this.notiService.mostrar('Por favor, ingresa un título para el examen', 'error');
-            return;
-        }
 
         const currentUser = this.authService.getCurrentUser();
         if (!currentUser) {
@@ -165,32 +158,30 @@ export class CrearExamenAiComponent implements OnInit {
             return;
         }
 
-        // Create exam with generated questions
-        const examDto = {
-            titulo: this.examData.titulo,
-            asignatura: this.formData.asignatura,
-            ras: [this.formData.tema],
-            preguntas: this.generatedQuestions,
-            estado: 'borrador' as 'borrador' | 'publicado',
-            creador: currentUser.id
-        } as any;
+        // Prepare questions for bulk saving
+        const questionsToSave = this.generatedQuestions.map(q => ({
+            ...q,
+            creador: currentUser.id,
+            // Ensure tema is an array as expected by the backend
+            tema: Array.isArray(q.tema) ? q.tema : [q.tema]
+        }));
 
-        this.examenService.crearExamen(examDto).subscribe({
+        this.preguntaService.crearPreguntasBulk(questionsToSave).subscribe({
             next: () => {
-                this.notiService.mostrar('¡Examen creado con éxito!', 'exito');
-                this.router.navigate(['/examenes']);
+                this.notiService.mostrar('¡Preguntas guardadas con éxito!', 'exito');
+                this.router.navigate(['/preguntas']);
             },
             error: (err) => {
-                console.error('Error saving exam:', err);
-                const errorMsg = err.error?.message || 'Error al guardar el examen';
+                console.error('Error saving questions:', err);
+                const errorMsg = err.error?.message || 'Error al guardar las preguntas';
                 this.notiService.mostrar(errorMsg, 'error');
             }
         });
     }
 
-    regenerateExam(): void {
+    regenerateQuestions(): void {
         this.generatedQuestions = [];
-        this.generateExam();
+        this.generateQuestions();
     }
 
     async cancelar(): Promise<void> {
@@ -198,7 +189,7 @@ export class CrearExamenAiComponent implements OnInit {
 
         if (hasData) {
             const confirmar = await this.confirmationService.confirm({
-                title: '¿Cancelar creación de examen?',
+                title: '¿Cancelar generación de preguntas?',
                 message: 'Se perderán todos los datos seleccionados y las preguntas generadas.',
                 confirmText: 'Sí, cancelar',
                 cancelText: 'No, continuar',
@@ -206,10 +197,10 @@ export class CrearExamenAiComponent implements OnInit {
             });
 
             if (confirmar) {
-                this.router.navigate(['/examenes']);
+                this.router.navigate(['/preguntas']);
             }
         } else {
-            this.router.navigate(['/examenes']);
+            this.router.navigate(['/preguntas']);
         }
     }
 

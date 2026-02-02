@@ -1,0 +1,120 @@
+<div class="tarjeta">
+    <h1>Generar Preguntas con IA</h1>
+    <p class="descripcion">Sube un archivo PDF y configura los parámetros para generar preguntas automáticamente.</p>
+
+    <!-- Formulario de Configuración -->
+    <div class="seccion-configuracion">
+        <div class="rejilla-configuracion">
+            <!-- Selección de Módulo -->
+            <div class="grupo-formulario">
+                <label for="modulo" class="etiqueta-formulario requerido">Módulo</label>
+                <select id="modulo" class="entrada-formulario" [(ngModel)]="formData.asignatura"
+                    (change)="onSubjectChange()">
+                    <option value="" disabled selected>Selecciona un módulo</option>
+                    <option *ngFor="let m of moduloHierarchy" [value]="m.nombre">{{ m.nombre }}</option>
+                </select>
+            </div>
+
+            <!-- Selección de RA -->
+            <div class="grupo-formulario">
+                <label for="ra" class="etiqueta-formulario requerido">Resultado de Aprendizaje (RA)</label>
+                <select id="ra" class="entrada-formulario" [(ngModel)]="formData.tema"
+                    [disabled]="!formData.asignatura">
+                    <option value="" disabled selected>Selecciona un RA</option>
+                    <option *ngFor="let ra of rasDisponibles" [value]="ra.codigo">
+                        {{ ra.codigo }}: {{ ra.descripcion }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- Número de Preguntas -->
+            <div class="grupo-formulario">
+                <label for="numPreguntas" class="etiqueta-formulario requerido">Número de preguntas</label>
+                <input type="number" id="numPreguntas" class="entrada-formulario" [(ngModel)]="formData.numPreguntas"
+                    min="1" max="20" />
+            </div>
+
+            <!-- Dificultad -->
+            <div class="grupo-formulario">
+                <label for="dificultad" class="etiqueta-formulario requerido">Dificultad</label>
+                <select id="dificultad" class="entrada-formulario" [(ngModel)]="formData.dificultad">
+                    <option [value]="0">Fácil</option>
+                    <option [value]="1">Media</option>
+                    <option [value]="2">Difícil</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Dropzone de PDF -->
+        <div class="zona-subida" [class.arrastrando]="isDragging" (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept="application/pdf" hidden />
+
+            <div class="contenido-subida" *ngIf="!selectedFile">
+                <svg class="icono-subida" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p><strong>Haz clic para subir</strong> o arrastra un PDF aquí</p>
+                <span>Solo archivos PDF (Máx. 10MB)</span>
+            </div>
+
+            <div class="archivo-seleccionado" *ngIf="selectedFile">
+                <svg class="icono-pdf" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM15 10h-1V8h1v2zM10 9.5H9V8h1v1.5zM3 6H1.5v15c0 1.1.9 2 2 2H18V21.5H3V6z" />
+                </svg>
+                <div class="detalles-archivo">
+                    <span class="nombre-archivo">{{ fileName }}</span>
+                    <span class="tamano-archivo">{{ (selectedFile.size / 1024 / 1024) | number:'1.1-2' }} MB</span>
+                </div>
+                <button class="btn-eliminar" (click)="removeFile(); $event.stopPropagation()">&times;</button>
+            </div>
+        </div>
+
+        <div class="acciones-generar">
+            <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+            <button class="btn-primario" (click)="generateQuestions()" [disabled]="isGenerating || !selectedFile">
+                <span *ngIf="!isGenerating">Generar con IA</span>
+                <span *ngIf="isGenerating" class="cargando">Generando preguntas...</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Lista de Preguntas Generadas -->
+    <div class="preguntas-generadas" *ngIf="generatedQuestions.length > 0">
+        <hr />
+        <h2>Preguntas Generadas ({{ generatedQuestions.length }})</h2>
+
+        <div class="lista-preguntas">
+            <div class="tarjeta-pregunta" *ngFor="let q of generatedQuestions; let i = index">
+                <div class="cabecera-pregunta">
+                    <span class="numero-pregunta">Pregunta {{ i + 1 }}</span>
+                    <span class="etiqueta-dificultad" [attr.data-nivel]="q.dificultad">
+                        {{ getDificultadTexto(q.dificultad) }}
+                    </span>
+                </div>
+                <p class="enunciado">{{ q.enunciado }}</p>
+
+                <div class="opciones-pregunta">
+                    <div class="opcion" *ngFor="let opt of q.opciones; let optIdx = index"
+                        [class.correcta]="optIdx === q.respuesta_correcta">
+                        <span class="letra-opcion">{{ String.fromCharCode(65 + optIdx) }}</span>
+                        <span>{{ opt }}</span>
+                        <svg *ngIf="optIdx === q.respuesta_correcta" class="icono-check" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="acciones-finales">
+            <button class="btn-secundario" (click)="regenerateQuestions()">Volver a generar</button>
+            <button class="btn-exito" (click)="saveQuestions()">Guardar Preguntas</button>
+        </div>
+    </div>
+</div>

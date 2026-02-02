@@ -7,7 +7,7 @@ const openai = new OpenAI({
 // Mantén MOCK_MODE en true para probar sin gastar créditos
 const MOCK_MODE = true;
 
-exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQuestions = 10) => {
+exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQuestions = 10, dificultad = 1) => {
     try {
         if (MOCK_MODE) {
             console.log("⚠️ MODO SIMULACIÓN: Generando preguntas de prueba...");
@@ -22,7 +22,7 @@ exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQue
                 ],
                 respuesta_correcta: 0,
                 tema: tema,
-                dificultad: 1
+                dificultad: dificultad
             }));
         }
 
@@ -35,7 +35,7 @@ exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQue
             REGLAS CRÍTICAS:
             1. El campo "tema" debe ser exactamente "${tema}".
             2. El campo "respuesta_correcta" debe ser el ÍNDICE (0, 1, 2 o 3) del array de opciones.
-            3. "dificultad" debe ser un número: 0 (fácil), 1 (medio) o 2 (difícil).
+            3. "dificultad" debe ser exactamente ${dificultad} (0=fácil, 1=medio, 2=difícil). Ajusta el nivel de las preguntas a este valor.
             4. Responde ÚNICAMENTE con un array JSON válido.
             5. La pregunta debe estar directamente relacionada con el contenido del PDF.
 

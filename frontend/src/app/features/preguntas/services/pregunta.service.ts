@@ -49,6 +49,15 @@ export class PreguntaService {
         );
     }
 
+    /**
+     * Crea múltiples preguntas a la vez.
+     */
+    crearPreguntasBulk(preguntas: any[]): Observable<Pregunta[]> {
+        return this.http.post<{ success: boolean; questions: Pregunta[] }>(`${this.apiUrl}/bulk`, preguntas).pipe(
+            map(response => response.questions || [])
+        );
+    }
+
     eliminarPregunta(id: string): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${id}`);
     }

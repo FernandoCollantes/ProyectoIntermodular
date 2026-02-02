@@ -11,11 +11,12 @@ export class AiService {
 
     constructor(private http: HttpClient) { }
 
-    generateQuestionFromPdf(asignatura: string, tema: string, numPreguntas: number, pdfFile: File): Observable<any> {
+    generateQuestionFromPdf(asignatura: string, tema: string, numPreguntas: number, dificultad: number, pdfFile: File): Observable<any> {
         const formData = new FormData();
         formData.append('asignatura', asignatura);
         formData.append('tema', tema);
         formData.append('numPreguntas', numPreguntas.toString());
+        formData.append('dificultad', dificultad.toString());
         formData.append('pdfFile', pdfFile);
 
         return this.http.post(`${this.apiUrl}/ai/upload-pdf`, formData);

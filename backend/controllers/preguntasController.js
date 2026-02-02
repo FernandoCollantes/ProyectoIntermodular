@@ -173,3 +173,34 @@ exports.getQuestionById = async (req, res) => {
         res.status(500).json({ success: false, message: e.message });
     }
 };
+
+/**
+ * Añade múltiples preguntas al sistema (bulk)
+ */
+exports.bulkAdd = async (req, res) => {
+    try {
+        const questions = req.body;
+
+        if (!Array.isArray(questions) || questions.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Se requiere un array de preguntas no vacío.'
+            });
+        }
+
+        const results = await preguntasService.bulkCreateQuestions(questions);
+
+        res.status(201).json({
+            success: true,
+            message: `¡${results.length} preguntas creadas con éxito!`,
+            questions: results
+        });
+
+    } catch (error) {
+        console.error("Error en el controlador al crear preguntas en bloque:", error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor: ' + error.message
+        });
+    }
+};

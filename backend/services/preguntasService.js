@@ -75,3 +75,14 @@ exports.updateQuestion = async (id, data) => {
 exports.getQuestionById = async (id) => {
     return await PreguntaModel.findById(id).lean();
 };
+
+/**
+ * Guarda múltiples preguntas en bloque
+ */
+exports.bulkCreateQuestions = async (questionsArray) => {
+    try {
+        return await PreguntaModel.insertMany(questionsArray);
+    } catch (error) {
+        throw new Error('Error en la base de datos al guardar múltiples preguntas: ' + error.message);
+    }
+};
