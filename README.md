@@ -88,17 +88,23 @@ ng serve
 ```
 backend/
 ├── models/              # Esquemas Mongoose (Model)
-│   ├── Pregunta.js
-│   ├── Examen.js
-│   └── Usuario.js
+│   ├── Asignatura.js
+│   ├── ExamenModelo.js
+│   ├── PreguntaModelo.js
+│   ├── Profesor.js
+│   └── SesionExamen.js
 ├── controllers/         # Controladores HTTP (Controller)
+│   ├── authController.js
+│   ├── examenesController.js
 │   └── preguntasController.js
 ├── services/            # Lógica de negocio (Service Layer)
-│   └── preguntasService.js
+│   ├── examenesService.js
+│   ├── preguntasService.js
+│   └── pdfService.js
 ├── routes/              # Definición de endpoints (Routes)
+│   ├── authRoutes.js
+│   ├── examenesRoutes.js
 │   └── preguntasRoutes.js
-├── middleware/          # Middlewares (autenticación, validación)
-├── config/              # Configuración (BD, variables entorno)
 ├── classes/             # Clases auxiliares y DTOs
 └── server.js            # Punto de entrada
 ```
@@ -149,34 +155,22 @@ npm run dev
 frontend/src/app/
 ├── core/                      # Funcionalidades globales
 │   ├── models/                # Interfaces TypeScript (Model)
-│   │   ├── usuario.model.ts
-│   │   ├── pregunta.model.ts
-│   │   └── examen.model.ts
 │   ├── services/              # Servicios globales (Model)
-│   │   └── auth.service.ts
+│   │   ├── auth.service.ts
+│   │   └── ai.service.ts
 │   ├── guards/                # Protección de rutas
-│   │   ├── auth.guard.ts
-│   │   └── profesor.guard.ts
+│   │   ├── auth-guard.ts
+│   │   └── profesor-guard.ts
 │   └── interceptors/          # Interceptores HTTP (JWT)
-│       └── auth.interceptor.ts
+│       └── auth-interceptor.ts
 ├── shared/                    # Componentes reutilizables
 │   └── components/            # Header, Sidebar, Loading (View + ViewModel)
-│       ├── header/
-│       ├── sidebar/
-│       └── loading/
 ├── features/                  # Módulos por funcionalidad (MVVM completo)
 │   ├── auth/                  # Autenticación
-│   │   ├── pages/             # Componentes de página (ViewModel + View)
-│   │   ├── services/          # Servicios específicos (Model)
-│   │   └── auth.module.ts
 │   ├── dashboard/             # Panel principal
 │   ├── preguntas/             # Gestión de preguntas
 │   │   ├── pages/
-│   │   │   ├── lista-preguntas/
-│   │   │   └── crear-pregunta/
-│   │   ├── services/
-│   │   │   └── pregunta.service.ts
-│   │   └── preguntas.module.ts
+│   │   └── services/
 │   ├── examenes/              # Gestión de exámenes
 │   └── alumno/                # Módulo alumno (realizar exámenes)
 └── layouts/                   # Plantillas de página (View + ViewModel)
