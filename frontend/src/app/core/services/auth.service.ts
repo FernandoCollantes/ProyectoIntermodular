@@ -67,7 +67,7 @@ export class AuthService {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('currentCycle');
 
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/acceso-profesor']);
     }
 
     // Removed switchCycle as requested

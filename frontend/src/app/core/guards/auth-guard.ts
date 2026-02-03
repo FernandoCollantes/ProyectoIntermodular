@@ -13,7 +13,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       if (isAuthenticated) {
         return true;
       }
-      return router.createUrlTree(['/auth/login']);
+      return router.createUrlTree(['/auth/acceso-profesor']);
     })
   );
 };

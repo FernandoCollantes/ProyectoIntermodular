@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  { path: 'acceso-profesor', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
+  { path: '', redirectTo: 'acceso-profesor', pathMatch: 'full' }
 ];
 
 @NgModule({

@@ -12,7 +12,7 @@ async function seedProfesor() {
         const teacherData = {
             nombre: 'Fernando Collantes',
             email: email,
-            password: 'G.unit666'
+            password: 'ExamGen'
         };
 
         // Upsert: actualizar si existe, crear si no

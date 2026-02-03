@@ -38,13 +38,13 @@ const testLogin = (nombreCompleto, email, password, label) => {
 };
 
 // 1. Valid Login with all correct fields
-testLogin('Fernando Collantes', 'fernandocollantes.24@campuscamara.es', 'G.unit666', 'Valid Login');
+testLogin('Fernando Collantes', 'fernandocollantes.24@campuscamara.es', 'ExamGen', 'Valid Login');
 
 // 2. Invalid Name
-testLogin('Wrong Name', 'fernandocollantes.24@campuscamara.es', 'G.unit666', 'Invalid Name');
+testLogin('Wrong Name', 'fernandocollantes.24@campuscamara.es', 'ExamGen', 'Invalid Name');
 
 // 3. Invalid Email
-testLogin('Fernando Collantes', 'wrong@email.com', 'G.unit666', 'Invalid Email');
+testLogin('Fernando Collantes', 'wrong@email.com', 'ExamGen', 'Invalid Email');
 
 // 4. Invalid Password
 testLogin('Fernando Collantes', 'fernandocollantes.24@campuscamara.es', 'wrongpass', 'Invalid Password');
