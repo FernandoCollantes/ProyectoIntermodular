@@ -56,6 +56,11 @@
     --bg-primary: #ffffff;
     --bg-secondary: var(--color-background-app);
 
+    /* LEGACY MAPPINGS FOR COMPATIBILITY */
+    --text-primary: var(--color-text-body);
+    --text-secondary: var(--color-text-secondary);
+    --transition-base: 0.2s ease;
+
     /* LEGACY GRAYSCALE & UTILS (Subject to future refactor) */
     --gray-900: #212121;
     --gray-800: #424242;
