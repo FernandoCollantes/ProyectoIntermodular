@@ -114,8 +114,8 @@ export class CrearPreguntaAiComponent implements OnInit, HasPendingChanges {
     generateQuestions(): void {
         const { asignatura, tema, numPreguntas, dificultad } = this.formData;
 
-        if (!asignatura || !tema || !numPreguntas || dificultad === undefined || dificultad === null) {
-            this.notiService.mostrar('Por favor, completa todos los campos del formulario', 'error');
+        if (!asignatura || !numPreguntas || dificultad === undefined || dificultad === null) {
+            this.notiService.mostrar('Por favor, completa los campos obligatorios del formulario', 'error');
             return;
         }
 
@@ -142,7 +142,12 @@ export class CrearPreguntaAiComponent implements OnInit, HasPendingChanges {
             next: (response) => {
                 this.isGenerating = false;
                 if (response.success && response.questions && response.questions.length > 0) {
-                    this.generatedQuestions = response.questions;
+                    this.generatedQuestions = response.questions.map((q: any) => ({
+                        ...q,
+                        asignatura: this.formData.asignatura, // Garantizar que tiene la asignatura
+                        isEditing: false,
+                        tempData: { ...q, asignatura: this.formData.asignatura }
+                    }));
                     this.notiService.mostrar(`¡${this.generatedQuestions.length} preguntas generadas con éxito!`, 'exito');
                 } else {
                     this.notiService.mostrar('No se pudieron generar las preguntas', 'error');
@@ -157,8 +162,45 @@ export class CrearPreguntaAiComponent implements OnInit, HasPendingChanges {
         });
     }
 
-    saveQuestions(): void {
-        if (!this.generatedQuestions.length) return;
+    toggleEdit(index: number): void {
+        const q = this.generatedQuestions[index];
+        if (q.isEditing) {
+            // Cancel editing, restore from original
+            q.tempData = { ...q };
+            q.tempData.isEditing = undefined;
+            q.tempData.tempData = undefined;
+        } else {
+            // Start editing
+            q.tempData = JSON.parse(JSON.stringify(q));
+        }
+        q.isEditing = !q.isEditing;
+    }
+
+    toggleRa(index: number, raCodigo: string): void {
+        const q = this.generatedQuestions[index];
+        const target = q.isEditing ? q.tempData : q;
+        if (!target.tema) target.tema = [];
+        if (!Array.isArray(target.tema)) target.tema = [target.tema];
+
+        const idx = target.tema.indexOf(raCodigo);
+        if (idx > -1) {
+            target.tema.splice(idx, 1);
+        } else {
+            target.tema.push(raCodigo);
+        }
+    }
+
+    isRaSelected(index: number, raCodigo: string): boolean {
+        const q = this.generatedQuestions[index];
+        const target = q.isEditing ? q.tempData : q;
+        if (!target.tema) return false;
+        if (!Array.isArray(target.tema)) return target.tema === raCodigo;
+        return target.tema.includes(raCodigo);
+    }
+
+    saveIndividualQuestion(index: number): void {
+        const q = this.generatedQuestions[index];
+        const dataToSave = q.isEditing ? q.tempData : q;
 
         const currentUser = this.authService.getCurrentUser();
         if (!currentUser) {
@@ -166,25 +208,45 @@ export class CrearPreguntaAiComponent implements OnInit, HasPendingChanges {
             return;
         }
 
-        // Prepare questions for bulk saving
-        const questionsToSave = this.generatedQuestions.map(q => ({
-            ...q,
-            creador: currentUser.id,
-            // Ensure tema is an array as expected by the backend
-            tema: Array.isArray(q.tema) ? q.tema : [q.tema]
-        }));
+        if (!dataToSave.tema || (Array.isArray(dataToSave.tema) && dataToSave.tema.length === 0)) {
+            this.notiService.mostrar('Asigna al menos un RA antes de guardar', 'error');
+            return;
+        }
 
-        this.preguntaService.crearPreguntasBulk(questionsToSave).subscribe({
+        // Limpiar el array de temas (eliminar vacíos)
+        let temasFinales = Array.isArray(dataToSave.tema) ? dataToSave.tema : [dataToSave.tema];
+        temasFinales = temasFinales.filter((t: string) => t && t.trim() !== "");
+
+        const question: any = {
+            enunciado: dataToSave.enunciado,
+            opciones: dataToSave.opciones,
+            respuesta_correcta: String(dataToSave.respuesta_correcta), // Convertir a string para el DTO
+            asignatura: dataToSave.asignatura || this.formData.asignatura,
+            tema: temasFinales,
+            dificultad: dataToSave.dificultad,
+            creador: currentUser.id
+        };
+
+        console.log('Intentando guardar pregunta IA:', question);
+
+        this.preguntaService.crearPregunta(question, currentUser.id).subscribe({
             next: () => {
-                this.notiService.mostrar('¡Preguntas guardadas con éxito!', 'exito');
-                this.router.navigate(['/preguntas']);
+                this.notiService.mostrar('Pregunta guardada con éxito', 'exito');
+                this.generatedQuestions.splice(index, 1);
             },
             error: (err) => {
-                console.error('Error saving questions:', err);
-                const errorMsg = err.error?.message || 'Error al guardar las preguntas';
-                this.notiService.mostrar(errorMsg, 'error');
+                console.error('Error saving question:', err);
+                const msg = err.error?.message || 'Error al guardar la pregunta';
+                this.notiService.mostrar(msg, 'error');
             }
         });
+    }
+
+    discardQuestion(index: number): void {
+        this.generatedQuestions.splice(index, 1);
+        if (this.generatedQuestions.length === 0) {
+            this.notiService.mostrar('Todas las preguntas han sido procesadas', 'exito');
+        }
     }
 
     regenerateQuestions(): void {

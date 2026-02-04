@@ -26,14 +26,15 @@ exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQue
             }));
         }
 
+        const temaPrompt = tema ? `relacionada(s) con el Resultado de Aprendizaje "${tema}"` : `de carácter general sobre la asignatura`;
         const prompt = `
             Actúa como un profesor experto en el módulo de "${asignatura}".
             Basándote exclusivamente en el siguiente contenido técnico: "${textContext.substring(0, 10000)}"
             
-            Genera exactamente ${numQuestions} pregunta(s) de opción múltiple relacionada(s) con el Resultado de Aprendizaje "${tema}".
+            Genera exactamente ${numQuestions} pregunta(s) de opción múltiple ${temaPrompt}.
             
             REGLAS CRÍTICAS:
-            1. El campo "tema" debe ser exactamente "${tema}".
+            1. El campo "tema" debe ser un ARRAY de strings. Si se especificó un RA, inclúyelo: ["${tema || ''}"]. Si no, devuélvelo vacío: [].
             2. El campo "respuesta_correcta" debe ser el ÍNDICE (0, 1, 2 o 3) del array de opciones.
             3. "dificultad" debe ser exactamente ${dificultad} (0=fácil, 1=medio, 2=difícil). Ajusta el nivel de las preguntas a este valor.
             4. Responde ÚNICAMENTE con un array JSON válido.
@@ -45,8 +46,8 @@ exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQue
                     "enunciado": "La pregunta...",
                     "opciones": ["A", "B", "C", "D"],
                     "respuesta_correcta": 0,
-                    "tema": "${tema}",
-                    "dificultad": 1
+                    "tema": ${tema ? `["${tema}"]` : '[]'},
+                    "dificultad": ${dificultad}
                 }
             ]
         `;

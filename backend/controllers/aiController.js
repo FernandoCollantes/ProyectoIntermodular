@@ -14,10 +14,10 @@ exports.generateFromPdf = async (req, res) => {
         const count = parseInt(numPreguntas) || 10;
         const diff = parseInt(dificultad) || 1; // Default to Middle (1)
 
-        if (!asignatura || !tema) {
+        if (!asignatura) {
             // Borramos el archivo si faltan datos para no dejar basura
-            fs.unlinkSync(req.file.path);
-            return res.status(400).json({ success: false, message: "Faltan la asignatura o el tema (RA)." });
+            if (req.file) fs.unlinkSync(req.file.path);
+            return res.status(400).json({ success: false, message: "Falta la asignatura." });
         }
 
         // 3. Leer y extraer texto del PDF

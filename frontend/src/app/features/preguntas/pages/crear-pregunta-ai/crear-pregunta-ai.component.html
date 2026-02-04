@@ -15,26 +15,6 @@
                 </select>
             </div>
 
-            <!-- Selección de RA -->
-            <div class="grupo-formulario col-completa">
-                <label class="etiqueta-formulario requerido">Resultado de Aprendizaje (RA)</label>
-                <div class="contenedor-ras-scroll" [class.deshabilitado]="!formData.asignatura">
-                    <p *ngIf="!formData.asignatura" class="aviso-vacio">Selecciona un módulo para ver los RAs
-                        disponibles.</p>
-                    <p *ngIf="formData.asignatura && rasDisponibles.length === 0" class="aviso-vacio">No hay RAs
-                        disponibles para este módulo.</p>
-
-                    <div *ngFor="let ra of rasDisponibles" class="item-ra"
-                        [class.seleccionado]="formData.tema === ra.codigo" (click)="formData.tema = ra.codigo">
-                        <input type="radio" name="ra-select" [value]="ra.codigo" [(ngModel)]="formData.tema"
-                            (click)="$event.stopPropagation()">
-                        <div class="ra-texto">
-                            <strong>{{ ra.codigo }}:</strong> {{ ra.texto }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Número de Preguntas -->
             <div class="grupo-formulario">
                 <label for="numPreguntas" class="etiqueta-formulario requerido">Número de preguntas</label>
@@ -51,6 +31,15 @@
                     <option [value]="2">Difícil</option>
                 </select>
             </div>
+        </div>
+
+        <!-- Opcional: Selección de RA para guiar a la IA -->
+        <div class="opcion-ra-guia" *ngIf="formData.asignatura">
+            <label class="etiqueta-formulario">Filtrar por RA específico (Opcional)</label>
+            <select class="entrada-formulario" [(ngModel)]="formData.tema">
+                <option value="">Cualquiera / Generar sobre todo el PDF</option>
+                <option *ngFor="let ra of rasDisponibles" [value]="ra.codigo">{{ ra.codigo }}: {{ ra.texto }}</option>
+            </select>
         </div>
 
         <!-- Dropzone de PDF -->
@@ -81,11 +70,11 @@
         </div>
 
         <div class="acciones-generar">
-            <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
-            <button class="btn-primario" (click)="generateQuestions()"
-                [disabled]="isGenerating || !selectedFile || !formData.asignatura || !formData.tema || !formData.numPreguntas">
+            <button class="boton boton-secundario" (click)="cancelar()">Cancelar</button>
+            <button class="boton boton-primario" (click)="generateQuestions()"
+                [disabled]="isGenerating || !selectedFile || !formData.asignatura || !formData.numPreguntas">
                 <span *ngIf="!isGenerating">Generar con IA</span>
-                <span *ngIf="isGenerating" class="cargando">Generando preguntas...</span>
+                <span *ngIf="isGenerating" class="cargando">Generando...</span>
             </button>
         </div>
     </div>
@@ -93,37 +82,81 @@
     <!-- Lista de Preguntas Generadas -->
     <div class="preguntas-generadas" *ngIf="generatedQuestions.length > 0">
         <hr />
-        <h2>Preguntas Generadas ({{ generatedQuestions.length }})</h2>
-
-        <div class="lista-preguntas">
-            <div class="tarjeta-pregunta" *ngFor="let q of generatedQuestions; let i = index">
-                <div class="cabecera-pregunta">
-                    <span class="numero-pregunta">Pregunta {{ i + 1 }}</span>
-                    <span class="etiqueta-dificultad" [attr.data-nivel]="q.dificultad">
-                        {{ getDificultadTexto(q.dificultad) }}
-                    </span>
-                </div>
-                <p class="enunciado">{{ q.enunciado }}</p>
-
-                <div class="opciones-pregunta">
-                    <div class="opcion" *ngFor="let opt of q.opciones; let optIdx = index"
-                        [class.correcta]="optIdx === q.respuesta_correcta">
-                        <span class="letra-opcion">{{ String.fromCharCode(65 + optIdx) }}</span>
-                        <span>{{ opt }}</span>
-                        <svg *ngIf="optIdx === q.respuesta_correcta" class="icono-check" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
+        <div class="cabecera-resultados">
+            <h2>Preguntas Generadas ({{ generatedQuestions.length }})</h2>
+            <button class="boton boton-secundario" (click)="regenerateQuestions()">Volver a generar todas</button>
         </div>
 
-        <div class="acciones-finales">
-            <button class="btn-secundario" (click)="regenerateQuestions()">Volver a generar</button>
-            <button class="btn-exito" (click)="saveQuestions()">Guardar Preguntas</button>
+        <div class="lista-preguntas">
+            <div class="tarjeta-pregunta-ia" *ngFor="let q of generatedQuestions; let i = index"
+                [class.editando]="q.isEditing">
+                <div class="cabecera-tarjeta">
+                    <span class="numero-pregunta">Pregunta {{ i + 1 }}</span>
+                    <div class="acciones-tarjeta">
+                        <button class="btn-icono" (click)="toggleEdit(i)" title="Editar">
+                            <svg *ngIf="!q.isEditing" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            <svg *ngIf="q.isEditing" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vista Normal -->
+                <div class="vista-pregunta" *ngIf="!q.isEditing">
+                    <p class="enunciado">{{ q.enunciado }}</p>
+                    <div class="opciones-pregunta">
+                        <div class="opcion" *ngFor="let opt of q.opciones; let optIdx = index">
+                            <span class="letra-opcion">{{ String.fromCharCode(65 + optIdx) }}</span>
+                            <span>{{ opt }}</span>
+                            <svg *ngIf="optIdx === q.respuesta_correcta" class="icono-check" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vista Edición -->
+                <div class="edicion-pregunta" *ngIf="q.isEditing">
+                    <div class="grupo-formulario">
+                        <label class="etiqueta-formulario">Enunciado</label>
+                        <textarea class="entrada-formulario" [(ngModel)]="q.tempData.enunciado" rows="3"></textarea>
+                    </div>
+                    <div class="grupo-opciones-editar">
+                        <div class="opcion-editar" *ngFor="let opt of q.tempData.opciones; let optIdx = index">
+                            <input type="radio" [name]="'correcta-' + i" [value]="optIdx"
+                                [(ngModel)]="q.tempData.respuesta_correcta">
+                            <input type="text" class="entrada-formulario" [(ngModel)]="q.tempData.opciones[optIdx]">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selección de RA (Siempre visible o en edición) -->
+                <div class="seleccion-ra-pregunta">
+                    <label class="etiqueta-formulario Required">Resultados de Aprendizaje</label>
+                    <div class="chips-ras">
+                        <div *ngFor="let ra of rasDisponibles" class="chip-ra"
+                            [class.seleccionado]="isRaSelected(i, ra.codigo)" (click)="toggleRa(i, ra.codigo)">
+                            {{ ra.codigo }}
+                        </div>
+                    </div>
+                    <p class="ayuda-ra" *ngIf="!isRaSelected(i, '')">Selecciona al menos un RA para guardar.</p>
+                </div>
+
+                <!-- Acciones Individuales -->
+                <div class="acciones-tarjeta-final">
+                    <button class="boton boton-peligro sm" (click)="discardQuestion(i)">Descartar</button>
+                    <button class="boton boton-exito sm" (click)="saveIndividualQuestion(i)">Guardar en Banco</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
