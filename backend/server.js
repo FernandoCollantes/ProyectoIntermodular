@@ -5,6 +5,11 @@ const path = require('path');
 const app = express();
 const { connect } = require('./dataBase.js');
 
+const { setupConsoleRedirection, logger } = require('./services/logger');
+
+// Configurar redirección de consola al logger (opcional pero solicitado)
+setupConsoleRedirection();
+
 app.use(cors());
 app.use(express.json());
 
@@ -23,6 +28,12 @@ app.use('/api/preguntas', require('./routes/preguntasRoutes'));
 app.use('/api/examenes', require('./routes/examenesRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
+
+// Middleware Global de Errores (para capturar lo que no se gestione manualmente)
+app.use((err, req, res, next) => {
+    console.error('Error no manejado:', err.stack || err.message || err);
+    res.status(500).json({ message: 'Error interno del servidor capturado por el logger' });
+});
 
 const os = require('os');
 
