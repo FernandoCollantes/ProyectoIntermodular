@@ -1,7 +1,7 @@
 const OpenAI = require('openai');
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY || "TU_CLAVE_AQUÍ"
+    apiKey: process.env.OPENAI_API_KEY || "CLAVE API"
 });
 
 // Mantén MOCK_MODE en true para probar sin gastar créditos
@@ -57,7 +57,7 @@ exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQue
                 { role: "system", content: "Eres un generador de exámenes que solo responde en JSON técnico y estructurado." },
                 { role: "user", content: prompt }
             ],
-            model: "gpt-4o-mini", // O el modelo que prefieras
+            model: 'gpt-4.1-mini', // O el modelo que prefieras
             temperature: 0.3,
         });
 
@@ -74,7 +74,7 @@ exports.generateQuestionsFromText = async (textContext, asignatura, tema, numQue
         }));
 
     } catch (error) {
-        console.error("❌ Error en aiService:", error);
+        console.error("Error en aiService:", error);
         throw new Error("No se pudieron generar preguntas: " + error.message);
     }
 };

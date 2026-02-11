@@ -58,44 +58,112 @@
       <p>Por favor, completa los campos requeridos (Título, Asignatura y Duración) para poder seleccionar preguntas.</p>
     </div>
 
-    <!-- Sección de selección de preguntas (solo visible cuando el formulario inicial está completo) -->
-    <div class="seleccion-preguntas" *ngIf="formularioInicialCompleto()">
-      <div class="cabecera-seleccion">
-        <h2>Seleccionar Preguntas</h2>
-        <div class="busqueda-preguntas">
-          <input type="text" [(ngModel)]="filtroTexto" [ngModelOptions]="{standalone: true}" (input)="aplicarFiltros()"
-            placeholder="Buscar en el enunciado..." class="entrada-formulario mini" />
-        </div>
-        <span class="contador-seleccionado">
-          <div class="indicador-estado"></div>
-          {{ preguntasSeleccionadas.size }} preguntas seleccionadas
-        </span>
+    <!-- Selección de método de creación -->
+    <div class="metodo-seleccion" *ngIf="formularioInicialCompleto()">
+      <label class="etiqueta-formulario">Método de selección de preguntas</label>
+      <div class="botones-alternar">
+        <button type="button" class="boton-alternar" [class.activo]="metodoSeleccion === 'manual'"
+          (click)="metodoSeleccion = 'manual'">
+          Manual
+        </button>
+        <button type="button" class="boton-alternar" [class.activo]="metodoSeleccion === 'aleatorio'"
+          (click)="metodoSeleccion = 'aleatorio'">
+          Aleatorio (Banco de preguntas)
+        </button>
       </div>
+    </div>
 
-      <!-- Questions List -->
-      <div class="lista-preguntas" *ngIf="!cargando">
-        <label class="item-seleccion-pregunta" *ngFor="let p of preguntasFiltradas"
-          [class.seleccionada]="estaSeleccionada(p._id)">
-          <input type="checkbox" [checked]="estaSeleccionada(p._id)" (change)="togglePregunta(p._id)" />
-          <div class="contenido-seleccion-pregunta">
-            <div class="texto-seleccion-pregunta">{{ p.enunciado }}</div>
-            <div class="meta-seleccion-pregunta">
-              <span class="insignia insignia-primaria">{{ p.asignatura }}</span>
-              <span class="insignia">{{ p.tema }}</span>
-              <span class="insignia" [ngClass]="getClaseDificultad(p.dificultad)">
-                {{ getDificultadTexto(p.dificultad) }}
-              </span>
+    <!-- Controles para generación aleatoria -->
+    <div class="controles-aleatorios" *ngIf="formularioInicialCompleto() && metodoSeleccion === 'aleatorio'">
+      <div class="grupo-formulario">
+        <label for="randomAmount" class="etiqueta-formulario">Número de preguntas a generar</label>
+        <div class="entrada-con-boton">
+          <input type="number" id="randomAmount" [(ngModel)]="cantidadAleatoria" [ngModelOptions]="{standalone: true}"
+            min="1" max="50" class="entrada-formulario mini" />
+          <button type="button" (click)="generarPreguntasAleatorias()" class="boton boton-secundario">
+            Generar Examen
+          </button>
+        </div>
+        <p class="ayuda-formulario">Se seleccionarán preguntas aleatorias de la asignatura actual.</p>
+      </div>
+    </div>
+
+    <!-- Sección de selección de preguntas -->
+    <div class="seleccion-preguntas" *ngIf="formularioInicialCompleto()">
+      <div class="contenedor-dos-columnas">
+
+        <!-- Columna Izquierda: Banco de Preguntas -->
+        <div class="columna-banco">
+          <div class="cabecera-seleccion">
+            <h2>{{ metodoSeleccion === 'manual' ? 'Banco de Preguntas' : 'Preguntas Disponibles' }}</h2>
+            <div class="busqueda-preguntas">
+              <input type="text" [(ngModel)]="filtroTexto" [ngModelOptions]="{standalone: true}"
+                (input)="aplicarFiltros()" placeholder="Buscar en el enunciado..." class="entrada-formulario mini" />
             </div>
           </div>
-        </label>
 
-        <div *ngIf="preguntasFiltradas.length === 0" class="sin-resultados">
-          <p>No se encontraron preguntas con los filtros aplicados.</p>
+          <!-- Questions List -->
+          <div class="lista-preguntas" *ngIf="!cargando">
+            <label class="item-seleccion-pregunta" *ngFor="let p of preguntasFiltradas"
+              [class.seleccionada]="estaSeleccionada(p._id)">
+              <input type="checkbox" [checked]="estaSeleccionada(p._id)" (change)="togglePregunta(p._id)" />
+              <div class="contenido-seleccion-pregunta">
+                <div class="texto-seleccion-pregunta">{{ p.enunciado }}</div>
+                <div class="meta-seleccion-pregunta">
+                  <span class="insignia insignia-primaria">{{ p.asignatura }}</span>
+                  <span class="insignia">{{ p.tema }}</span>
+                  <span class="insignia" [ngClass]="getClaseDificultad(p.dificultad)">
+                    {{ getDificultadTexto(p.dificultad) }}
+                  </span>
+                </div>
+              </div>
+            </label>
+
+            <div *ngIf="preguntasFiltradas.length === 0" class="sin-resultados">
+              <p>No se encontraron preguntas con los filtros aplicados.</p>
+            </div>
+          </div>
+
+          <div *ngIf="cargando" class="cargando">
+            <p>Cargando preguntas...</p>
+          </div>
         </div>
-      </div>
 
-      <div *ngIf="cargando" class="cargando">
-        <p>Cargando preguntas...</p>
+        <!-- Columna Derecha: Sidebar de Seleccionadas -->
+        <div class="columna-sidebar">
+          <div class="caja-seleccionadas">
+            <div class="cabecera-sidebar">
+              <h3>Preguntas Seleccionadas</h3>
+              <span class="contador-burbuja">{{ preguntasSeleccionadas.size }}</span>
+            </div>
+
+            <div class="lista-seleccionadas" *ngIf="preguntasSeleccionadas.size > 0">
+              <div class="item-seleccionada" *ngFor="let p of preguntasSeleccionadasLista">
+                <div class="info-item-seleccionada">
+                  <span class="texto-item-seleccionada">{{ p.enunciado }}</span>
+                </div>
+                <button type="button" class="boton-quitar" (click)="togglePregunta(p._id)" title="Quitar">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor"
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="vacio-sidebar" *ngIf="preguntasSeleccionadas.size === 0">
+              <div class="icono-vacio">📋</div>
+              <p>No hay preguntas seleccionadasún.</p>
+              <small>Usa el banco de la izquierda o genera un examen aleatorio.</small>
+            </div>
+
+            <button type="button" *ngIf="preguntasSeleccionadas.size > 0" class="boton-limpiar-todo"
+              (click)="preguntasSeleccionadas.clear()">
+              Limpiar selección
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
 
