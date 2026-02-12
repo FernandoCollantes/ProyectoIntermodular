@@ -19,7 +19,7 @@ test.describe('Flujo Completo de Usuario', () => {
 
     test('Usuario puede navegar por la aplicación', async ({ page }) => {
         // Verificar que la página carga
-        await expect(page).toHaveTitle(/Proyecto Intermodular/i);
+        await expect(page).toHaveTitle(/ExamGen/i);
 
         // Tomar screenshot del estado inicial
         await page.screenshot({ path: 'test-results/screenshots/home.png' });
