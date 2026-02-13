@@ -19,15 +19,10 @@ exports.generateExamPreview = async (subjectId, amount) => {
 
         if (randomQuestions.length === 0) throw new Error(`No hay preguntas suficientes.`);
 
-        const preguntasConNombres = await PreguntaModel.populate(randomQuestions, [
-            { path: 'asignatura' },
-            { path: 'criterios_evaluacion' }
-        ]);
-
-        const preguntasAdaptadas = preguntasConNombres.map(q => ({
+        const preguntasAdaptadas = randomQuestions.map(q => ({
             ...q,
-            asignatura: q.asignatura?.nombre || '',
-            tema: q.criterios_evaluacion ? q.criterios_evaluacion.map(c => c.nombre).join(', ') : ''
+            asignatura: q.asignatura || '',
+            tema: Array.isArray(q.tema) ? q.tema.join(', ') : (q.tema || '')
         }));
 
         const nombreSugerido = `Examen_${Date.now()}`;
@@ -47,8 +42,8 @@ exports.saveExamToDb = async (examData) => {
 
         const { nombre, asignaturaId, preguntasIds, autor, tipo } = examData;
         const preguntasDocs = await PreguntaModel.find({ _id: { $in: preguntasIds } });
-        const allCriterios = preguntasDocs.flatMap(q => q.criterios_evaluacion);
-        const criteriosIdsStrings = [...new Set(allCriterios.map(id => id.toString()))];
+        const allTemas = preguntasDocs.flatMap(q => q.tema || []);
+        const ras = [...new Set(allTemas)];
 
         // Forzamos el tipo explícitamente para ver si es undefined
         const tipoFinal = tipo || 'PRACTICA';
@@ -58,7 +53,7 @@ exports.saveExamToDb = async (examData) => {
             nombre,
             asignatura: asignaturaId,
             preguntas: preguntasIds,
-            criterios_abarcados: criteriosIdsStrings,
+            ras: ras,
             autor: autor || 'admin',
             tipo: tipoFinal // Asignación directa
         });

@@ -14,8 +14,8 @@ export class ExamenService {
 
     // Legacy methods for exam preview
     generarPreview(params: GenerateExamParams): Observable<Examen> {
-        return this.http.post<ApiResponse<Examen>>(`${environment.apiUrl}/preguntas/exam`, params).pipe(
-            map(response => response.exam!)
+        return this.http.post<{ success: boolean; exam: Examen }>(`${this.apiUrl}/preview`, params).pipe(
+            map(response => response.exam)
         );
     }
 

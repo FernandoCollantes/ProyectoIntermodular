@@ -8,7 +8,7 @@ export interface ExamenPreview {
 }
 
 export interface GenerateExamParams {
-    subject: string;
+    subjectId: string;
     amount: number;
 }
 

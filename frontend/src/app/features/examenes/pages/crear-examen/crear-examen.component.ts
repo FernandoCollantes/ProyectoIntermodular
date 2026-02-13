@@ -33,6 +33,8 @@ export class CrearExamenComponent implements OnInit, HasPendingChanges {
   todasLasPreguntas: Pregunta[] = [];
   preguntasFiltradas: Pregunta[] = [];
   preguntasSeleccionadas: Set<string> = new Set();
+  metodoSeleccion: 'manual' | 'aleatorio' = 'manual';
+  cantidadAleatoria: number = 5;
 
   // Filters
   filtroTexto: string = '';
@@ -48,6 +50,10 @@ export class CrearExamenComponent implements OnInit, HasPendingChanges {
       ra.codigo.toLowerCase().includes(term) ||
       ra.texto.toLowerCase().includes(term)
     );
+  }
+
+  get preguntasSeleccionadasLista(): Pregunta[] {
+    return this.todasLasPreguntas.filter(p => this.preguntasSeleccionadas.has(p._id!));
   }
 
   // Loading state
@@ -226,6 +232,42 @@ export class CrearExamenComponent implements OnInit, HasPendingChanges {
     } else {
       this.preguntasSeleccionadas.add(id);
     }
+  }
+
+  generarPreguntasAleatorias(): void {
+    const asignatura = this.examenForm.get('asignatura')?.value;
+    if (!asignatura) {
+      this.notificacionService.mostrar('Selecciona una asignatura primero', 'error');
+      return;
+    }
+
+    this.cargando = true;
+    this.examenService.generarPreview({
+      subjectId: asignatura,
+      amount: this.cantidadAleatoria
+    }).subscribe({
+      next: (examenAleatorio) => {
+        if (examenAleatorio && examenAleatorio.preguntas) {
+          // Limpiar selección previa si se desea, o añadir a la existente. 
+          // Según el requerimiento "generarte el examen aleatoriamente", suele implicar un nuevo conjunto.
+          this.preguntasSeleccionadas.clear();
+
+          examenAleatorio.preguntas.forEach((p: any) => {
+            // El backend devuelve objetos completos en el preview, necesitamos los IDs
+            const id = typeof p === 'string' ? p : p._id;
+            if (id) this.preguntasSeleccionadas.add(id);
+          });
+
+          this.notificacionService.mostrar(`Se han generado ${this.preguntasSeleccionadas.size} preguntas aleatorias`);
+        }
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error generando preguntas aleatorias:', err);
+        this.notificacionService.mostrar('Error al generar preguntas aleatorias: ' + (err.error?.message || err.message), 'error');
+        this.cargando = false;
+      }
+    });
   }
 
   estaSeleccionada(id: string | undefined): boolean {
